@@ -860,6 +860,131 @@ const FRAMES_HTML = {
     .question-card { min-height: 80px; padding: 8px; }
     .ans-btn { padding: 10px 4px; font-size: 20px; }
   }
+
+  /* ── Stage progress bar ── */
+  .stage-bar {
+    background: linear-gradient(135deg, #FFF8E5, #FFFAF0);
+    border: 2.5px solid var(--yellow);
+    border-radius: var(--radius);
+    padding: clamp(8px,2vw,12px) clamp(10px,2.5vw,16px);
+    display: flex; align-items: center;
+    gap: clamp(6px,2vw,12px);
+    box-shadow: 0 3px 10px rgba(249,199,79,0.20);
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage-info {
+    display: flex; flex-direction: column; flex-shrink: 0;
+    line-height: 1.1; min-width: clamp(48px,12vw,62px);
+  }
+  .stage-title {
+    font-size: clamp(10px,2.5vw,12px); color: #B57A00;
+    font-weight: 800; letter-spacing: 0.3px;
+  }
+  .stage-num {
+    font-size: clamp(18px,5vw,26px); font-weight: 900; color: #6B4C00;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+  }
+  .progress-track {
+    flex: 1; height: clamp(16px,4.5vw,22px);
+    background: #fff; border: 2px solid #FFE08A;
+    border-radius: 14px; overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #F9C74F, #FF8C42);
+    width: 0%; border-radius: 12px;
+    transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 1px 3px rgba(255,140,66,0.35);
+  }
+  .progress-fill.shine::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation: shine 1.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes shine { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+  .progress-stars {
+    display: flex; gap: clamp(1px,0.5vw,3px);
+    flex-shrink: 0;
+  }
+  .progress-stars .ps-dot {
+    font-size: clamp(13px,3.4vw,17px);
+    line-height: 1;
+    filter: grayscale(0.85) opacity(0.32);
+    transition: filter 0.3s, transform 0.3s;
+    display: inline-block;
+  }
+  .progress-stars .ps-dot.filled {
+    filter: none;
+    transform: scale(1.18);
+    animation: starpop 0.5s ease-out;
+  }
+  @keyframes starpop {
+    0% { transform: scale(0.5) rotate(-30deg); }
+    60% { transform: scale(1.5) rotate(15deg); }
+    100% { transform: scale(1.18) rotate(0); }
+  }
+  .stage-bar.complete {
+    border-color: var(--green);
+    background: linear-gradient(135deg, #E6F7EA, #F0FFF5);
+    animation: stageGlow 0.9s ease-out;
+  }
+  .stage-bar.complete .stage-title { color: #2F7B43; }
+  .stage-bar.complete .stage-num   { color: #1F5A2D; }
+  @keyframes stageGlow {
+    0%, 100% { box-shadow: 0 3px 10px rgba(91,173,111,0.25); }
+    50%      { box-shadow: 0 3px 30px rgba(91,173,111,0.7), 0 0 0 6px rgba(91,173,111,0.18); }
+  }
+
+  /* ── Stage-up popup (special celebration) ── */
+  .popup-overlay.stage-mode .popup-box {
+    background: linear-gradient(160deg, #FFF8E5 0%, #FFE5C4 60%, #FFD6A5 100%);
+    border: 4px solid var(--yellow);
+    box-shadow: 0 16px 60px rgba(180,120,0,0.45),
+                0 0 0 6px rgba(249,199,79,0.25),
+                inset 0 0 30px rgba(255,255,255,0.5);
+  }
+  .popup-overlay.stage-mode .popup-icon {
+    font-size: clamp(64px,18vw,96px) !important;
+    animation: trophy-spin 0.8s ease-out;
+    filter: drop-shadow(0 4px 8px rgba(180,100,0,0.4));
+  }
+  @keyframes trophy-spin {
+    0%   { transform: scale(0) rotate(-180deg); }
+    60%  { transform: scale(1.3) rotate(20deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+  .popup-overlay.stage-mode .popup-title {
+    color: #6B4C00 !important;
+    font-size: clamp(22px,7vw,34px) !important;
+    text-shadow: 0 2px 0 rgba(255,255,255,0.6);
+  }
+  .popup-overlay.stage-mode .popup-sub {
+    color: #8B5C00 !important;
+    font-size: clamp(14px,4vw,18px) !important;
+  }
+  .popup-overlay.stage-mode .popup-badge {
+    background: linear-gradient(135deg, #FF8C42, #F9C74F) !important;
+    color: #fff !important;
+    font-size: clamp(16px,5vw,24px) !important;
+    box-shadow: 0 5px 0 rgba(180,90,0,0.45);
+    padding: 8px 24px !important;
+    animation: badge-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes badge-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+  .popup-overlay.stage-mode .popup-btn-next {
+    background: linear-gradient(135deg, #FF8C42, #F9C74F) !important;
+    color: #6B4C00 !important;
+    box-shadow: 0 4px 0 rgba(180,100,0,0.4);
+  }
+
 </style>
 </head>
 <body>
@@ -910,6 +1035,23 @@ const FRAMES_HTML = {
     <div class="score-item">
       <span class="score-label">🔥 ຕໍ່ເນື່ອງ</span>
       <span class="score-num" id="streak">0</span>
+    </div>
+  </div>
+
+  <div class="stage-bar" id="stage-bar">
+    <div class="stage-info">
+      <span class="stage-title">🏆 ດ່ານ</span>
+      <span class="stage-num" id="stage-num">1</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-stars" id="progress-stars">
+      <span class="ps-dot">⭐</span>
+      <span class="ps-dot">⭐</span>
+      <span class="ps-dot">⭐</span>
+      <span class="ps-dot">⭐</span>
+      <span class="ps-dot">⭐</span>
     </div>
   </div>
 
@@ -1024,6 +1166,8 @@ const FRAMES_HTML = {
 <script>
 var mode='add', level=1;
 var score=0, correctCount=0, totalCount=0, streak=0;
+var stage=1, stageProgress=0, stageJustCompleted=false;
+var STAGE_GOAL=5;
 var correctAnswer=0, answered=false;
 var ansHistory=[];
 var currentChar='🐰';
@@ -1282,6 +1426,7 @@ if('speechSynthesis' in window){
 }
 document.addEventListener('DOMContentLoaded', function(){
   updateLangButtons(ttsLang, null);
+  updateStageUI();
 });
 setTimeout(function(){ updateLangButtons(ttsLang, null); }, 50);
 
@@ -1338,9 +1483,9 @@ function playCorrectSound(){
 
   // ຄຳສັນລະເສີນ ແຕ່ລະພາສາ (ຫຼາຍຄຳ ໃຫ້ສຸ່ມ ບໍ່ຈຳເຈ)
   var praises = {
-    th: ['ถูกต้อง เก่งหลาย ชมเชย'],
-    en: ['Correct very good'],
-    zh: ['你很棒  下次再加油']
+    th: ['เก่งมาก','เก่งจังเลย','ยอดเยี่ยม','สุดยอดเลย','เยี่ยมมาก'],
+    en: ['Excellent!','Great job!','Well done!','Awesome!','Fantastic!'],
+    zh: ['真棒','太棒了','你真聪明','非常好','你最棒了']
   };
   var lang = TTS_CONFIG[ttsLang] ? ttsLang : 'th';
   var arr  = praises[lang];
@@ -1577,8 +1722,43 @@ var groupColors=[
 function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
 function pickChar(){var a=MODE_CHARS[mode];return a[randInt(0,a.length-1)];}
 
+// ── ເວົ້າຊື່ Operator ເມື່ອກົດປຸ່ມ Mode ──
+function speakOperator(modeKey){
+  if(!('speechSynthesis' in window)) return;
+  if(!soundOn) return;
+  var symMap = {add:'+', sub:'−', mul:'×', div:'÷'};
+  var sym = symMap[modeKey];
+  if(!sym) return;
+  var cfg = TTS_CONFIG[ttsLang] || TTS_CONFIG.th;
+  var word = cfg.sym[sym];
+  if(!word) return;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  ensureVoices(function(voices){
+    var pick = pickVoice(voices, cfg.fallbacks);
+    function makeUtter(){
+      var u = new SpeechSynthesisUtterance(word);
+      u.lang = cfg.lang;
+      u.rate = Math.max(0.45, (cfg.rate || 0.7) * 0.92); // ຊ້າກວ່າ ໃຫ້ເດັກຟັງຊັດ
+      u.pitch = (cfg.pitch || 1.1) + 0.05;
+      u.volume = 1.0;
+      if(pick) u.voice = pick;
+      return u;
+    }
+    var u1 = makeUtter();
+    // ສຳລັບພາສາຈີນ ເວົ້າ 2 ຄັ້ງ ໃຫ້ຄົມຊັດ (ເພາະຄຳສັ້ນ)
+    if(cfg.boost){
+      var u2 = makeUtter();
+      u1.onend = function(){
+        setTimeout(function(){ try{ speechSynthesis.speak(u2); }catch(e){} }, 200);
+      };
+    }
+    try{ speechSynthesis.speak(u1); }catch(e){}
+  });
+}
+
 function setMode(m){
   mode=m;
+  speakOperator(m);
   document.querySelectorAll('.mode-btn').forEach(function(b,i){
     b.classList.toggle('active',['add','sub','mul','div'][i]===m);
   });
@@ -2040,6 +2220,7 @@ function applyResult(ok){
   var pts=0;
   if(ok){
     correctCount++; streak++;
+    stageProgress++;
     pts=streak>=3?20:10; score+=pts;
     document.getElementById('correct-count').textContent=correctCount;
     document.getElementById('score').textContent=score;
@@ -2050,6 +2231,10 @@ function applyResult(ok){
     ansHistory.push('ok'); lastOk=true; lastPts=pts;
     playCorrectSound();
     if(streak>=3)launchConfetti();
+    updateStageUI();
+    if(stageProgress >= STAGE_GOAL){
+      stageJustCompleted = true;
+    }
   } else {
     streak=0;
     document.getElementById('streak').textContent='0';
@@ -2092,6 +2277,12 @@ function checkInput(){
 // ── Popup ──
 function openPopup(ok,pts){
   if(ok===undefined){ok=lastOk;pts=lastPts;}
+  // ── ຖ້າຫາກຫາກໍ່ຜ່ານດ່ານ ສະແດງປ໋ອບອັບພິເສດ ──
+  if(stageJustCompleted){
+    stageJustCompleted = false;
+    openStagePopup();
+    return;
+  }
   var icon,title,sub,badge;
   if(ok){
     var icons=['🎉','🌟','🏆','🥳','✨','🎊'];
@@ -2112,8 +2303,89 @@ function openPopup(ok,pts){
   document.getElementById('popup-overlay').classList.add('show');
 }
 
+function updateStageUI(){
+  var sn = document.getElementById('stage-num');
+  if(sn) sn.textContent = stage;
+  var fill = document.getElementById('progress-fill');
+  if(fill){
+    var pct = Math.min(100, (stageProgress/STAGE_GOAL)*100);
+    fill.style.width = pct + '%';
+    fill.classList.toggle('shine', stageProgress > 0 && stageProgress < STAGE_GOAL);
+  }
+  var dots = document.querySelectorAll('#progress-stars .ps-dot');
+  dots.forEach(function(d, i){
+    d.classList.toggle('filled', i < stageProgress);
+  });
+}
+
+function openStagePopup(){
+  var bonus = 50 + (stage * 10);
+  score += bonus;
+  document.getElementById('score').textContent = score;
+  var passedStage = stage;
+  stage++;
+  stageProgress = 0;
+  // ສະແດງເອັຟເຟັກໃນແຖບ
+  var bar = document.getElementById('stage-bar');
+  if(bar){
+    bar.classList.add('complete');
+    setTimeout(function(){ bar.classList.remove('complete'); }, 900);
+  }
+  // ດ່ານທີ 5, 10, 15... → ແນະນຳເລື່ອນລະດັບ
+  var levelUpHint = '';
+  if(passedStage % 3 === 0 && level < 3){
+    levelUpHint = ' ລອງເລື່ອນລະດັບໃຫ້ຍາກຂຶ້ນເລີຍ! 🚀';
+  } else if(passedStage % 5 === 0){
+    levelUpHint = ' ເຈົ້າເກັ່ງສຸດໆ! 🎯';
+  }
+  var titles = ['🎊 ຜ່ານດ່ານໃໝ່!','🏆 ສຸດຍອດ!','🌟 ດີຫຼາຍ!','✨ ຍອດຍ້ຽມ!'];
+  var title = titles[Math.floor(Math.random()*titles.length)];
+  document.getElementById('popup-icon').textContent = '🏆';
+  document.getElementById('popup-title').textContent = title;
+  document.getElementById('popup-sub').textContent = 'ຜ່ານດ່ານທີ ' + passedStage + ' ສຳເລັດ! ໄປດ່ານທີ ' + stage + ' ກັນເລີຍ!' + levelUpHint;
+  document.getElementById('popup-badge').textContent = '🌟 +' + bonus + ' ຄະແນນພິເສດ!';
+  var ovl = document.getElementById('popup-overlay');
+  ovl.classList.add('stage-mode');
+  ovl.classList.add('show');
+  setTimeout(function(){
+    if(typeof launchConfetti === 'function'){
+      launchConfetti();
+      setTimeout(launchConfetti, 250);
+      setTimeout(launchConfetti, 500);
+      setTimeout(launchConfetti, 750);
+    }
+  }, 100);
+  playStageSound();
+  updateStageUI();
+}
+
+function playStageSound(){
+  if(!soundOn) return;
+  try{
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return;
+    var ctx = new Ctx();
+    // 4-note ascending fanfare: C, E, G, C(high)
+    var notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach(function(freq, i){
+      var t0 = ctx.currentTime + i * 0.13;
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.22, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.32);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(t0); osc.stop(t0 + 0.34);
+    });
+    setTimeout(function(){ try{ ctx.close(); }catch(e){} }, 1500);
+  }catch(e){}
+}
+
 function closePopup(){
   document.getElementById('popup-overlay').classList.remove('show');
+  document.getElementById('popup-overlay').classList.remove('stage-mode');
 }
 
 function popupNext(){
