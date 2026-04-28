@@ -274,27 +274,48 @@
     box-shadow: 0 0 0 2.5px var(--purple) inset;
   }
 
-  /* ── ປຸ່ມຫຍໍ້ "ແຕະຟັງ" ── */
-  .speak-hint {
+  /* ── ຫົວຂໍ້ນຳພາ ── */
+  .speak-label {
+    display: block; font-size: clamp(9px,2.4vw,11px);
+    color: var(--text-soft); font-weight: 800;
+    margin-top: 2px; letter-spacing: 0.3px;
+  }
+
+  /* ── ປຸ່ມເລືອກພາສາ TTS (ໄທ / ອັງກິດ / ຈີນ) ── */
+  .lang-picker {
+    display: flex; gap: clamp(5px,1.5vw,8px);
+    justify-content: center; align-items: stretch;
+    flex-wrap: wrap; margin-top: 2px; width: 100%;
+  }
+  .lang-btn {
     display: inline-flex; align-items: center; gap: 5px;
-    font-size: clamp(10px,2.7vw,13px);
-    color: var(--purple); font-weight: 800;
+    font-size: clamp(11px,2.9vw,13px);
+    font-weight: 800; color: var(--purple);
     background: var(--purple-light);
-    border: 1.5px solid #C5BCFF;
-    border-radius: 30px; padding: 4px 12px;
+    border: 2px solid #C5BCFF;
+    border-radius: 24px;
+    padding: clamp(5px,1.4vw,7px) clamp(10px,2.6vw,14px);
     cursor: pointer; user-select: none;
-    transition: transform 0.15s;
-    animation: speak-pulse 2.2s ease-in-out infinite;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    transition: transform 0.12s, background 0.15s, color 0.15s, border-color 0.15s;
+    box-shadow: 0 2px 0 rgba(124,111,205,0.18);
+    line-height: 1.1;
   }
-  .speak-hint:active { transform: scale(0.92); }
-  .speak-hint.playing {
-    background: var(--green-light); border-color: var(--green); color: var(--green);
-    animation: none;
+  .lang-btn:active { transform: translateY(2px); box-shadow: 0 0 0 rgba(124,111,205,0.18); }
+  .lang-btn:hover { background: #E0D8FF; }
+  .lang-btn.active {
+    background: var(--purple); color: #fff; border-color: var(--purple);
+    box-shadow: 0 2px 0 rgba(92,77,170,0.5);
   }
-  .speak-hint .speak-ico { font-size: 1.1em; line-height: 1; }
-  @keyframes speak-pulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(124,111,205,0.45); }
-    50%     { box-shadow: 0 0 0 7px rgba(124,111,205,0); }
+  .lang-btn.playing {
+    background: var(--green); color: #fff; border-color: var(--green);
+    box-shadow: 0 2px 0 rgba(60,130,80,0.5);
+    animation: lang-pulse 1.3s ease-in-out infinite;
+  }
+  .lang-btn .flag { font-size: 1.2em; line-height: 1; }
+  @keyframes lang-pulse {
+    0%,100% { box-shadow: 0 2px 0 rgba(60,130,80,0.5), 0 0 0 0 rgba(91,173,111,0.55); }
+    50%     { box-shadow: 0 2px 0 rgba(60,130,80,0.5), 0 0 0 8px rgba(91,173,111,0); }
   }
   .question-text .q-op {
     color: var(--purple); font-weight: 900;
@@ -399,6 +420,93 @@
   }
   .mul-table-btn.show { display: block; }
   .mul-table-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(124,111,205,0.25); }
+
+  /* ── ປຸ່ມ "ການນັບເລກ 0-100" (ຢູ່ເທິງສຸດ) ── */
+  .counting-btn {
+    width: 100%;
+    padding: clamp(10px,2.7vw,14px);
+    font-size: clamp(14px,3.8vw,17px);
+    border: 2.5px solid var(--green);
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, #E6F7EA, #F0FFF5);
+    color: #2F7B43;
+    cursor: pointer;
+    font-weight: 900;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    box-shadow: 0 4px 0 rgba(91,173,111,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+  }
+  .counting-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 rgba(91,173,111,0.35);
+  }
+  .counting-btn .cnt-ico { font-size: 1.3em; line-height: 1; }
+
+  /* ── Popup "ການນັບເລກ" ── */
+  .counting-box {
+    max-width: 480px !important; width: 96% !important;
+    padding: clamp(16px,3.2vw,22px) clamp(10px,2.5vw,18px) !important;
+    position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .counting-title {
+    font-size: clamp(17px,5vw,22px); font-weight: 900;
+    color: var(--green); margin-bottom: 4px;
+  }
+  .counting-sub {
+    font-size: clamp(10px,2.7vw,12px); color: var(--text-soft);
+    font-weight: 700; margin-bottom: 10px;
+  }
+  .counting-lang {
+    margin-bottom: 12px !important;
+    padding-bottom: 10px; border-bottom: 2px dashed var(--border);
+  }
+  .counting-grid {
+    display: grid; grid-template-columns: repeat(10, 1fr);
+    gap: clamp(3px,1vw,5px);
+  }
+  .counting-cell {
+    aspect-ratio: 1;
+    font-size: clamp(11px,3vw,15px);
+    font-weight: 800; color: var(--text);
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    transition: transform 0.1s, background 0.12s, color 0.12s, border-color 0.12s;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; line-height: 1;
+  }
+  .counting-cell:hover {
+    background: var(--green-light); border-color: var(--green);
+  }
+  .counting-cell:active {
+    transform: scale(0.88);
+    background: var(--green); color: #fff; border-color: var(--green);
+  }
+  .counting-cell.speaking {
+    background: var(--green); color: #fff; border-color: var(--green);
+    transform: scale(1.08);
+    box-shadow: 0 0 0 3px rgba(91,173,111,0.4);
+    z-index: 2; position: relative;
+  }
+  .counting-cell.zero {
+    background: var(--purple-light); border-color: var(--purple); color: var(--purple);
+  }
+  .counting-cell.hundred {
+    background: var(--yellow); color: #6B4C00;
+    border-color: #E0A800; font-weight: 900;
+    grid-column: span 2; aspect-ratio: 2/1;
+  }
+  .counting-foot {
+    margin-top: 12px;
+    font-size: clamp(10px,2.7vw,12px);
+    color: var(--text-soft); font-weight: 700;
+    text-align: center; line-height: 1.5;
+  }
 
   /* ── Popup ສຳລັບສະແດງສູດຄູນ ── */
   .mul-table-box {
@@ -550,6 +658,11 @@
     <div class="header-sub">ສອນຄິດໄລ່ເລກ 🌟 DeDyDeMy 🌟</div>
   </div>
 
+  <button class="counting-btn" onclick="openCounting()" type="button">
+    <span class="cnt-ico">🔢</span>
+    <span>ການນັບເລກ 0 → 100</span>
+  </button>
+
   <div class="score-bar">
     <div class="score-item">
       <span class="score-label">⭐ ຄະແນນ</span>
@@ -592,8 +705,17 @@
 
     <div class="character-row" id="character-row"></div>
     <div class="question-text" id="question" onclick="speakQuestion()" title="ແຕະເພື່ອຟັງສຽງອ່ານ">?</div>
-    <div class="speak-hint" id="speak-hint" onclick="speakQuestion()">
-      <span class="speak-ico">🔊</span><span>ແຕະຟັງສຽງອ່ານຄຳຖາມ</span>
+    <span class="speak-label">🔊 ແຕະຟັງສຽງອ່ານ — ເລືອກພາສາ:</span>
+    <div class="lang-picker" id="lang-picker">
+      <button class="lang-btn" id="lang-btn-th" onclick="speakQuestion('th')" type="button">
+        <span class="flag">🇹🇭</span><span>ໄທ</span>
+      </button>
+      <button class="lang-btn" id="lang-btn-en" onclick="speakQuestion('en')" type="button">
+        <span class="flag">🇺🇸</span><span>EN</span>
+      </button>
+      <button class="lang-btn" id="lang-btn-zh" onclick="speakQuestion('zh')" type="button">
+        <span class="flag">🇨🇳</span><span>中文</span>
+      </button>
     </div>
   </div>
 
@@ -642,6 +764,28 @@
   </div>
 </div>
 
+<!-- POPUP ການນັບເລກ 0-100 -->
+<div class="popup-overlay" id="counting-overlay">
+  <div class="popup-box counting-box">
+    <button class="mul-table-close-x" onclick="closeCounting()" type="button">✕</button>
+    <div class="counting-title">🔢 ການນັບເລກ 0 → 100</div>
+    <div class="counting-sub">ແຕະເລກໃດກໍໄດ້ ເພື່ອຟັງສຽງອ່ານ</div>
+    <div class="lang-picker counting-lang">
+      <button class="lang-btn" id="cnt-lang-th" onclick="setCountingLang('th')" type="button">
+        <span class="flag">🇹🇭</span><span>ໄທ</span>
+      </button>
+      <button class="lang-btn" id="cnt-lang-en" onclick="setCountingLang('en')" type="button">
+        <span class="flag">🇺🇸</span><span>EN</span>
+      </button>
+      <button class="lang-btn" id="cnt-lang-zh" onclick="setCountingLang('zh')" type="button">
+        <span class="flag">🇨🇳</span><span>中文</span>
+      </button>
+    </div>
+    <div class="counting-grid" id="counting-grid"></div>
+    <div class="counting-foot">💡 ປ່ຽນພາສາໄດ້ທຸກເວລາ — ຄຳເລືອກນີ້ໃຊ້ກັບເກມຄະນິດສາດນຳ</div>
+  </div>
+</div>
+
 <div class="confetti-wrap" id="confetti-wrap"></div>
 
 <script>
@@ -654,26 +798,106 @@ var lastOk=false, lastPts=0;
 var crossedCount=0, subB=0;
 var currentQ=null;
 
-// ── Lao number → Lao word (0 - 999) ──
-function numToLao(n){
-  if(n<0) return 'ລົບ '+numToLao(-n);
-  if(n===0) return 'ສູນ';
-  var ones=['','ໜຶ່ງ','ສອງ','ສາມ','ສີ່','ຫ້າ','ຫົກ','ເຈັດ','ແປດ','ເກົ້າ'];
-  var tens=['','ສິບ','ຊາວ','ສາມສິບ','ສີ່ສິບ','ຫ້າສິບ','ຫົກສິບ','ເຈັດສິບ','ແປດສິບ','ເກົ້າສິບ'];
+// ────────────────────────────────────────────────────────────
+//  TTS: ຮອງຮັບ 3 ພາສາ — ໄທ / ອັງກິດ / ຈີນ
+// ────────────────────────────────────────────────────────────
+var ttsLang = 'th';   // ຄ່າຕັ້ງຕົ້ນ = ໄທ
+try {
+  var saved = localStorage.getItem('mathTtsLang');
+  if (saved && (saved==='th'||saved==='en'||saved==='zh')) ttsLang = saved;
+} catch(e) {}
+
+// ── ເລກໄທ (0-999) ──
+function numToThai(n){
+  if(n<0) return 'ลบ '+numToThai(-n);
+  if(n===0) return 'ศูนย์';
+  var ones=['','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
   if(n<10) return ones[n];
   if(n<100){
-    var t=Math.floor(n/10), u=n%10;
-    if(u===0) return tens[t];
-    if(u===1 && t>=1) return tens[t]+'ເອັດ';   // 11=ສິບເອັດ, 21=ຊາວເອັດ
-    return tens[t]+ones[u];
+    var t=Math.floor(n/10), u=n%10, tStr;
+    if(t===1) tStr='สิบ';
+    else if(t===2) tStr='ยี่สิบ';
+    else tStr=ones[t]+'สิบ';
+    if(u===0) return tStr;
+    if(u===1) return tStr+'เอ็ด';
+    return tStr+ones[u];
   }
   if(n<1000){
     var h=Math.floor(n/100), rest=n%100;
-    var s=ones[h]+'ຮ້ອຍ';
-    return rest===0 ? s : s+numToLao(rest);
+    var s=ones[h]+'ร้อย';
+    return rest===0 ? s : s+numToThai(rest);
   }
   return String(n);
 }
+
+// ── ເລກອັງກິດ ──
+function numToEnglish(n){
+  if(n<0) return 'minus '+numToEnglish(-n);
+  if(n===0) return 'zero';
+  var ones=['','one','two','three','four','five','six','seven','eight','nine',
+            'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen',
+            'seventeen','eighteen','nineteen'];
+  var tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+  if(n<20) return ones[n];
+  if(n<100){
+    var t=Math.floor(n/10), u=n%10;
+    return u===0 ? tens[t] : tens[t]+'-'+ones[u];
+  }
+  if(n<1000){
+    var h=Math.floor(n/100), rest=n%100;
+    var s=ones[h]+' hundred';
+    return rest===0 ? s : s+' '+numToEnglish(rest);
+  }
+  return String(n);
+}
+
+// ── ເລກຈີນ ──
+function numToChinese(n){
+  if(n<0) return '负'+numToChinese(-n);
+  if(n===0) return '零';
+  var ones=['零','一','二','三','四','五','六','七','八','九'];
+  if(n<10) return ones[n];
+  if(n<20) return '十'+(n===10 ? '' : ones[n-10]);
+  if(n<100){
+    var t=Math.floor(n/10), u=n%10;
+    return ones[t]+'十'+(u===0 ? '' : ones[u]);
+  }
+  if(n<1000){
+    var h=Math.floor(n/100), rest=n%100;
+    var s=ones[h]+'百';
+    if(rest===0) return s;
+    if(rest<10)  return s+'零'+ones[rest];
+    if(rest<20)  return s+'一十'+(rest===10 ? '' : ones[rest-10]);
+    return s+numToChinese(rest);
+  }
+  return String(n);
+}
+
+// ── ຕາຕະລາງເຄື່ອງໝາຍ ແລະ ຮູບແບບປະໂຫຍກ ──
+var TTS_CONFIG = {
+  th: {
+    lang: 'th-TH', fallbacks: ['th'],
+    rate: 0.70, pitch: 1.05,
+    sym: {'+':'บวก','−':'ลบ','-':'ลบ','×':'คูณ','x':'คูณ','*':'คูณ','÷':'หาร','/':'หาร'},
+    num: numToThai,
+    // ໃສ່ ", " ເພື່ອໃຫ້ engine ຫຍຸດເລັກນ້ອຍ ເດັກຟັງທັນ
+    join: function(a, op, b){ return a+', '+op+', '+b+', เท่ากับเท่าไหร่'; }
+  },
+  en: {
+    lang: 'en-US', fallbacks: ['en-US','en-GB','en'],
+    rate: 0.75, pitch: 1.0,
+    sym: {'+':'plus','−':'minus','-':'minus','×':'times','x':'times','*':'times','÷':'divided by','/':'divided by'},
+    num: numToEnglish,
+    join: function(a, op, b){ return a+', '+op+', '+b+', equals what?'; }
+  },
+  zh: {
+    lang: 'zh-CN', fallbacks: ['zh-CN','zh-TW','zh-HK','zh'],
+    rate: 0.70, pitch: 1.05,
+    sym: {'+':'加','−':'减','-':'减','×':'乘','x':'乘','*':'乘','÷':'除以','/':'除以'},
+    num: numToChinese,
+    join: function(a, op, b){ return a+'，'+op+'，'+b+'，等于多少'; }
+  }
+};
 
 // ── ໂຫລດສຽງ Voice ໃຫ້ພ້ອມ ──
 var _voicesReady=false;
@@ -688,65 +912,87 @@ function ensureVoices(cb){
     _voicesReady=true;
     cb(speechSynthesis.getVoices());
   };
-  // fallback timeout - ບາງເຄື່ອງບໍ່ trigger event
   setTimeout(function(){
     if(done) return; done=true;
     cb(speechSynthesis.getVoices());
   }, 1200);
 }
 
-// ── ອ່ານຄຳຖາມດ້ວຍສຽງ AI ──
-function speakQuestion(){
-  if(!soundOn) return;
+function pickVoice(voices, prefs){
+  if(!voices||!voices.length) return null;
+  for(var i=0;i<prefs.length;i++){
+    var p=prefs[i].toLowerCase();
+    var match=voices.find(function(v){
+      return v.lang && v.lang.toLowerCase().indexOf(p)===0;
+    });
+    if(match) return match;
+  }
+  return null;
+}
+
+function updateLangButtons(active, playing){
+  ['th','en','zh'].forEach(function(code){
+    var b=document.getElementById('lang-btn-'+code);
+    if(!b) return;
+    b.classList.toggle('active', code===active);
+    b.classList.toggle('playing', code===playing);
+  });
+}
+
+function speakQuestion(lang){
   if(!('speechSynthesis' in window)) return;
   if(!currentQ) return;
-  var symMap={'+':'ບວກ','−':'ລົບ','-':'ລົບ','×':'ຄູນ','x':'ຄູນ','*':'ຄູນ','÷':'ຫານ','/':'ຫານ'};
-  var opWord=symMap[currentQ.sym]||currentQ.sym;
-  var aWord=numToLao(currentQ.a);
-  var bWord=numToLao(currentQ.b);
-  var text=aWord+' '+opWord+' '+bWord+' ເທົ່າກັບເທົ່າໃດ';
 
-  // ຢຸດສຽງເກົ່າກ່ອນ
+  if(lang && TTS_CONFIG[lang]){
+    ttsLang = lang;
+    try { localStorage.setItem('mathTtsLang', lang); } catch(e) {}
+  }
+  var cfg = TTS_CONFIG[ttsLang] || TTS_CONFIG.th;
+  updateLangButtons(ttsLang, null);
+
+  if(!soundOn) return;
+
+  var opWord=cfg.sym[currentQ.sym] || currentQ.sym;
+  var aWord=cfg.num(currentQ.a);
+  var bWord=cfg.num(currentQ.b);
+  var text=cfg.join(aWord, opWord, bWord);
+
   try{ speechSynthesis.cancel(); }catch(e){}
 
   ensureVoices(function(voices){
     var utter=new SpeechSynthesisUtterance(text);
-    utter.lang='lo-LA';
-    utter.rate=0.85;
-    utter.pitch=1.05;
+    utter.lang=cfg.lang;
+    utter.rate=cfg.rate;
+    utter.pitch=cfg.pitch;
     utter.volume=1.0;
 
-    // ຄົ້ນຫາ Lao voice ກ່ອນ, ຖ້າບໍ່ມີ ໃຊ້ Thai (ສຽງໃກ້ຄຽງ), ຖ້າບໍ່ມີ ປ່ອຍ default
-    var pick=null;
-    if(voices && voices.length){
-      pick = voices.find(function(v){return v.lang && v.lang.toLowerCase().indexOf('lo')===0;});
-      if(!pick) pick = voices.find(function(v){return v.lang && v.lang.toLowerCase().indexOf('th')===0;});
-    }
+    var pick=pickVoice(voices, cfg.fallbacks);
     if(pick) utter.voice=pick;
 
-    // ສະແດງສະຖານະກຳລັງເວົ້າ
     var qEl=document.getElementById('question');
-    var hEl=document.getElementById('speak-hint');
     utter.onstart=function(){
       if(qEl) qEl.classList.add('speaking');
-      if(hEl) hEl.classList.add('playing');
+      updateLangButtons(ttsLang, ttsLang);
     };
     utter.onend=utter.onerror=function(){
       if(qEl) qEl.classList.remove('speaking');
-      if(hEl) hEl.classList.remove('playing');
+      updateLangButtons(ttsLang, null);
     };
 
     speechSynthesis.speak(utter);
   });
 }
 
-// preload voices ໃຫ້ພ້ອມໃຊ້ງານ
 if('speechSynthesis' in window){
   try{ speechSynthesis.getVoices(); }catch(e){}
   if(typeof speechSynthesis.onvoiceschanged !== 'undefined'){
     speechSynthesis.onvoiceschanged=function(){ _voicesReady=true; };
   }
 }
+document.addEventListener('DOMContentLoaded', function(){
+  updateLangButtons(ttsLang, null);
+});
+setTimeout(function(){ updateLangButtons(ttsLang, null); }, 50);
 
 // ── ຕັ້ງຄ່າສຽງ ──
 var soundOn = true;
@@ -966,6 +1212,104 @@ function closeMulTable(){
 
 document.getElementById('mul-table-overlay').addEventListener('click',function(e){
   if(e.target===this)closeMulTable();
+});
+
+// ════════════════════════════════════════════════════════════
+//  POPUP ການນັບເລກ 0-100
+// ════════════════════════════════════════════════════════════
+function buildCountingGrid(){
+  var grid=document.getElementById('counting-grid');
+  if(!grid) return;
+  grid.innerHTML='';
+  for(var i=0;i<=100;i++){
+    (function(n){
+      var b=document.createElement('button');
+      b.type='button';
+      b.className='counting-cell'+(n===0?' zero':n===100?' hundred':'');
+      b.textContent=n;
+      b.dataset.num=n;
+      var fn=function(e){
+        e.preventDefault();
+        speakNumber(n, b);
+      };
+      b.addEventListener('click', fn);
+      grid.appendChild(b);
+    })(i);
+  }
+}
+
+function speakNumber(n, btn){
+  if(!('speechSynthesis' in window)){ return; }
+  if(!soundOn){ return; }
+  var cfg = TTS_CONFIG[ttsLang] || TTS_CONFIG.th;
+  var text = cfg.num(n);
+
+  try{ speechSynthesis.cancel(); }catch(e){}
+
+  // ລົບ class .speaking ຈາກປຸ່ມເກົ່າ
+  document.querySelectorAll('.counting-cell.speaking').forEach(function(el){
+    el.classList.remove('speaking');
+  });
+
+  ensureVoices(function(voices){
+    var utter=new SpeechSynthesisUtterance(text);
+    utter.lang=cfg.lang;
+    utter.rate=cfg.rate;
+    utter.pitch=cfg.pitch;
+    utter.volume=1.0;
+    var pick=pickVoice(voices, cfg.fallbacks);
+    if(pick) utter.voice=pick;
+
+    if(btn){
+      utter.onstart=function(){ btn.classList.add('speaking'); };
+      utter.onend=utter.onerror=function(){ btn.classList.remove('speaking'); };
+    }
+
+    speechSynthesis.speak(utter);
+  });
+}
+
+function setCountingLang(lang){
+  if(!TTS_CONFIG[lang]) return;
+  ttsLang = lang;
+  try{ localStorage.setItem('mathTtsLang', lang); }catch(e){}
+  updateLangButtons(ttsLang, null);
+  updateCountingLangButtons(ttsLang);
+  // ສຽງຕົວຢ່າງສັ້ນໆ ເພື່ອຢືນຢັນວ່າພາສາໃໝ່ໃຊ້ໄດ້
+  if(soundOn){
+    var samples={th:'หนึ่ง', en:'one', zh:'一'};
+    try{ speechSynthesis.cancel(); }catch(e){}
+    ensureVoices(function(voices){
+      var cfg=TTS_CONFIG[lang];
+      var u=new SpeechSynthesisUtterance(samples[lang]||'1');
+      u.lang=cfg.lang; u.rate=cfg.rate; u.pitch=cfg.pitch; u.volume=1.0;
+      var pick=pickVoice(voices, cfg.fallbacks);
+      if(pick) u.voice=pick;
+      speechSynthesis.speak(u);
+    });
+  }
+}
+
+function updateCountingLangButtons(active){
+  ['th','en','zh'].forEach(function(code){
+    var b=document.getElementById('cnt-lang-'+code);
+    if(b) b.classList.toggle('active', code===active);
+  });
+}
+
+function openCounting(){
+  buildCountingGrid();
+  updateCountingLangButtons(ttsLang);
+  document.getElementById('counting-overlay').classList.add('show');
+}
+
+function closeCounting(){
+  document.getElementById('counting-overlay').classList.remove('show');
+  try{ speechSynthesis.cancel(); }catch(e){}
+}
+
+document.getElementById('counting-overlay').addEventListener('click',function(e){
+  if(e.target===this) closeCounting();
 });
 function setLevel(v){
   level=parseInt(v);
