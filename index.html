@@ -261,6 +261,40 @@
     gap: clamp(4px,1.4vw,10px);
     white-space: nowrap;
     width: 100%; max-width: 100%;
+    cursor: pointer;
+    padding: 6px 10px; border-radius: 14px;
+    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+    user-select: none;
+    position: relative;
+  }
+  .question-text:hover { background: rgba(124,111,205,0.06); }
+  .question-text:active { transform: scale(0.97); }
+  .question-text.speaking {
+    background: var(--purple-light);
+    box-shadow: 0 0 0 2.5px var(--purple) inset;
+  }
+
+  /* ── ປຸ່ມຫຍໍ້ "ແຕະຟັງ" ── */
+  .speak-hint {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: clamp(10px,2.7vw,13px);
+    color: var(--purple); font-weight: 800;
+    background: var(--purple-light);
+    border: 1.5px solid #C5BCFF;
+    border-radius: 30px; padding: 4px 12px;
+    cursor: pointer; user-select: none;
+    transition: transform 0.15s;
+    animation: speak-pulse 2.2s ease-in-out infinite;
+  }
+  .speak-hint:active { transform: scale(0.92); }
+  .speak-hint.playing {
+    background: var(--green-light); border-color: var(--green); color: var(--green);
+    animation: none;
+  }
+  .speak-hint .speak-ico { font-size: 1.1em; line-height: 1; }
+  @keyframes speak-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(124,111,205,0.45); }
+    50%     { box-shadow: 0 0 0 7px rgba(124,111,205,0); }
   }
   .question-text .q-op {
     color: var(--purple); font-weight: 900;
@@ -557,7 +591,10 @@
     <div class="group-area" id="group-area"></div>
 
     <div class="character-row" id="character-row"></div>
-    <div class="question-text" id="question">?</div>
+    <div class="question-text" id="question" onclick="speakQuestion()" title="ແຕະເພື່ອຟັງສຽງອ່ານ">?</div>
+    <div class="speak-hint" id="speak-hint" onclick="speakQuestion()">
+      <span class="speak-ico">🔊</span><span>ແຕະຟັງສຽງອ່ານຄຳຖາມ</span>
+    </div>
   </div>
 
   <div class="feedback-area">
@@ -615,6 +652,101 @@ var ansHistory=[];
 var currentChar='🐰';
 var lastOk=false, lastPts=0;
 var crossedCount=0, subB=0;
+var currentQ=null;
+
+// ── Lao number → Lao word (0 - 999) ──
+function numToLao(n){
+  if(n<0) return 'ລົບ '+numToLao(-n);
+  if(n===0) return 'ສູນ';
+  var ones=['','ໜຶ່ງ','ສອງ','ສາມ','ສີ່','ຫ້າ','ຫົກ','ເຈັດ','ແປດ','ເກົ້າ'];
+  var tens=['','ສິບ','ຊາວ','ສາມສິບ','ສີ່ສິບ','ຫ້າສິບ','ຫົກສິບ','ເຈັດສິບ','ແປດສິບ','ເກົ້າສິບ'];
+  if(n<10) return ones[n];
+  if(n<100){
+    var t=Math.floor(n/10), u=n%10;
+    if(u===0) return tens[t];
+    if(u===1 && t>=1) return tens[t]+'ເອັດ';   // 11=ສິບເອັດ, 21=ຊາວເອັດ
+    return tens[t]+ones[u];
+  }
+  if(n<1000){
+    var h=Math.floor(n/100), rest=n%100;
+    var s=ones[h]+'ຮ້ອຍ';
+    return rest===0 ? s : s+numToLao(rest);
+  }
+  return String(n);
+}
+
+// ── ໂຫລດສຽງ Voice ໃຫ້ພ້ອມ ──
+var _voicesReady=false;
+function ensureVoices(cb){
+  if(!('speechSynthesis' in window)){ cb([]); return; }
+  var v=speechSynthesis.getVoices();
+  if(v && v.length>0){ _voicesReady=true; cb(v); return; }
+  if(_voicesReady){ cb(speechSynthesis.getVoices()); return; }
+  var done=false;
+  speechSynthesis.onvoiceschanged=function(){
+    if(done) return; done=true;
+    _voicesReady=true;
+    cb(speechSynthesis.getVoices());
+  };
+  // fallback timeout - ບາງເຄື່ອງບໍ່ trigger event
+  setTimeout(function(){
+    if(done) return; done=true;
+    cb(speechSynthesis.getVoices());
+  }, 1200);
+}
+
+// ── ອ່ານຄຳຖາມດ້ວຍສຽງ AI ──
+function speakQuestion(){
+  if(!soundOn) return;
+  if(!('speechSynthesis' in window)) return;
+  if(!currentQ) return;
+  var symMap={'+':'ບວກ','−':'ລົບ','-':'ລົບ','×':'ຄູນ','x':'ຄູນ','*':'ຄູນ','÷':'ຫານ','/':'ຫານ'};
+  var opWord=symMap[currentQ.sym]||currentQ.sym;
+  var aWord=numToLao(currentQ.a);
+  var bWord=numToLao(currentQ.b);
+  var text=aWord+' '+opWord+' '+bWord+' ເທົ່າກັບເທົ່າໃດ';
+
+  // ຢຸດສຽງເກົ່າກ່ອນ
+  try{ speechSynthesis.cancel(); }catch(e){}
+
+  ensureVoices(function(voices){
+    var utter=new SpeechSynthesisUtterance(text);
+    utter.lang='lo-LA';
+    utter.rate=0.85;
+    utter.pitch=1.05;
+    utter.volume=1.0;
+
+    // ຄົ້ນຫາ Lao voice ກ່ອນ, ຖ້າບໍ່ມີ ໃຊ້ Thai (ສຽງໃກ້ຄຽງ), ຖ້າບໍ່ມີ ປ່ອຍ default
+    var pick=null;
+    if(voices && voices.length){
+      pick = voices.find(function(v){return v.lang && v.lang.toLowerCase().indexOf('lo')===0;});
+      if(!pick) pick = voices.find(function(v){return v.lang && v.lang.toLowerCase().indexOf('th')===0;});
+    }
+    if(pick) utter.voice=pick;
+
+    // ສະແດງສະຖານະກຳລັງເວົ້າ
+    var qEl=document.getElementById('question');
+    var hEl=document.getElementById('speak-hint');
+    utter.onstart=function(){
+      if(qEl) qEl.classList.add('speaking');
+      if(hEl) hEl.classList.add('playing');
+    };
+    utter.onend=utter.onerror=function(){
+      if(qEl) qEl.classList.remove('speaking');
+      if(hEl) hEl.classList.remove('playing');
+    };
+
+    speechSynthesis.speak(utter);
+  });
+}
+
+// preload voices ໃຫ້ພ້ອມໃຊ້ງານ
+if('speechSynthesis' in window){
+  try{ speechSynthesis.getVoices(); }catch(e){}
+  if(typeof speechSynthesis.onvoiceschanged !== 'undefined'){
+    speechSynthesis.onvoiceschanged=function(){ _voicesReady=true; };
+  }
+}
 
 // ── ຕັ້ງຄ່າສຽງ ──
 var soundOn = true;
@@ -734,6 +866,7 @@ function toggleSound(){
   btn.textContent = soundOn ? '🔊' : '🔇';
   btn.classList.toggle('muted', !soundOn);
   if(soundOn){ playTone(880, 0, 0.12, 0.1, 'sine'); }
+  else { try{ speechSynthesis.cancel(); }catch(e){} }
 }
 
 var levelNames={1:'🌱 ງ່າຍ',2:'🌿 ກາງ',3:'🔥 ຍາກ'};
@@ -1067,6 +1200,7 @@ function nextQuestion(){
 
   var q=generateQuestion();
   correctAnswer=q.ans;
+  currentQ=q;
   renderQuestion(q);
 
   var isSubVis=(mode==='sub'&&level<=2);
