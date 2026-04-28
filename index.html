@@ -446,60 +446,69 @@
 
   /* ── Popup "ການນັບເລກ" ── */
   .counting-box {
-    max-width: 480px !important; width: 96% !important;
-    padding: clamp(16px,3.2vw,22px) clamp(10px,2.5vw,18px) !important;
+    max-width: 540px !important; width: 96% !important;
+    padding: clamp(18px,3.5vw,26px) clamp(12px,3vw,22px) !important;
     position: relative;
-    max-height: 90vh; overflow-y: auto;
+    max-height: 92vh; overflow-y: auto;
   }
   .counting-title {
-    font-size: clamp(17px,5vw,22px); font-weight: 900;
+    font-size: clamp(19px,5.5vw,26px); font-weight: 900;
     color: var(--green); margin-bottom: 4px;
   }
   .counting-sub {
-    font-size: clamp(10px,2.7vw,12px); color: var(--text-soft);
-    font-weight: 700; margin-bottom: 10px;
+    font-size: clamp(12px,3.2vw,15px); color: var(--text-soft);
+    font-weight: 700; margin-bottom: 12px;
   }
   .counting-lang {
-    margin-bottom: 12px !important;
-    padding-bottom: 10px; border-bottom: 2px dashed var(--border);
+    margin-bottom: 14px !important;
+    padding-bottom: 12px; border-bottom: 2px dashed var(--border);
+  }
+  /* ປຸ່ມພາສາໃນປ໋ອບອັບການນັບເລກ — ໃຫຍ່ຂຶ້ນກວ່າຂ້າງລຸ່ມ */
+  .counting-lang .lang-btn {
+    font-size: clamp(13px,3.5vw,16px);
+    padding: clamp(7px,2vw,10px) clamp(13px,3.2vw,18px);
   }
   .counting-grid {
-    display: grid; grid-template-columns: repeat(10, 1fr);
-    gap: clamp(3px,1vw,5px);
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: clamp(6px,1.8vw,10px);
   }
   .counting-cell {
     aspect-ratio: 1;
-    font-size: clamp(11px,3vw,15px);
-    font-weight: 800; color: var(--text);
+    font-size: clamp(24px,7vw,38px);
+    font-weight: 900; color: var(--text);
     background: #fff;
-    border: 2px solid var(--border);
-    border-radius: 10px;
+    border: 3px solid var(--border);
+    border-radius: 16px;
     cursor: pointer;
     font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
-    transition: transform 0.1s, background 0.12s, color 0.12s, border-color 0.12s;
+    transition: transform 0.1s, background 0.12s, color 0.12s, border-color 0.12s, box-shadow 0.12s;
     display: flex; align-items: center; justify-content: center;
     padding: 0; line-height: 1;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.08);
   }
   .counting-cell:hover {
     background: var(--green-light); border-color: var(--green);
   }
   .counting-cell:active {
-    transform: scale(0.88);
+    transform: scale(0.92) translateY(2px);
     background: var(--green); color: #fff; border-color: var(--green);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.08);
   }
   .counting-cell.speaking {
     background: var(--green); color: #fff; border-color: var(--green);
-    transform: scale(1.08);
-    box-shadow: 0 0 0 3px rgba(91,173,111,0.4);
+    transform: scale(1.10);
+    box-shadow: 0 4px 0 rgba(60,130,80,0.4), 0 0 0 4px rgba(91,173,111,0.4);
     z-index: 2; position: relative;
   }
   .counting-cell.zero {
     background: var(--purple-light); border-color: var(--purple); color: var(--purple);
   }
+  /* ເລກ 3 ໂຕ (100) — ຕົວນ້ອຍກວ່າເລັກນ້ອຍ ໃຫ້ພໍດີໃນກ່ອງ */
   .counting-cell.hundred {
     background: var(--yellow); color: #6B4C00;
     border-color: #E0A800; font-weight: 900;
     grid-column: span 2; aspect-ratio: 2/1;
+    font-size: clamp(28px,8vw,44px);
   }
   .counting-foot {
     margin-top: 12px;
@@ -892,10 +901,11 @@ var TTS_CONFIG = {
   },
   zh: {
     lang: 'zh-CN', fallbacks: ['zh-CN','zh-TW','zh-HK','zh'],
-    rate: 0.70, pitch: 1.05,
+    rate: 0.55, pitch: 1.20,   // ຊ້າຫຼາຍ + pitch ສູງ ໃຫ້ຄົມຕັດຫູ
     sym: {'+':'加','−':'减','-':'减','×':'乘','x':'乘','*':'乘','÷':'除以','/':'除以'},
     num: numToChinese,
-    join: function(a, op, b){ return a+'，'+op+'，'+b+'，等于多少'; }
+    join: function(a, op, b){ return a+'，'+op+'，'+b+'，等于多少'; },
+    boost: true  // ຫຼັງ flag ໃຫ້ speakQuestion ເວົ້າ 2 ຄັ້ງ ເພື່ອເສີມສຽງ
   }
 };
 
@@ -960,24 +970,49 @@ function speakQuestion(lang){
   try{ speechSynthesis.cancel(); }catch(e){}
 
   ensureVoices(function(voices){
-    var utter=new SpeechSynthesisUtterance(text);
-    utter.lang=cfg.lang;
-    utter.rate=cfg.rate;
-    utter.pitch=cfg.pitch;
-    utter.volume=1.0;
-
     var pick=pickVoice(voices, cfg.fallbacks);
-    if(pick) utter.voice=pick;
 
+    function makeUtter(){
+      var u=new SpeechSynthesisUtterance(text);
+      u.lang=cfg.lang;
+      u.rate=cfg.rate;
+      u.pitch=cfg.pitch;
+      u.volume=1.0;          // ສຸງສຸດທີ່ Web Speech API ອະນຸຍາດ
+      if(pick) u.voice=pick;
+      return u;
+    }
+
+    var utter=makeUtter();
     var qEl=document.getElementById('question');
     utter.onstart=function(){
       if(qEl) qEl.classList.add('speaking');
       updateLangButtons(ttsLang, ttsLang);
     };
-    utter.onend=utter.onerror=function(){
-      if(qEl) qEl.classList.remove('speaking');
-      updateLangButtons(ttsLang, null);
-    };
+
+    if(cfg.boost){
+      // ── ພາສາທີ່ມີ boost (ເຊັ່ນຈີນ) ──
+      // ເວົ້າ 2 ຄັ້ງຕິດກັນ ໃຫ້ເດັກຟັງຊັດເຈນຂຶ້ນ
+      var utter2=makeUtter();
+      utter.onend=function(){
+        // ຫຍຸດສັ້ນໆແລ້ວເວົ້າຄັ້ງທີ 2
+        setTimeout(function(){
+          try{ speechSynthesis.speak(utter2); }catch(e){}
+        }, 250);
+      };
+      utter2.onend=utter2.onerror=function(){
+        if(qEl) qEl.classList.remove('speaking');
+        updateLangButtons(ttsLang, null);
+      };
+      utter.onerror=function(){
+        if(qEl) qEl.classList.remove('speaking');
+        updateLangButtons(ttsLang, null);
+      };
+    } else {
+      utter.onend=utter.onerror=function(){
+        if(qEl) qEl.classList.remove('speaking');
+        updateLangButtons(ttsLang, null);
+      };
+    }
 
     speechSynthesis.speak(utter);
   });
@@ -1025,64 +1060,213 @@ function playTone(freq, when, duration, volume, type){
   osc.stop(t0 + duration + 0.05);
 }
 
-// ສຽງຕອບຖືກ - ຣິງ ດີດີດີ + ສຽງຕົບມືຍາວ ~2.5 ວິນາທີ
+// ສຽງຕອບຖືກ:
+//   1) chime ສັ້ນ ສະຫຼອງ
+//   2) ສຽງເວົ້າ "ເກັ່ງຫຼາຍ" (ຕາມພາສາທີ່ເລືອກ TH/EN/ZH)
+//   3) ສຽງຕົບມື (ຕາມຫຼັງສຽງເວົ້າ)
 function playCorrectSound(){
   if(!soundOn) return;
   var ctx = getAudioCtx();
   if(!ctx) return;
-  // ໂນດຂຶ້ນສູງມ່ວນຊື່ນ: C5, E5, G5, C6
-  var notes = [523.25, 659.25, 783.99, 1046.50];
-  notes.forEach(function(freq, i){
-    playTone(freq, i*0.08, 0.30, 0.18, 'triangle');
+
+  // ── Step 1: chime ສັ້ນ (2 ໂນດ) ສະຫຼອງການຕອບຖືກ ──
+  playTone(659.25, 0,    0.12, 0.16, 'triangle');  // E5
+  playTone(987.77, 0.08, 0.20, 0.16, 'triangle');  // B5
+
+  // ── Step 2: ສຽງເວົ້າຄຳສັນລະເສີນ ──
+  if(!('speechSynthesis' in window)){
+    // ບໍ່ມີ TTS → ຕົບມືເລີຍ ຫຼັງ chime
+    setTimeout(playApplauseBurst, 350);
+    return;
+  }
+
+  // ຄຳສັນລະເສີນ ແຕ່ລະພາສາ (ຫຼາຍຄຳ ໃຫ້ສຸ່ມ ບໍ່ຈຳເຈ)
+  var praises = {
+    th: ['เก่งมาก','เก่งจังเลย','ยอดเยี่ยม','สุดยอดเลย','เยี่ยมมาก'],
+    en: ['Excellent!','Great job!','Well done!','Awesome!','Fantastic!'],
+    zh: ['真棒','太棒了','你真聪明','非常好','你最棒了']
+  };
+  var lang = TTS_CONFIG[ttsLang] ? ttsLang : 'th';
+  var arr  = praises[lang];
+  var phrase = arr[Math.floor(Math.random()*arr.length)];
+  var cfg  = TTS_CONFIG[lang];
+
+  try{ speechSynthesis.cancel(); }catch(e){}
+
+  ensureVoices(function(voices){
+    var utter = new SpeechSynthesisUtterance(phrase);
+    utter.lang   = cfg.lang;
+    utter.rate   = cfg.rate * 1.10;  // ໄວເລັກນ້ອຍກວ່າຄຳຖາມ - ມີຊີວິດຊີວາ
+    utter.pitch  = 1.15;             // ສຽງສູງເລັກນ້ອຍ - ມີຄວາມຕື່ນເຕັ້ນ
+    utter.volume = 1.0;
+    var pick = pickVoice(voices, cfg.fallbacks);
+    if(pick) utter.voice = pick;
+
+    // ── Step 3: ຫຼັງສຽງເວົ້າຈົບ → ຕົບມື ──
+    var applauseStarted = false;
+    function startApplause(){
+      if(applauseStarted) return;
+      applauseStarted = true;
+      setTimeout(playApplauseBurst, 120);
+    }
+    utter.onend   = startApplause;
+    utter.onerror = startApplause;
+
+    // Safety: ຖ້າ TTS ບໍ່ຍິງ event ພາຍໃນ 3 ວິ → ບັງຄັບໃຫ້ຕົບມື
+    setTimeout(startApplause, 3000);
+
+    // ເລີ່ມເວົ້າຫຼັງ chime ຈົບ (~320ms)
+    setTimeout(function(){
+      try{ speechSynthesis.speak(utter); }
+      catch(e){ startApplause(); }
+    }, 320);
   });
-  // ສຽງຕົບມືຫຼັງຣິງ ~2.1s ລວມຣິງເປັນ ~2.5s
-  setTimeout(playApplauseBurst, 380);
-  // ໂນດປິດທ້າຍ ໃຫ້ຮູ້ສຶກສົມບູນ
-  setTimeout(function(){
-    playTone(1046.50, 0, 0.4, 0.12, 'triangle');
-    playTone(1318.51, 0, 0.5, 0.10, 'triangle'); // E6
-  }, 2150);
 }
 
-// ສຽງຕົບມືຊົມເຊີຍ (ໃຊ້ noise + filter, ມີຄວາມເຂັ້ມຂຸ້ນຂຶ້ນ-ລົງ ຄ້າຍຝູງຊົນຕົບມື)
+// ─────────────────────────────────────────────────────────────
+//  ສຽງຕົບມືສົມຈິງ (Realistic Crowd Applause)
+//  ແນວຄິດ: ຈຳລອງຄົນຫຼາຍຄົນ (40 ຄົນ) ຕົບມືພ້ອມກັນ ໃນຫ້ອງທີ່ມີ reverb
+//  ແຕ່ລະຄົນ: ຈັງຫວະ, ຄວາມດັງ, ຕຳແໜ່ງ ຊ້າຍ-ຂວາ ແຕກຕ່າງກັນ
+//  ການຕົບແຕ່ລະຄັ້ງ: ມີ "smack" ສັ້ນ + decay ໄວ + ຄວາມຖີ່ສະເພາະ
+// ─────────────────────────────────────────────────────────────
+
+// ສ້າງ impulse response ສຳລັບ reverb ຫ້ອງ
+function createRoomImpulse(ctx, durSec, decay){
+  var sr = ctx.sampleRate;
+  var len = Math.floor(sr * durSec);
+  var imp = ctx.createBuffer(2, len, sr);
+  var IL = imp.getChannelData(0);
+  var IR = imp.getChannelData(1);
+  for(var i=0;i<len;i++){
+    var env = Math.pow(1 - i/len, decay);
+    IL[i] = (Math.random()*2-1) * env;
+    IR[i] = (Math.random()*2-1) * env;
+  }
+  var conv = ctx.createConvolver();
+  conv.buffer = imp;
+  return conv;
+}
+
+// ສ້າງ "ການຕົບມື 1 ຄັ້ງ" ໃສ່ buffer ທີ່ຕຳແໜ່ງ startSample
+function renderClap(L, R, startSample, sr, amp, pan){
+  // ຄວາມຍາວການຕົບ ~ 35-75ms (ຕົບສັ້ນໆ)
+  var clapLen = Math.floor(sr * (0.035 + Math.random()*0.040));
+  var bufLen = L.length;
+  // ຄວາມຖີ່ສະເພາະຂອງຄົນຕົບ (ຕ່າງກັນ ໃຫ້ສຽງມີ variety)
+  // Two-pole bandpass simulation via simple resonant filter
+  var fcenter = 1200 + Math.random()*2200; // 1.2-3.4kHz "smack" range
+  var omega = 2*Math.PI*fcenter/sr;
+  var Q = 2.0 + Math.random()*1.5;
+  var alpha = Math.sin(omega) / (2*Q);
+  var cosw = Math.cos(omega);
+  // Biquad bandpass coefficients
+  var b0 = alpha, b1 = 0, b2 = -alpha;
+  var a0 = 1+alpha, a1 = -2*cosw, a2 = 1-alpha;
+  b0/=a0; b1/=a0; b2/=a0; a1/=a0; a2/=a0;
+  var x1=0,x2=0,y1=0,y2=0;
+  // Stereo equal-power pan
+  var theta = (pan+1) * Math.PI/4;
+  var lG = Math.cos(theta), rG = Math.sin(theta);
+  var attack = Math.max(2, Math.floor(sr*0.0015)); // ~1.5ms ultra-sharp attack
+  var decayTau = clapLen * 0.18; // exponential decay
+  for(var i=0;i<clapLen;i++){
+    var idx = startSample + i;
+    if(idx < 0 || idx >= bufLen) continue;
+    var noise = Math.random()*2-1;
+    // Filter
+    var y = b0*noise + b1*x1 + b2*x2 - a1*y1 - a2*y2;
+    x2=x1; x1=noise; y2=y1; y1=y;
+    // Envelope
+    var env;
+    if(i < attack){
+      env = i/attack;
+    } else {
+      env = Math.exp(-(i-attack)/decayTau);
+    }
+    // ຜະສົມ: ສຽງ filtered (ຕົ້ນສຸດຂອງ clap = "smack") + ສຽງ noise ດິບເລັກນ້ອຍ (body)
+    var sample = (y * 0.85 + noise * 0.20) * env * amp;
+    L[idx] += sample * lG;
+    R[idx] += sample * rG;
+  }
+}
+
 function playApplauseBurst(){
   if(!soundOn) return;
   var ctx = getAudioCtx();
   if(!ctx) return;
-  var duration = 2.1;
-  var bufferSize = Math.floor(ctx.sampleRate * duration);
-  var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-  var data = buffer.getChannelData(0);
-  for(var i=0;i<bufferSize;i++){
-    var t = i / ctx.sampleRate;
-    // ຄວາມເຂັ້ມຂຸ້ນຂອງການຕົບມື ມີຍອດສູງ ແລ້ວຄ່ອຍໆຫຼຸດລົງ
-    // ສູງສຸດທີ່ປະມານ 0.3-0.6s ແລ້ວຄ່ອຍໆຈາງລົງຫາ 2.1s
-    var density;
-    if(t<0.2)        density = 0.04 + t*0.4;        // ເລີ່ມຕົ້ນ ສຸງຂຶ້ນ
-    else if(t<0.7)   density = 0.12;                // ຍອດ - ຫຼາຍຄົນຕົບພ້ອມກັນ
-    else if(t<1.4)   density = 0.10 - (t-0.7)*0.04; // ຄ່ອຍໆຫຼຸດ
-    else             density = 0.07 - (t-1.4)*0.07; // ບາງລົງເລື່ອຍໆ
-    if(density<0.005) density = 0.005;
 
-    var clap = (Math.random()<density) ? (Math.random()*2-1) : 0;
-    var noise = (Math.random()*2-1) * 0.30;
+  var sr = ctx.sampleRate;
+  var duration = 2.6; // ຍາວ 2.6s
+  var bufLen = Math.floor(sr * duration);
 
-    // Envelope ໂດຍລວມ - ບໍ່ຫຼຸດໄວເກີນໄປ
-    var envelope;
-    if(t<0.1)      envelope = t/0.1;                 // fade in
-    else if(t<1.6) envelope = 1.0;                   // ເຕັມ
-    else           envelope = Math.max(0, 1.0 - (t-1.6)/0.5); // fade out
+  // Stereo buffer
+  var buffer = ctx.createBuffer(2, bufLen, sr);
+  var L = buffer.getChannelData(0);
+  var R = buffer.getChannelData(1);
 
-    data[i] = (clap*1.4 + noise*0.4) * envelope;
+  // ຈຳນວນ "ຄົນຕົບມື" ໃນຝູງຊົນ
+  var numClappers = 38;
+
+  for(var p=0; p<numClappers; p++){
+    // ແຕ່ລະຄົນ:
+    var pan = (Math.random()*2-1) * 0.75;          // ຕຳແໜ່ງຊ້າຍ-ຂວາ
+    var distance = 0.25 + Math.random()*0.75;       // ໄກ-ໃກ້ (ຄວາມດັງ)
+    var rate = 4.0 + Math.random()*4.5;             // ຄວາມໄວ ຄົນລະ 4-8.5 ຄັ້ງ/ວິ
+    var startOffset = Math.random()*0.35;           // ເລີ່ມຊ້າ-ໄວ
+    var rhythmJitter = 0.45;                        // ຄວາມບໍ່ຄົງທີ່ຂອງຈັງຫວະ
+
+    var t = startOffset;
+    while(t < duration - 0.05){
+      // ຄວາມເຂັ້ມຂຸ້ນຂອງຝູງຊົນ ໃນຊ່ວງເວລາ t (envelope ລວມ)
+      var crowdEnv;
+      if(t < 0.2)       crowdEnv = (t/0.2) * 0.85;             // build-up
+      else if(t < 1.0)  crowdEnv = 0.85 + (t-0.2)*0.15/0.8;    // peak rising
+      else if(t < 1.6)  crowdEnv = 1.0;                        // peak hold
+      else if(t < 2.2)  crowdEnv = 1.0 - (t-1.6)*0.55/0.6;     // decay
+      else              crowdEnv = Math.max(0, 0.45 - (t-2.2)*0.45/0.4);
+
+      if(crowdEnv > 0.05){
+        // ຄວາມດັງຂອງການຕົບແຕ່ລະຄັ້ງ
+        var amp = distance * crowdEnv * (0.55 + Math.random()*0.55);
+        renderClap(L, R, Math.floor(t*sr), sr, amp, pan);
+      }
+
+      // ຍ່າງເວລາໄປຄັ້ງຕໍ່ໄປ - ມີ jitter
+      var step = (1/rate) * (1 - rhythmJitter + Math.random()*rhythmJitter*2);
+      t += Math.max(0.05, step);
+    }
   }
+
+  // ─── Audio chain: source → bandpass → [dry + reverb] → out ───
   var source = ctx.createBufferSource();
   source.buffer = buffer;
-  // ກອງຄວາມຖີ່ສູງ ໃຫ້ຟັງຄືສຽງຕົບມືແທ້ໆ
-  var filter = ctx.createBiquadFilter();
-  filter.type = 'highpass'; filter.frequency.value = 1100;
-  var gain = ctx.createGain();
-  gain.gain.value = 0.22;
-  source.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+
+  // ກອງຄວາມຖີ່ ໃຫ້ສຽງຄົມຄ້າຍຕົບມືແທ້
+  var hipass = ctx.createBiquadFilter();
+  hipass.type = 'highpass'; hipass.frequency.value = 600; hipass.Q.value = 0.7;
+
+  var lopass = ctx.createBiquadFilter();
+  lopass.type = 'lowpass'; lopass.frequency.value = 8500; lopass.Q.value = 0.5;
+
+  // Reverb ຫ້ອງ ຂະໜາດກາງ
+  var reverb = createRoomImpulse(ctx, 0.55, 2.2);
+  var revGain = ctx.createGain(); revGain.gain.value = 0.30;
+  var dryGain = ctx.createGain(); dryGain.gain.value = 0.75;
+  var outGain = ctx.createGain(); outGain.gain.value = 0.55;
+
+  source.connect(hipass);
+  hipass.connect(lopass);
+
+  // dry path
+  lopass.connect(dryGain);
+  dryGain.connect(outGain);
+
+  // wet (reverb) path
+  lopass.connect(reverb);
+  reverb.connect(revGain);
+  revGain.connect(outGain);
+
+  outGain.connect(ctx.destination);
   source.start();
 }
 
