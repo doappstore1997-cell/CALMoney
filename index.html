@@ -2,256 +2,1257 @@
 <html lang="lo">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>ກະຕຸນໂຄໂລມິ ສອນເລກ - ປັບປຸງໃໝ່</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ຄະນິດສາດ ມ່ວນໆ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{width:100%;min-height:100vh;font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#FFF0F8 0%,#EDE9FE 100%);overflow-x:hidden;}
-.wrap{max-width:460px;margin:0 auto;padding:10px 12px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+  /* Phetsarath OT - ໂຫລດຈາກ CDN ແລະ ໃຊ້ local ຖ້າມີຕິດຕັ້ງໃນເຄື່ອງ */
+  @font-face {
+    font-family: 'Phetsarath OT';
+    src: local('Phetsarath OT'),
+         local('Phetsarath_OT'),
+         local('Phetsarath'),
+         url('https://cdn.jsdelivr.net/gh/lao-dictionary/lao-fonts@master/Phetsarath_OT.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Phetsarath OT';
+    src: local('Phetsarath OT Bold'),
+         local('Phetsarath_OT_Bold'),
+         local('Phetsarath Bold'),
+         url('https://cdn.jsdelivr.net/gh/lao-dictionary/lao-fonts@master/Phetsarath_OT.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --bg: #FFF8EE;
+    --card: #FFFFFF;
+    --purple: #7C6FCD;
+    --purple-light: #EEE9FF;
+    --green: #5BAD6F;
+    --green-light: #E6F7EA;
+    --red: #E85D5D;
+    --red-light: #FDEAEA;
+    --yellow: #F9C74F;
+    --text: #3A2E5A;
+    --text-soft: #7B6F9A;
+    --border: #E8DFF8;
+    --shadow: 0 4px 16px rgba(124,111,205,0.13);
+    --radius: 20px;
+    --radius-lg: 28px;
+  }
 
-/* HEADER */
-.hdr{width:100%;display:flex;align-items:center;justify-content:space-between;background:white;border-radius:22px;padding:10px 16px;box-shadow:0 4px 20px rgba(168,85,247,0.15);}
-.hdr-title{font-size:14px;font-weight:900;color:#7C3AED;}
-.score-pill{display:flex;align-items:center;gap:5px;background:#EDE9FE;border-radius:50px;padding:6px 14px;font-size:18px;font-weight:900;color:#7C3AED;}
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-/* LANGUAGE SELECTOR */
-.lang-box{width:100%;display:flex;justify-content:center;gap:8px;margin-bottom:5px;}
-.lang-btn{padding:8px 12px;border:2px solid #E5E7EB;border-radius:12px;background:white;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;}
-.lang-btn.active{background:#7C3AED;color:white;border-color:#7C3AED;box-shadow:0 4px 10px rgba(124,58,237,0.3);}
+  body {
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 10% 20%, #FFE0F0 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, #DDEEFF 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, #E8F0FF 0%, transparent 60%);
+  }
 
-/* MODE TABS */
-.modes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;}
-.mode-btn{padding:10px 4px;border:3px solid transparent;border-radius:16px;background:white;font-size:20px;font-weight:900;cursor:pointer;text-align:center;transition:all .2s;box-shadow:0 3px 10px rgba(0,0,0,0.08);color:#9CA3AF;line-height:1.2;}
-.mode-btn span{display:block;font-size:11px;margin-top:2px;}
-.mode-btn.active{border-color:#FF6B9D;background:#FFF0F8;color:#FF6B9D;transform:translateY(-2px);box-shadow:0 6px 18px rgba(255,107,157,.28);}
+  .app {
+    max-width: 520px; margin: 0 auto;
+    padding: clamp(10px, 3vw, 20px);
+    min-height: 100vh; display: flex; flex-direction: column;
+    gap: clamp(8px, 2vw, 14px);
+    position: relative;
+  }
 
-/* CHARACTER */
-.char-area{position:relative;display:flex;flex-direction:column;align-items:center;}
-.kolo-wrap{position:relative;width:150px;height:150px;cursor:pointer;}
-.kolo{width:100%;height:100%;animation:bob 2s ease-in-out infinite;}
-@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
-.bubble{position:absolute;top:-10px;right:-55px;background:white;border-radius:18px;padding:8px 12px;font-size:12px;font-weight:700;color:#1F2937;box-shadow:0 4px 16px rgba(0,0,0,.13);max-width:110px;text-align:center;opacity:0;transform:scale(.5);transition:all .3s cubic-bezier(.175,.885,.32,1.275);z-index:10;}
-.bubble.show{opacity:1;transform:scale(1);}
+  /* ── ປຸ່ມເປີດ-ປິດສຽງ ── */
+  .sound-btn {
+    position: absolute;
+    top: clamp(10px,3vw,20px); right: clamp(10px,3vw,20px);
+    width: clamp(38px,9vw,44px); height: clamp(38px,9vw,44px);
+    border-radius: 50%; border: 2.5px solid var(--border);
+    background: var(--card); color: var(--text);
+    font-size: clamp(15px,4vw,20px); cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    z-index: 10; transition: all 0.15s;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; padding: 0;
+  }
+  .sound-btn:active { transform: scale(0.9); }
+  .sound-btn.muted { background: #FDEAEA; border-color: var(--red); opacity: 0.85; }
 
-/* SOUND BTN */
-.sound-btn{width:100%;padding:14px;font-size:18px;font-weight:900;border:3px solid #BAE6FD;border-radius:20px;background:#F0F9FF;color:#0369A1;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 3px 12px rgba(3,105,161,.12);}
-.sound-btn.playing{animation:pulse 0.8s infinite alternate;}
-@keyframes pulse{from{transform:scale(1);}to{transform:scale(1.02);box-shadow:0 0 15px rgba(59,130,246,0.3);}}
+  /* Header */
+  .header { text-align: center; padding: clamp(6px,2vw,12px) 0 2px; }
+  .header-icon { font-size: clamp(32px,9vw,50px); display: block; margin-bottom: 2px; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .header-title { font-size: clamp(20px,6vw,32px); font-weight: 900; color: var(--purple); }
+  .header-sub { font-size: clamp(11px,3vw,14px); color: var(--text-soft); font-weight: 600; }
 
-.emo-box{background:white;border-radius:20px;padding:12px;width:100%;min-height:60px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;font-size:24px;box-shadow:0 3px 12px rgba(0,0,0,.07);}
-.q-card{background:white;border-radius:26px;padding:15px;width:100%;text-align:center;box-shadow:0 6px 28px rgba(124,58,237,.13);border:3px solid #EDE9FE;}
-.q-text{font-size:42px;font-weight:900;color:#2D1B69;}
+  /* Score bar */
+  .score-bar {
+    display: flex; justify-content: space-around; align-items: center;
+    background: var(--card); border-radius: var(--radius);
+    padding: clamp(7px,2vw,11px) clamp(10px,3vw,18px);
+    box-shadow: var(--shadow); border: 2px solid var(--border); gap: 6px;
+  }
+  .score-item { text-align: center; }
+  .score-label { font-size: clamp(10px,2.5vw,12px); color: var(--text-soft); font-weight: 700; display: block; }
+  .score-num { font-size: clamp(17px,5vw,26px); font-weight: 900; color: var(--text); display: block; line-height: 1.1; }
+  .score-divider { width: 2px; height: 32px; background: var(--border); border-radius: 2px; }
 
-.lvl-row{width:100%;display:flex;align-items:center;gap:10px;padding:5px;}
-.lvl-row input[type=range]{flex:1;accent-color:#7C3AED;}
+  /* Mode tabs */
+  .mode-tabs { display: grid; grid-template-columns: repeat(4,1fr); gap: clamp(5px,1.5vw,10px); }
+  .mode-btn {
+    padding: clamp(7px,2vw,12px) 4px;
+    border: 2.5px solid var(--border); border-radius: var(--radius);
+    background: var(--card); color: var(--text-soft);
+    font-size: clamp(10px,2.8vw,13px); font-weight: 800;
+    cursor: pointer; text-align: center; transition: all 0.18s;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif; line-height: 1.3;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .mode-btn .mode-icon { font-size: clamp(17px,4.5vw,24px); display: block; }
+  .mode-btn.active {
+    background: var(--purple-light); border-color: var(--purple); color: var(--purple);
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124,111,205,0.22);
+  }
 
-.ans-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;}
-.ans-btn{padding:18px 8px;font-size:34px;font-weight:900;border:3px solid #E5E7EB;border-radius:22px;background:white;cursor:pointer;transition:all .18s;}
-.ans-btn.correct{background:#D1FAE5;border-color:#34D399;color:#065F46;}
-.ans-btn.wrong{background:#FEE2E2;border-color:#F87171;color:#991B1B;}
+  /* Level row */
+  .level-row {
+    display: flex; align-items: center; gap: clamp(6px,2vw,12px);
+    background: var(--card); border-radius: var(--radius);
+    padding: clamp(7px,2vw,11px) clamp(12px,3vw,18px);
+    box-shadow: var(--shadow); border: 2px solid var(--border);
+  }
+  .level-label { font-size: clamp(12px,3vw,14px); color: var(--text-soft); font-weight: 700; white-space: nowrap; }
+  .level-row input[type=range] {
+    flex: 1; -webkit-appearance: none; height: 8px;
+    border-radius: 4px; background: var(--purple-light); outline: none; cursor: pointer;
+  }
+  .level-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--purple); box-shadow: 0 2px 8px rgba(124,111,205,0.4); cursor: pointer;
+  }
+  .level-value { font-size: clamp(13px,3.5vw,16px); font-weight: 900; color: var(--purple); white-space: nowrap; min-width: 52px; }
 
-.next-btn{width:100%;padding:18px;font-size:20px;font-weight:900;border:none;border-radius:24px;background:linear-gradient(135deg,#FF6B9D 0%,#7C3AED 100%);color:white;cursor:pointer;display:none;box-shadow:0 6px 24px rgba(124,58,237,.35);}
+  /* Question card */
+  .question-card {
+    background: var(--card); border-radius: var(--radius-lg);
+    padding: clamp(12px,3vw,22px); text-align: center;
+    box-shadow: var(--shadow); border: 2.5px solid var(--border);
+    position: relative; overflow: hidden;
+    min-height: clamp(130px,26vw,200px);
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px;
+  }
+  .question-card::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(124,111,205,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
 
-.loading{width:16px;height:16px;border:3px solid #3B82F6;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
+  /* Subtraction interactive */
+  .sub-hint {
+    font-size: clamp(10px,2.5vw,13px); color: var(--purple); font-weight: 800;
+    background: var(--purple-light); border-radius: 30px; padding: 4px 12px;
+    display: none; border: 1.5px solid #C5BCFF;
+  }
+  .char-grid {
+    display: none; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: clamp(3px,1vw,7px); max-width: 100%;
+    min-height: clamp(38px,10vw,68px);
+  }
+  .char-item {
+    font-size: clamp(22px,6.5vw,38px); line-height: 1; cursor: default;
+    position: relative; transition: all 0.15s; user-select: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 2px;
+  }
+  .char-item.tappable { cursor: pointer; }
+  .char-item.tappable:active { transform: scale(0.85); }
+  .char-item.crossed { opacity: 0.22; filter: grayscale(1); }
+  .char-item.crossed::after {
+    content: '❌'; position: absolute;
+    font-size: 0.58em; top: -3px; right: -3px; pointer-events: none;
+  }
+  .sub-counter {
+    font-size: clamp(12px,3.2vw,15px); font-weight: 900;
+    background: var(--red-light); border-radius: 30px;
+    padding: 4px 14px; border: 2px solid var(--red); color: #A32D2D;
+    display: none;
+  }
+  .sub-counter.done { background: var(--green-light); border-color: var(--green); color: #3B6D11; }
+
+  /* ── Group visualization (Multiplication / Division) ── */
+  .group-hint {
+    font-size: clamp(10px,2.7vw,13px); color: var(--purple); font-weight: 800;
+    background: var(--purple-light); border-radius: 30px; padding: 5px 14px;
+    border: 1.5px solid #C5BCFF; display: none; text-align: center;
+    line-height: 1.3; max-width: 100%;
+  }
+  .group-area {
+    display: none; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: clamp(4px,1.2vw,8px); max-width: 100%;
+    min-height: clamp(40px,10vw,68px);
+  }
+  .group-box {
+    display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: 1px; padding: clamp(4px,1.2vw,8px) clamp(6px,1.6vw,10px);
+    border-radius: 14px; border: 2.5px dashed;
+    font-size: clamp(16px,4.5vw,28px); line-height: 1.1;
+    max-width: 100%;
+    animation: pop-in 0.3s ease-out backwards;
+    position: relative;
+  }
+  /* ກ່ອງສຳລັບການຄູນ - ເບິ່ງຄືກ່ອງແທ້ໆ ໃຫ້ກົງກັບ 📦 ໃນສົມຜົນ */
+  .group-box.group-box-mul {
+    border-style: solid; border-width: 3px;
+    padding-top: clamp(10px,2.5vw,14px);
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.08), 0 3px 6px rgba(0,0,0,0.1);
+  }
+  .group-box.group-box-mul::before {
+    content: ''; position: absolute;
+    top: 7px; left: 6px; right: 6px; height: 2px;
+    background: rgba(0,0,0,0.12); border-radius: 1px;
+  }
+  /* ກະຕ່າສຳລັບການຫານ - ເບິ່ງຄືກະຕ່າ ໃຫ້ກົງກັບ 🧺 ໃນສົມຜົນ */
+  .group-box.group-box-div {
+    border-style: solid; border-width: 3px;
+    padding-top: clamp(10px,2.5vw,14px);
+    border-radius: 8px 8px 22px 22px;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.08), 0 3px 6px rgba(0,0,0,0.1);
+  }
+  .group-box.group-box-div::before {
+    content: ''; position: absolute;
+    top: 7px; left: 4px; right: 4px; height: 3px;
+    background: repeating-linear-gradient(90deg, rgba(0,0,0,0.18) 0 4px, transparent 4px 7px);
+    border-radius: 1px;
+  }
+  .group-box .gb-label {
+    position: absolute; top: -10px; left: 6px;
+    font-size: clamp(9px,2.2vw,11px); font-weight: 900;
+    background: var(--card); padding: 0 5px; border-radius: 10px;
+    color: var(--text-soft); white-space: nowrap;
+  }
+  @keyframes pop-in {
+    0% { transform: scale(0.5) rotate(-6deg); opacity: 0; }
+    70% { transform: scale(1.08) rotate(2deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .group-sep {
+    font-size: clamp(15px,4vw,22px); font-weight: 900; color: var(--purple);
+    padding: 0 1px; animation: pop-in 0.3s ease-out backwards;
+  }
+
+  /* Normal char row */
+  .character-row {
+    display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+    gap: 2px; min-height: clamp(36px,9vw,58px);
+    font-size: clamp(22px,6.5vw,38px); line-height: 1.2; max-width: 100%;
+  }
+
+  .question-text {
+    font-size: clamp(22px,6.8vw,42px);
+    font-weight: 900; color: var(--text);
+    letter-spacing: 0; line-height: 1.2;
+    display: flex; flex-wrap: nowrap;
+    align-items: center; justify-content: center;
+    gap: clamp(4px,1.4vw,10px);
+    white-space: nowrap;
+    width: 100%; max-width: 100%;
+  }
+  .question-text .q-op {
+    color: var(--purple); font-weight: 900;
+    flex: none;
+  }
+  .question-text .q-plain {
+    color: var(--text); font-weight: 900;
+    flex: none;
+  }
+  .question-text .q-result {
+    color: var(--purple); font-size: 1.05em;
+    background: var(--purple-light);
+    border: 2.5px dashed var(--purple);
+    border-radius: 12px;
+    padding: 0 0.35em;
+    min-width: 1.2em; text-align: center;
+    flex: none;
+  }
+  .question-text .q-iconnum {
+    position: relative; display: inline-block; vertical-align: middle;
+    letter-spacing: 0; margin: 0; line-height: 1;
+    width: 1.3em; height: 1.3em;
+    flex: none;
+  }
+  .question-text .q-iconnum .q-emoji {
+    font-size: 1.25em; line-height: 1; display: block;
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%,-50%);
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.18));
+  }
+  .question-text .q-iconnum .q-num {
+    position: absolute; left: 50%; top: 58%;
+    transform: translate(-50%,-50%);
+    font-size: 0.5em; font-weight: 900; color: #fff;
+    background: var(--purple); border: 2.5px solid #fff;
+    border-radius: 50%;
+    min-width: 1.6em; height: 1.6em; padding: 0 0.25em;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.28);
+    z-index: 2;
+  }
+  .question-text .q-iconnum.q-box .q-num {
+    background: #E85D5D;
+  }
+  .question-text .q-iconnum.q-basket .q-num {
+    background: #E89A3E;
+  }
+
+  /* Feedback */
+  .feedback-area {
+    text-align: center; min-height: clamp(30px,6vw,44px);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .feedback { font-size: clamp(15px,4.5vw,22px); font-weight: 900; min-height: 1em; transition: all 0.2s; }
+  .feedback.ok { color: var(--green); }
+  .feedback.no { color: var(--red); }
+  .stars { font-size: clamp(17px,5vw,26px); }
+
+  /* Answer grid */
+  .answer-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: clamp(8px,2.5vw,14px); }
+  .ans-btn {
+    padding: clamp(14px,3.5vw,22px) 8px; font-size: clamp(24px,7.5vw,42px); font-weight: 900;
+    border: 3px solid var(--border); border-radius: var(--radius);
+    background: var(--card); color: var(--text); cursor: pointer;
+    transition: all 0.18s; font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.07);
+  }
+  .ans-btn:active { transform: scale(0.94) translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.07); }
+  .ans-btn:hover:not([disabled]) { border-color: var(--purple); background: var(--purple-light); transform: translateY(-2px); }
+  .ans-btn.correct { background: var(--green-light); border-color: var(--green); color: var(--green); animation: pop 0.3s; }
+  .ans-btn.wrong   { background: var(--red-light);   border-color: var(--red);   color: var(--red);   animation: shake-x 0.3s; }
+  @keyframes pop     { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
+  @keyframes shake-x { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  /* Input row */
+  .input-row { display: flex; gap: clamp(6px,2vw,10px); }
+  .ans-input {
+    flex: 1; padding: clamp(12px,3vw,18px); font-size: clamp(24px,7.5vw,40px);
+    text-align: center; border: 3px solid var(--border); border-radius: var(--radius);
+    background: var(--card); color: var(--text); font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    font-weight: 900; outline: none; box-shadow: var(--shadow); transition: border-color 0.18s;
+  }
+  .ans-input:focus { border-color: var(--purple); }
+  .check-btn {
+    padding: clamp(12px,3vw,18px) clamp(14px,3.5vw,24px); font-size: clamp(18px,5.5vw,30px);
+    border: none; border-radius: var(--radius); background: var(--purple); color: #fff;
+    cursor: pointer; font-weight: 900; font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    box-shadow: 0 4px 0 rgba(92,77,170,0.5); transition: all 0.15s;
+  }
+  .check-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(92,77,170,0.5); }
+
+  /* ── ປຸ່ມສູດຄູນ (ສະແດງສະເພາະ mode ຄູນ) ── */
+  .mul-table-btn {
+    display: none; width: 100%;
+    padding: clamp(9px,2.5vw,13px); font-size: clamp(13px,3.5vw,16px);
+    border: 2.5px solid var(--purple); border-radius: var(--radius);
+    background: var(--purple-light); color: var(--purple);
+    cursor: pointer; font-weight: 800;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    box-shadow: 0 3px 0 rgba(124,111,205,0.25); transition: all 0.15s;
+  }
+  .mul-table-btn.show { display: block; }
+  .mul-table-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(124,111,205,0.25); }
+
+  /* ── Popup ສຳລັບສະແດງສູດຄູນ ── */
+  .mul-table-box {
+    max-width: 460px !important; width: 96% !important;
+    padding: clamp(14px,3vw,22px) clamp(10px,2.5vw,18px) !important;
+    position: relative;
+  }
+  .mul-table-title {
+    font-size: clamp(17px,5vw,22px); font-weight: 900;
+    color: var(--purple); margin-bottom: 4px;
+  }
+  .mul-table-sub {
+    font-size: clamp(10px,2.7vw,12px); color: var(--text-soft);
+    font-weight: 700; margin-bottom: 10px;
+  }
+  .mul-table-close-x {
+    position: absolute; top: 6px; right: 10px;
+    background: none; border: none;
+    font-size: clamp(18px,5vw,22px); cursor: pointer;
+    color: var(--text-soft); font-weight: 900;
+    width: 32px; height: 32px; line-height: 1;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+  }
+  .mul-table-grid {
+    display: grid; grid-template-columns: repeat(13, 1fr);
+    gap: 1px; background: var(--border);
+    border: 2px solid var(--border); border-radius: 12px;
+    overflow: hidden;
+    font-size: clamp(8px,2.4vw,12px);
+  }
+  .mt-cell {
+    background: #fff; padding: clamp(2px,0.8vw,5px) 1px;
+    text-align: center; font-weight: 700;
+    color: var(--text); aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .mt-head {
+    background: var(--purple-light);
+    color: var(--purple); font-weight: 900;
+  }
+  .mt-corner {
+    background: var(--purple); color: #fff; font-weight: 900;
+    font-size: 1.1em;
+  }
+  .mt-cell.mt-row-hi { background: #FFF0D6; color: #8B5A00; }
+  .mt-cell.mt-col-hi { background: #DDEEFF; color: #1B4D8C; }
+  .mt-cell.mt-hit {
+    background: var(--green-light); color: var(--green);
+    font-weight: 900; transform: scale(1.05);
+    box-shadow: 0 0 0 2px var(--green);
+    border-radius: 6px; z-index: 2; position: relative;
+  }
+  .mul-table-foot {
+    margin-top: 10px;
+    font-size: clamp(10px,2.8vw,12px);
+    color: var(--text-soft); font-weight: 700;
+  }
+  .mul-table-foot b { color: var(--green); }
+
+  /* Next button */
+  .next-btn {
+    width: 100%; padding: clamp(13px,3.5vw,19px); font-size: clamp(15px,4.5vw,20px);
+    border: none; border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--purple), #A78BFA); color: #fff;
+    cursor: pointer; font-weight: 900; font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    box-shadow: 0 5px 0 rgba(92,77,170,0.45); transition: all 0.15s; display: none;
+  }
+  .next-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(92,77,170,0.45); }
+
+  /* ═══════════════════════════
+     POPUP
+  ═══════════════════════════ */
+  .popup-overlay {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(40,28,80,0.58); backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.22s;
+  }
+  .popup-overlay.show { opacity: 1; pointer-events: all; }
+
+  .popup-box {
+    background: var(--card); border-radius: var(--radius-lg);
+    padding: clamp(22px,5vw,36px) clamp(18px,5vw,32px);
+    text-align: center; max-width: 340px; width: 90%;
+    box-shadow: 0 16px 50px rgba(50,30,110,0.28); border: 3px solid var(--border);
+    transform: scale(0.82) translateY(20px); transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .popup-overlay.show .popup-box { transform: scale(1) translateY(0); }
+
+  .popup-icon { font-size: clamp(48px,15vw,76px); display: block; margin-bottom: 8px; }
+  .popup-title { font-size: clamp(20px,6vw,30px); font-weight: 900; color: var(--text); margin-bottom: 4px; }
+  .popup-sub   { font-size: clamp(13px,3.5vw,17px); color: var(--text-soft); font-weight: 700; margin-bottom: 14px; }
+  .popup-badge {
+    display: inline-block; background: var(--yellow);
+    border-radius: 30px; padding: 6px 20px;
+    font-size: clamp(15px,4.5vw,21px); font-weight: 900; color: #6B4C00;
+    margin-bottom: 20px; box-shadow: 0 3px 0 rgba(180,130,0,0.3);
+  }
+  .popup-btns { display: flex; gap: 10px; justify-content: center; }
+  .popup-btn {
+    padding: clamp(11px,3vw,16px) clamp(14px,4vw,22px);
+    font-size: clamp(13px,3.8vw,17px); font-weight: 900;
+    border: none; border-radius: var(--radius); cursor: pointer;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif; transition: all 0.15s; flex: 1;
+  }
+  .popup-btn-next {
+    background: linear-gradient(135deg, var(--purple), #A78BFA); color: #fff;
+    box-shadow: 0 4px 0 rgba(92,77,170,0.4);
+  }
+  .popup-btn-next:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(92,77,170,0.4); }
+  .popup-btn-stay {
+    background: var(--purple-light); color: var(--purple);
+    border: 2.5px solid var(--purple);
+  }
+  .popup-btn-stay:active { transform: translateY(2px); }
+
+  /* History */
+  .history-section { }
+  .history-label { font-size: clamp(11px,3vw,13px); color: var(--text-soft); font-weight: 700; margin-bottom: 6px; }
+  .history { display: flex; gap: clamp(3px,1vw,6px); flex-wrap: wrap; min-height: 22px; }
+  .hist-dot {
+    width: clamp(16px,4vw,21px); height: clamp(16px,4vw,21px); border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: clamp(10px,2.5vw,12px); font-weight: 900; color: #fff;
+  }
+
+  /* Confetti */
+  .confetti-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; overflow: hidden; }
+  .confetti-piece { position: absolute; border-radius: 2px; animation: fall 1.2s ease-in forwards; }
+  @keyframes fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+
+  @media (max-height:500px) and (orientation:landscape) {
+    .header { padding: 2px 0; }
+    .header-icon { font-size: 26px; }
+    .question-card { min-height: 80px; padding: 8px; }
+    .ans-btn { padding: 10px 4px; font-size: 20px; }
+  }
 </style>
 </head>
 <body>
+<div class="app">
 
-<div class="wrap">
-    <div class="hdr">
-    <div class="hdr-title">🎀 ໂຄໂລມິ ສອນເລກ</div>
-    <div class="score-pill">⭐ <span id="score">0</span></div>
-  </div>
+  <button class="sound-btn" id="sound-btn" onclick="toggleSound()" title="ເປີດ/ປິດສຽງ">🔊</button>
 
-    <div class="lang-box">
-    <button class="lang-btn active" onclick="setLang('lo-LA')">🇱🇦 ລາວ</button>
-    <button class="lang-btn" onclick="setLang('th-TH')">🇹🇭 ไทย</button>
-    <button class="lang-btn" onclick="setLang('en-US')">🇺🇸 Eng</button>
-    <button class="lang-btn" onclick="setLang('zh-CN')">🇨🇳 中文</button>
-  </div>
+  <div class="header">
+    <span class="header-icon">🧮</span>
+    <div class="header-title">ຄະນິດສາດ ມ່ວນໆ</div>
+    <div class="header-sub">ສອນຄິດໄລ່ເລກ 🌟 DeDyDeMy 🌟</div>
+  </div>
 
-    <div class="modes">
-    <button class="mode-btn active" onclick="setMode('add')">➕<span>ບວກ</span></button>
-    <button class="mode-btn" onclick="setMode('sub')">➖<span>ລົບ</span></button>
-    <button class="mode-btn" onclick="setMode('mul')">✖<span>ຄູນ</span></button>
-    <button class="mode-btn" onclick="setMode('div')">➗<span>ຫານ</span></button>
-  </div>
+  <div class="score-bar">
+    <div class="score-item">
+      <span class="score-label">⭐ ຄະແນນ</span>
+      <span class="score-num" id="score">0</span>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <span class="score-label">✅ ຖືກ</span>
+      <span class="score-num"><span id="correct-count">0</span>/<span id="total-count">0</span></span>
+    </div>
+    <div class="score-divider"></div>
+    <div class="score-item">
+      <span class="score-label">🔥 ຕໍ່ເນື່ອງ</span>
+      <span class="score-num" id="streak">0</span>
+    </div>
+  </div>
 
-    <div class="char-area">
-    <div class="kolo-wrap" onclick="koloTap()">
-      <div class="kolo" id="kolo">
-        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="55" cy="38" rx="14" ry="30" fill="#F9A8D4" transform="rotate(-12,55,38)"/>
-          <ellipse cx="105" cy="38" rx="14" ry="30" fill="#F9A8D4" transform="rotate(12,105,38)"/>
-          <ellipse cx="80" cy="82" rx="40" ry="36" fill="#FDF2F8"/>
-          <g id="en"><circle cx="69" cy="79" r="4.5" fill="#2D1B69"/><circle cx="93" cy="79" r="4.5" fill="#2D1B69"/></g>
-          <g id="eh" style="display:none"><path d="M62 78 Q68 70 74 78" stroke="#2D1B69" stroke-width="3" fill="none"/><path d="M86 78 Q92 70 98 78" stroke="#2D1B69" stroke-width="3" fill="none"/></g>
-          <g id="es" style="display:none"><circle cx="68" cy="82" r="4" fill="#2D1B69"/><circle cx="92" cy="82" r="4" fill="#2D1B69"/></g>
-          <ellipse cx="80" cy="90" rx="5" ry="3.5" fill="#F472B6"/>
-          <path id="mn" d="M74 96 Q80 102 86 96" stroke="#C026D3" stroke-width="2.5" fill="none"/>
-          <ellipse cx="80" cy="130" rx="30" ry="22" fill="#F9A8D4"/>
-        </svg>
-      </div>
-      <div class="bubble" id="bubble"></div>
-    </div>
-  </div>
+  <div class="mode-tabs">
+    <button class="mode-btn active" onclick="setMode('add')"><span class="mode-icon">➕</span>ບວກ</button>
+    <button class="mode-btn" onclick="setMode('sub')"><span class="mode-icon">➖</span>ລົບ</button>
+    <button class="mode-btn" onclick="setMode('mul')"><span class="mode-icon">✖️</span>ຄູນ</button>
+    <button class="mode-btn" onclick="setMode('div')"><span class="mode-icon">➗</span>ຫານ</button>
+  </div>
 
-    <button class="sound-btn" id="sound-btn" onclick="playCurrentVoice()">
-    🔊 <span id="sound-label">ກົດຟັງໂຈດ!</span>
-  </button>
+  <div class="level-row">
+    <span class="level-label">🎯 ລະດັບ:</span>
+    <input type="range" min="1" max="3" value="1" step="1" id="lvl-slider" oninput="setLevel(this.value)">
+    <span class="level-value" id="lvl-label">🌱 ງ່າຍ</span>
+  </div>
 
-    <div class="emo-box" id="emo-box"></div>
+  <button class="mul-table-btn" id="mul-table-btn" onclick="openMulTable()">📋 ເບິ່ງສູດຄູນ</button>
 
-    <div class="lvl-row">
-    <input type="range" min="1" max="3" value="1" step="1" id="lvl" oninput="setLevel(this.value)">
-    <div style="font-weight:900; color:#7C3AED; font-size:13px;" id="lvl-label">ງ່າຍ 🌱</div>
-  </div>
+  <div class="question-card">
+    <div class="sub-hint" id="sub-hint">👆 ແຕະໂຕກາຕູນ <span id="sub-hint-n"></span> ໂຕ ເພື່ອຂີດຂ້າ!</div>
+    <div class="char-grid" id="char-grid"></div>
+    <div class="sub-counter" id="sub-counter">❌ ຂີດຂ້າ: 0 / 0</div>
 
-    <div class="q-card">
-    <div class="q-text" id="q-text">? + ?</div>
-  </div>
+    <div class="group-hint" id="group-hint"></div>
+    <div class="group-area" id="group-area"></div>
 
-    <div class="ans-grid" id="ans-grid"></div>
+    <div class="character-row" id="character-row"></div>
+    <div class="question-text" id="question">?</div>
+  </div>
 
-    <button class="next-btn" id="next-btn" onclick="nextQ()">ຂໍ້ຕໍ່ໄປ ▶</button>
+  <div class="feedback-area">
+    <div class="stars" id="stars"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <div class="answer-grid" id="answer-grid"></div>
+
+  <div class="input-row" id="input-row" style="display:none;">
+    <input class="ans-input" type="number" id="ans-input" placeholder="?" inputmode="numeric">
+    <button class="check-btn" onclick="checkInput()">✓</button>
+  </div>
+
+  <button class="next-btn" id="next-btn" onclick="openPopup()">ຕໍ່ໄປ ▶</button>
+
+  <div class="history-section">
+    <div class="history-label">📜 ປະຫວັດ 20 ຄຳຖາມ:</div>
+    <div class="history" id="history"></div>
+  </div>
 </div>
 
-<script>
-var mode='add', level=1, score=0, currentLang='lo-LA';
-var correctAns=0, answered=false, currentText='', ttsRate=0.6; // 0.6 is SLOW for kids
+<!-- POPUP -->
+<div class="popup-overlay" id="popup-overlay">
+  <div class="popup-box">
+    <span class="popup-icon" id="popup-icon">🎉</span>
+    <div class="popup-title" id="popup-title">ຖືກຕ້ອງ!</div>
+    <div class="popup-sub"   id="popup-sub">ເກັ່ງຫຼາຍ!</div>
+    <div class="popup-badge" id="popup-badge">⭐ +10</div>
+    <div class="popup-btns">
+      <button class="popup-btn popup-btn-stay" onclick="closePopup()">👀 ເບິ່ງຄຳຕອບ</button>
+      <button class="popup-btn popup-btn-next" onclick="popupNext()">ຕໍ່ໄປ ▶</button>
+    </div>
+  </div>
+</div>
 
-// Phrases in different languages
-var translations = {
-  'lo-LA': { plus:'ບວກ', minus:'ລົບ', times:'ຄູນ', div:'ຫານ', equal:'ເທົ່າກັບ', what:'ແມ່ນຫຍັງ', correct:'ເກັ່ງຫຼາຍ ຖືກຕ້ອງແລ້ວ', wrong:'ບໍ່ຖືກ ລອງໃໝ່ເດີ', tap:'ສູ້ໆເດີ' },
-  'th-TH': { plus:'บวก', minus:'ลบ', times:'คูณ', div:'หาร', equal:'เท่ากับ', what:'อะไรคะ', correct:'เก่งมากค่ะ ถูกต้องแล้ว', wrong:'ยังไม่ถูก ลองใหม่นะ', tap:'สู้ๆ นะคะ' },
-  'en-US': { plus:'plus', minus:'minus', times:'times', div:'divided by', equal:'is', what:'what', correct:'Excellent! That is right', wrong:'Not quite, try again', tap:'You can do it' },
-  'zh-CN': { plus:'加', minus:'减', times:'乘', div:'除以', equal:'等于', what:'多少', correct:'太棒了！答对了', wrong:'不对，再试一次', tap:'加油' }
+<!-- POPUP ສູດຄູນ -->
+<div class="popup-overlay" id="mul-table-overlay">
+  <div class="popup-box mul-table-box">
+    <button class="mul-table-close-x" onclick="closeMulTable()">✕</button>
+    <div class="mul-table-title">📋 ສູດຄູນ 1–12</div>
+    <div class="mul-table-sub">ແຖວສີເຫຼືອງ × ຖັນສີຟ້າ = ຊ່ອງສີຂຽວ</div>
+    <div class="mul-table-grid" id="mul-table-grid"></div>
+    <div class="mul-table-foot">💡 ເຄັດລັບ: <b>3 × 4</b> ກັບ <b>4 × 3</b> ໃຫ້ຄຳຕອບເທົ່າກັນ!</div>
+  </div>
+</div>
+
+<div class="confetti-wrap" id="confetti-wrap"></div>
+
+<script>
+var mode='add', level=1;
+var score=0, correctCount=0, totalCount=0, streak=0;
+var correctAnswer=0, answered=false;
+var ansHistory=[];
+var currentChar='🐰';
+var lastOk=false, lastPts=0;
+var crossedCount=0, subB=0;
+
+// ── ຕັ້ງຄ່າສຽງ ──
+var soundOn = true;
+try { soundOn = localStorage.getItem('mathSoundOn') !== '0'; } catch(e) {}
+var audioCtx = null;
+
+function getAudioCtx(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e){ return null; }
+  }
+  if(audioCtx && audioCtx.state==='suspended'){ audioCtx.resume(); }
+  return audioCtx;
+}
+
+function playTone(freq, when, duration, volume, type){
+  var ctx = getAudioCtx();
+  if(!ctx) return;
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.type = type || 'triangle';
+  osc.frequency.value = freq;
+  var t0 = ctx.currentTime + (when||0);
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(volume, t0 + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + duration + 0.05);
+}
+
+// ສຽງຕອບຖືກ - ຣິງ ດີດີດີ + ສຽງຕົບມືຍາວ ~2.5 ວິນາທີ
+function playCorrectSound(){
+  if(!soundOn) return;
+  var ctx = getAudioCtx();
+  if(!ctx) return;
+  // ໂນດຂຶ້ນສູງມ່ວນຊື່ນ: C5, E5, G5, C6
+  var notes = [523.25, 659.25, 783.99, 1046.50];
+  notes.forEach(function(freq, i){
+    playTone(freq, i*0.08, 0.30, 0.18, 'triangle');
+  });
+  // ສຽງຕົບມືຫຼັງຣິງ ~2.1s ລວມຣິງເປັນ ~2.5s
+  setTimeout(playApplauseBurst, 380);
+  // ໂນດປິດທ້າຍ ໃຫ້ຮູ້ສຶກສົມບູນ
+  setTimeout(function(){
+    playTone(1046.50, 0, 0.4, 0.12, 'triangle');
+    playTone(1318.51, 0, 0.5, 0.10, 'triangle'); // E6
+  }, 2150);
+}
+
+// ສຽງຕົບມືຊົມເຊີຍ (ໃຊ້ noise + filter, ມີຄວາມເຂັ້ມຂຸ້ນຂຶ້ນ-ລົງ ຄ້າຍຝູງຊົນຕົບມື)
+function playApplauseBurst(){
+  if(!soundOn) return;
+  var ctx = getAudioCtx();
+  if(!ctx) return;
+  var duration = 2.1;
+  var bufferSize = Math.floor(ctx.sampleRate * duration);
+  var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  var data = buffer.getChannelData(0);
+  for(var i=0;i<bufferSize;i++){
+    var t = i / ctx.sampleRate;
+    // ຄວາມເຂັ້ມຂຸ້ນຂອງການຕົບມື ມີຍອດສູງ ແລ້ວຄ່ອຍໆຫຼຸດລົງ
+    // ສູງສຸດທີ່ປະມານ 0.3-0.6s ແລ້ວຄ່ອຍໆຈາງລົງຫາ 2.1s
+    var density;
+    if(t<0.2)        density = 0.04 + t*0.4;        // ເລີ່ມຕົ້ນ ສຸງຂຶ້ນ
+    else if(t<0.7)   density = 0.12;                // ຍອດ - ຫຼາຍຄົນຕົບພ້ອມກັນ
+    else if(t<1.4)   density = 0.10 - (t-0.7)*0.04; // ຄ່ອຍໆຫຼຸດ
+    else             density = 0.07 - (t-1.4)*0.07; // ບາງລົງເລື່ອຍໆ
+    if(density<0.005) density = 0.005;
+
+    var clap = (Math.random()<density) ? (Math.random()*2-1) : 0;
+    var noise = (Math.random()*2-1) * 0.30;
+
+    // Envelope ໂດຍລວມ - ບໍ່ຫຼຸດໄວເກີນໄປ
+    var envelope;
+    if(t<0.1)      envelope = t/0.1;                 // fade in
+    else if(t<1.6) envelope = 1.0;                   // ເຕັມ
+    else           envelope = Math.max(0, 1.0 - (t-1.6)/0.5); // fade out
+
+    data[i] = (clap*1.4 + noise*0.4) * envelope;
+  }
+  var source = ctx.createBufferSource();
+  source.buffer = buffer;
+  // ກອງຄວາມຖີ່ສູງ ໃຫ້ຟັງຄືສຽງຕົບມືແທ້ໆ
+  var filter = ctx.createBiquadFilter();
+  filter.type = 'highpass'; filter.frequency.value = 1100;
+  var gain = ctx.createGain();
+  gain.gain.value = 0.22;
+  source.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+  source.start();
+}
+
+// ສຽງຕອບຜິດ - "ອູ້ຍ" ເລື່ອນລົງ
+function playWrongSound(){
+  if(!soundOn) return;
+  var ctx = getAudioCtx();
+  if(!ctx) return;
+  // 2 ໂນດຫຼຸດລົງ ຄ້າຍ "ອູ້ຍ"
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  var t0 = ctx.currentTime;
+  osc.frequency.setValueAtTime(380, t0);
+  osc.frequency.exponentialRampToValueAtTime(165, t0 + 0.45);
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(0.14, t0 + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.55);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(t0); osc.stop(t0 + 0.6);
+}
+
+function toggleSound(){
+  soundOn = !soundOn;
+  try { localStorage.setItem('mathSoundOn', soundOn?'1':'0'); } catch(e) {}
+  var btn = document.getElementById('sound-btn');
+  btn.textContent = soundOn ? '🔊' : '🔇';
+  btn.classList.toggle('muted', !soundOn);
+  if(soundOn){ playTone(880, 0, 0.12, 0.1, 'sine'); }
+}
+
+var levelNames={1:'🌱 ງ່າຍ',2:'🌿 ກາງ',3:'🔥 ຍາກ'};
+var confColors=['#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF6FC8','#A47EFF','#FF9F43'];
+var MODE_CHARS={
+  add:['🐰','🐱','🐸','🐥','🐶'],
+  sub:['🐻','🐹','🦊','🐨','🐯'],
+  mul:['🍎','🍊','🍇','🍓','🍌','🐰','🐱','🐸'],
+  div:['🍪','🍬','🍭','🍩','🍎','🐰','🐶','🐥']
 };
 
-function setLang(lang){
-  currentLang = lang;
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('onclick').includes(lang));
-  });
-  nextQ();
+// ສີສຳລັບກ່ອງກຸ່ມ (group boxes) - ໃຊ້ສີຫຼາຍສີເພື່ອແຍກກຸ່ມໃຫ້ຊັດເຈນ
+var groupColors=[
+  {bg:'#FFE0F0', bd:'#FF6FC8'},
+  {bg:'#DDEEFF', bd:'#4D96FF'},
+  {bg:'#E6F7EA', bd:'#5BAD6F'},
+  {bg:'#FFF0D6', bd:'#F9C74F'},
+  {bg:'#F0E6FF', bd:'#A47EFF'},
+  {bg:'#FDEAEA', bd:'#E85D5D'}
+];
+
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pickChar(){var a=MODE_CHARS[mode];return a[randInt(0,a.length-1)];}
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mode-btn').forEach(function(b,i){
+    b.classList.toggle('active',['add','sub','mul','div'][i]===m);
+  });
+  // ສະແດງ/ເຊື່ອງ ປຸ່ມເບິ່ງສູດຄູນ - ສະແດງໃນ mode ຄູນ ແລະ ຫານ
+  var btn=document.getElementById('mul-table-btn');
+  btn.classList.toggle('show', m==='mul'||m==='div');
+  btn.textContent = m==='div' ? '📋 ເບິ່ງສູດຄູນ (ຊ່ວຍຫານ)' : '📋 ເບິ່ງສູດຄູນ';
+  nextQuestion();
 }
 
-function playVoice(text){
-  if(!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  
-  var utter = new SpeechSynthesisUtterance(text);
-  var voices = window.speechSynthesis.getVoices();
-  
-  // Find best voice matching currentLang
-  var voice = voices.find(v => v.lang.replace('_','-') === currentLang);
-  if(!voice) voice = voices.find(v => v.lang.startsWith(currentLang.split('-')[0]));
-  
-  utter.voice = voice;
-  utter.rate = ttsRate; // SLOW RATE
-  utter.pitch = 1.3;
-  
-  utter.onstart = () => document.getElementById('sound-btn').classList.add('playing');
-  utter.onend = () => document.getElementById('sound-btn').classList.remove('playing');
-  
-  window.speechSynthesis.speak(utter);
+// ── ສ້າງຕາຕະລາງສູດຄູນ 1-12 ──
+function buildMulTable(highlightA, highlightB){
+  var grid=document.getElementById('mul-table-grid');
+  grid.innerHTML='';
+  // ແຖວແຮກ - header
+  for(var i=0;i<=12;i++){
+    var c=document.createElement('div');
+    c.className='mt-cell '+(i===0?'mt-corner':'mt-head');
+    if(i!==0 && highlightB && i===highlightB) c.classList.add('mt-col-hi');
+    c.textContent=i===0?'×':i;
+    grid.appendChild(c);
+  }
+  // ແຖວ 1-12
+  for(var r=1;r<=12;r++){
+    var hc=document.createElement('div');
+    hc.className='mt-cell mt-head';
+    if(highlightA && r===highlightA) hc.classList.add('mt-row-hi');
+    hc.textContent=r;
+    grid.appendChild(hc);
+    for(var col=1;col<=12;col++){
+      var cell=document.createElement('div');
+      cell.className='mt-cell';
+      cell.textContent=r*col;
+      if(highlightA && highlightB){
+        if(r===highlightA && col===highlightB) cell.classList.add('mt-hit');
+        else if(r===highlightA) cell.classList.add('mt-row-hi');
+        else if(col===highlightB) cell.classList.add('mt-col-hi');
+      }
+      grid.appendChild(cell);
+    }
+  }
 }
 
-function playCurrentVoice(){ playVoice(currentText); }
-
-function nextQ(){
-  answered = false;
-  document.getElementById('next-btn').style.display = 'none';
-  face('normal');
-  
-  // Generate numbers
-  var a, b, sym;
-  if(mode==='add'){ a=rnd(1,level*5); b=rnd(1,level*5); correctAns=a+b; sym='+'; }
-  else if(mode==='sub'){ b=rnd(1,level*5); a=b+rnd(0,5); correctAns=a-b; sym='-'; }
-  else if(mode==='mul'){ a=rnd(1,level+1); b=rnd(1,5); correctAns=a*b; sym='×'; }
-  else { b=rnd(1,5); correctAns=rnd(1,5); a=b*correctAns; sym='÷'; }
-
-  // Set Voice Text
-  var t = translations[currentLang];
-  var symWord = sym==='+'?t.plus : sym==='-'?t.minus : sym==='×'?t.times : t.div;
-  currentText = `${a} ${symWord} ${b} ${t.equal} ${t.what}`;
-
-  document.getElementById('q-text').textContent = `${a} ${sym} ${b} = ?`;
-  
-  // Visual aids (Emojis)
-  var eb = document.getElementById('emo-box');
-  eb.innerHTML = '🍓'.repeat(Math.min(a,10)) + (sym==='+'?' ➕ ':'') + (sym==='+'?'🍓'.repeat(Math.min(b,10)):'');
-
-  // Choices
-  var choices = [correctAns];
-  while(choices.length < 4){
-    var c = correctAns + rnd(-3, 3);
-    if(c>=0 && !choices.includes(c)) choices.push(c);
-  }
-  choices.sort(() => Math.random() - 0.5);
-
-  var grid = document.getElementById('ans-grid');
-  grid.innerHTML = '';
-  choices.forEach(c => {
-    var btn = document.createElement('button');
-    btn.className = 'ans-btn';
-    btn.textContent = c;
-    btn.onclick = () => checkAns(c, btn);
-    grid.appendChild(btn);
-  });
-
-  playVoice(currentText);
+function openMulTable(){
+  // ໄຮໄລ້ຄຳຕອບໃນຕາຕະລາງ ຕາມຄຳຖາມປະຈຸບັນ
+  var ha=null, hb=null;
+  var qText=document.getElementById('question').textContent||'';
+  // ດຶງຈຳນວນເລກທັງໝົດໃນຄຳຖາມ (ຂ້າມ emoji)
+  var nums=qText.match(/\d+/g)||[];
+  if(mode==='mul' && nums.length>=2){
+    ha=parseInt(nums[0]); hb=parseInt(nums[1]);
+    if(ha>12 || hb>12){ ha=null; hb=null; }
+  } else if(mode==='div' && nums.length>=2){
+    // ການຫານ a ÷ b = ans → ໄຮໄລ້ b × ans (ຊ່ອງທີ່ມີຄ່າ a)
+    var dividend=parseInt(nums[0]);
+    var divisor=parseInt(nums[1]);
+    if(divisor>0){
+      var quotient=Math.round(dividend/divisor);
+      if(divisor<=12 && quotient<=12){
+        ha=divisor; hb=quotient;
+      }
+    }
+  }
+  buildMulTable(ha, hb);
+  document.getElementById('mul-table-overlay').classList.add('show');
 }
 
-function checkAns(val, btn){
-  if(answered) return;
-  answered = true;
-  var ok = (val === correctAns);
-  var t = translations[currentLang];
-
-  if(ok){
-    score += 10;
-    document.getElementById('score').textContent = score;
-    btn.classList.add('correct');
-    face('happy');
-    playVoice(t.correct);
-  } else {
-    btn.classList.add('wrong');
-    face('sad');
-    playVoice(t.wrong);
-    // Highlight correct one
-    Array.from(document.querySelectorAll('.ans-btn')).forEach(b => {
-      if(parseInt(b.textContent) === correctAns) b.classList.add('correct');
-    });
-  }
-  document.getElementById('next-btn').style.display = 'block';
+function closeMulTable(){
+  document.getElementById('mul-table-overlay').classList.remove('show');
 }
 
-function face(st){
-  document.getElementById('en').style.display = st==='normal'?'':'none';
-  document.getElementById('eh').style.display = st==='happy'?'':'none';
-  document.getElementById('es').style.display = st==='sad'?'':'none';
+document.getElementById('mul-table-overlay').addEventListener('click',function(e){
+  if(e.target===this)closeMulTable();
+});
+function setLevel(v){
+  level=parseInt(v);
+  document.getElementById('lvl-label').textContent=levelNames[level];
+  nextQuestion();
 }
 
-function rnd(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
-
-function setMode(m){ mode=m; document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active', ['add','sub','mul','div'][i]===m)); nextQ(); }
-
-function setLevel(v){ level=parseInt(v); var lbls={1:'ງ່າຍ 🌱',2:'ກາງ 🌿',3:'ຍາກ 🌳'}; document.getElementById('lvl-label').textContent=lbls[level]; nextQ(); }
-
-function koloTap(){ 
-  var t = translations[currentLang].tap;
-  var b = document.getElementById('bubble');
-  b.textContent = t; b.classList.add('show');
-  setTimeout(()=>b.classList.remove('show'), 2000);
-  playVoice(t);
+// ── Helper: ສ້າງສ່ວນປະກອບສົມຜົນ (ປ້ອງກັນຕົກແຖວ) ──
+function makeIconNum(emoji, num, extraClass){
+  var span=document.createElement('span');
+  span.className='q-iconnum'+(extraClass?' '+extraClass:'');
+  var em=document.createElement('span');
+  em.className='q-emoji'; em.textContent=emoji;
+  var n=document.createElement('span');
+  n.className='q-num'; n.textContent=num;
+  span.appendChild(em); span.appendChild(n);
+  return span;
+}
+function makeOp(text){
+  var s=document.createElement('span');
+  s.className='q-op'; s.textContent=text;
+  return s;
+}
+function makePlain(text, extra){
+  var s=document.createElement('span');
+  s.className='q-plain'+(extra?' '+extra:'');
+  s.textContent=text;
+  return s;
 }
 
-// Init
-window.speechSynthesis.onvoiceschanged = () => { if(!currentText) nextQ(); };
-window.onload = () => { setTimeout(nextQ, 500); };
+// ── ສ້າງສົມຜົນເປັນ DOM nodes (flex layout, ບໍ່ຕົກແຖວ) ──
+function renderQuestion(q){
+  var qEl=document.getElementById('question');
+  qEl.innerHTML='';
+  if(mode==='add'){
+    qEl.appendChild(makeIconNum(q.charA, q.a));
+    qEl.appendChild(makeOp(q.sym));
+    qEl.appendChild(makeIconNum(q.charB, q.b));
+  } else if(mode==='mul'){
+    qEl.appendChild(makeIconNum('📦', q.a, 'q-box'));
+    qEl.appendChild(makeOp(q.sym));
+    qEl.appendChild(makeIconNum(currentChar, q.b));
+  } else if(mode==='div'){
+    qEl.appendChild(makeIconNum(currentChar, q.a));
+    qEl.appendChild(makeOp(q.sym));
+    qEl.appendChild(makeIconNum('🧺', q.b, 'q-basket'));
+  } else {
+    // ການລົບ: ໃຊ້ເລກທຳມະດາ
+    qEl.appendChild(makePlain(q.a));
+    qEl.appendChild(makeOp(q.sym));
+    qEl.appendChild(makePlain(q.b));
+  }
+  qEl.appendChild(makeOp('='));
+  qEl.appendChild(makePlain('?', 'q-result'));
+}
+
+function pickTwoDifferent(){
+  var arr=MODE_CHARS[mode];
+  var a=arr[randInt(0,arr.length-1)];
+  var b=arr[randInt(0,arr.length-1)];
+  var att=0;
+  while(b===a && att<15 && arr.length>1){
+    b=arr[randInt(0,arr.length-1)];
+    att++;
+  }
+  return [a,b];
+}
+
+function generateQuestion(){
+  var a,b,ans,sym,chars='';
+  currentChar=pickChar();
+  var ch=currentChar;
+  var charA=ch, charB=ch; // ຄ່າຕັ້ງຕົ້ນສຳລັບ mode ອື່ນ
+  if(mode==='add'){
+    if(level===1){a=randInt(1,5);b=randInt(1,5);}
+    else if(level===2){a=randInt(1,12);b=randInt(1,12);}
+    else{a=randInt(1,30);b=randInt(1,30);}
+    ans=a+b; sym='+';
+    // ໃຊ້ໂຕສັດ 2 ໂຕທີ່ແຕກຕ່າງກັນສຳລັບແຕ່ລະເບື້ອງ
+    var pair=pickTwoDifferent();
+    charA=pair[0]; charB=pair[1];
+    if(level===1) chars=charA.repeat(Math.min(a,6))+'  ➕  '+charB.repeat(Math.min(b,6));
+  } else if(mode==='sub'){
+    if(level===1){b=randInt(1,4);a=randInt(b,8);}
+    else if(level===2){b=randInt(1,10);a=randInt(b,18);}
+    else{b=randInt(1,20);a=randInt(b,40);}
+    ans=a-b; sym='−';
+  } else if(mode==='mul'){
+    // ລະດັບງ່າຍ: 1-3 × 1-4  (ໃຊ້ຮູບກຸ່ມ ສອນຄວາມໝາຍ "ກຸ່ມລະ")
+    // ລະດັບກາງ: 1-5 × 1-5  (ຍັງມີຮູບ ແຕ່ໃຫຍ່ຂຶ້ນ)
+    // ລະດັບຍາກ: 2-12 × 2-12 (ບໍ່ມີຮູບ - ຄິດໃນຫົວ)
+    if(level===1){a=randInt(1,3);b=randInt(1,4);}
+    else if(level===2){a=randInt(1,5);b=randInt(1,5);}
+    else{a=randInt(2,12);b=randInt(2,12);}
+    ans=a*b; sym='×';
+  } else {
+    // ຫານ: ສ້າງຈາກ ans × b ກ່ອນ ເພື່ອໃຫ້ໄດ້ຄຳຕອບເປັນຈຳນວນເຕັມສະເໝີ
+    // ລະດັບງ່າຍ: ແບ່ງເປັນ 2-3 ກຸ່ມ, ກຸ່ມລະ 1-4 ໂຕ
+    // ລະດັບກາງ: ແບ່ງເປັນ 2-5 ກຸ່ມ, ກຸ່ມລະ 1-5 ໂຕ
+    // ລະດັບຍາກ: ບໍ່ມີຮູບ
+    if(level===1){b=randInt(2,3);ans=randInt(1,4);}
+    else if(level===2){b=randInt(2,5);ans=randInt(1,5);}
+    else{b=randInt(2,12);ans=randInt(2,12);}
+    a=b*ans; sym='÷';
+  }
+  return{a:a,b:b,ans:ans,sym:sym,chars:chars,charA:charA,charB:charB};
+}
+
+function makeChoices(c){
+  var ch=[c],att=0,range=Math.max(4,Math.round(c*0.5));
+  while(ch.length<4&&att<80){att++;var x=c+randInt(-range,range);if(x>=0&&!ch.includes(x))ch.push(x);}
+  while(ch.length<4){var e=c+ch.length+1;if(!ch.includes(e))ch.push(e);}
+  return ch.sort(function(){return Math.random()-0.5;});
+}
+
+// ── Sub interactive grid ──
+function buildSubGrid(a,b){
+  subB=b; crossedCount=0;
+  var grid=document.getElementById('char-grid');
+  grid.innerHTML='';
+  var ch=currentChar;
+  var show=Math.min(a,20);
+  for(var i=0;i<show;i++){
+    (function(){
+      var sp=document.createElement('span');
+      sp.className='char-item tappable';
+      sp.textContent=ch;
+      var tapFn=function(e){
+        e.preventDefault();
+        if(answered)return;
+        if(!sp.classList.contains('crossed')){
+          if(crossedCount>=subB){
+            // wiggle counter
+            var sc=document.getElementById('sub-counter');
+            sc.style.transform='scale(1.15)';
+            setTimeout(function(){sc.style.transform='';},200);
+            return;
+          }
+          sp.classList.add('crossed');
+          crossedCount++;
+        } else {
+          sp.classList.remove('crossed');
+          crossedCount--;
+        }
+        refreshSubCounter();
+      };
+      sp.addEventListener('click',tapFn);
+      sp.addEventListener('touchend',tapFn);
+      grid.appendChild(sp);
+    })();
+  }
+  refreshSubCounter();
+  document.getElementById('sub-hint-n').textContent=b;
+}
+
+function refreshSubCounter(){
+  var sc=document.getElementById('sub-counter');
+  sc.textContent='❌ ຂີດຂ້າ: '+crossedCount+' / '+subB;
+  if(crossedCount===subB){
+    sc.classList.add('done');
+  } else {
+    sc.classList.remove('done');
+  }
+}
+
+// ── ການຄູນ: ສະແດງເປັນ "ກຸ່ມ" ──
+// ແນວຄິດ: a × b ໝາຍຄວາມວ່າ "ມີ a ກຸ່ມ, ກຸ່ມລະ b ໂຕ"
+// ເດັກນັບລວມທັງໝົດເພື່ອຫາຄຳຕອບ
+function buildMulGroups(a,b,ch){
+  var area=document.getElementById('group-area');
+  var hint=document.getElementById('group-hint');
+  area.innerHTML='';
+  for(var i=0;i<a;i++){
+    var box=document.createElement('div');
+    box.className='group-box group-box-mul';
+    var c=groupColors[i%groupColors.length];
+    box.style.background=c.bg;
+    box.style.borderColor=c.bd;
+    box.style.animationDelay=(i*0.08)+'s';
+    // ປ້າຍ "📦" ເທິງກ່ອງ ໃຫ້ກົງກັບສັນຍາລັກໃນສົມຜົນ
+    var lbl=document.createElement('span');
+    lbl.className='gb-label';
+    lbl.textContent='📦 '+(i+1);
+    box.appendChild(lbl);
+    var items=document.createTextNode(ch.repeat(b));
+    box.appendChild(items);
+    area.appendChild(box);
+    if(i<a-1){
+      var sep=document.createElement('span');
+      sep.className='group-sep';
+      sep.textContent='+';
+      sep.style.animationDelay=(i*0.08+0.04)+'s';
+      area.appendChild(sep);
+    }
+  }
+  hint.innerHTML='📦 <b>'+a+'</b> ກ່ອງ, ກ່ອງລະ '+ch+' <b>'+b+'</b> ໂຕ → ນັບລວມທັງໝົດເທົ່າໃດ?';
+}
+
+// ── ການຫານ: ສະແດງເປັນ "ການແບ່ງເທົ່າກັນ" ──
+// ແນວຄິດ: a ÷ b ໝາຍຄວາມວ່າ "ແບ່ງ a ໂຕ ໃສ່ b ກຸ່ມເທົ່າໆກັນ → ກຸ່ມລະຈັກໂຕ?"
+// ສະແດງກ່ອງ b ກ່ອງ ແຕ່ລະກ່ອງມີ ans ໂຕ - ເດັກນັບກຸ່ມດຽວເພື່ອຫາຄຳຕອບ
+function buildDivGroups(a,b,ans,ch){
+  var area=document.getElementById('group-area');
+  var hint=document.getElementById('group-hint');
+  area.innerHTML='';
+  for(var i=0;i<b;i++){
+    var box=document.createElement('div');
+    box.className='group-box group-box-div';
+    var c=groupColors[i%groupColors.length];
+    box.style.background=c.bg;
+    box.style.borderColor=c.bd;
+    box.style.animationDelay=(i*0.1)+'s';
+    // ປ້າຍ "🧺" ເທິງກ່ອງ ໃຫ້ກົງກັບສັນຍາລັກໃນສົມຜົນ
+    var lbl=document.createElement('span');
+    lbl.className='gb-label';
+    lbl.textContent='🧺 '+(i+1);
+    box.appendChild(lbl);
+    var items=document.createTextNode(ch.repeat(ans));
+    box.appendChild(items);
+    area.appendChild(box);
+  }
+  hint.innerHTML='ແບ່ງ '+ch+' <b>'+a+'</b> ໂຕ ໃສ່ 🧺 <b>'+b+'</b> ກະຕ່າເທົ່າໆກັນ → ກະຕ່າລະຈັກໂຕ?';
+}
+
+// ── Next question ──
+function nextQuestion(){
+  answered=false; crossedCount=0; subB=0;
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('stars').textContent='';
+  document.getElementById('next-btn').style.display='none';
+
+  var q=generateQuestion();
+  correctAnswer=q.ans;
+  renderQuestion(q);
+
+  var isSubVis=(mode==='sub'&&level<=2);
+  var isMulVis=(mode==='mul'&&level<=2);
+  var isDivVis=(mode==='div'&&level<=2);
+  var isAddVis=(mode==='add'&&level===1);
+
+  // ສະແດງ/ເຊື່ອງ ຮູບປະກອບແຕ່ລະປະເພດ
+  document.getElementById('sub-hint').style.display    = isSubVis?'block':'none';
+  document.getElementById('char-grid').style.display   = isSubVis?'flex':'none';
+  document.getElementById('sub-counter').style.display = isSubVis?'block':'none';
+
+  document.getElementById('group-hint').style.display  = (isMulVis||isDivVis)?'inline-block':'none';
+  document.getElementById('group-area').style.display  = (isMulVis||isDivVis)?'flex':'none';
+
+  document.getElementById('character-row').style.display = isAddVis?'flex':'none';
+
+  if(isSubVis){
+    buildSubGrid(q.a,q.b);
+  } else if(isMulVis){
+    buildMulGroups(q.a,q.b,currentChar);
+  } else if(isDivVis){
+    buildDivGroups(q.a,q.b,q.ans,currentChar);
+  } else if(isAddVis){
+    document.getElementById('character-row').textContent=q.chars;
+  }
+
+  if(level<=2){
+    document.getElementById('answer-grid').style.display='grid';
+    document.getElementById('input-row').style.display='none';
+    var choices=makeChoices(q.ans);
+    var grid=document.getElementById('answer-grid');
+    grid.innerHTML='';
+    choices.forEach(function(c){
+      var btn=document.createElement('button');
+      btn.className='ans-btn'; btn.textContent=c;
+      btn.onclick=function(){checkAnswer(c,btn);};
+      grid.appendChild(btn);
+    });
+  } else {
+    document.getElementById('answer-grid').style.display='none';
+    document.getElementById('input-row').style.display='flex';
+    var inp=document.getElementById('ans-input');
+    inp.value=''; inp.style.borderColor='';
+    setTimeout(function(){inp.focus();},100);
+  }
+}
+
+// ── Core check logic ──
+function applyResult(ok){
+  totalCount++;
+  document.getElementById('total-count').textContent=totalCount;
+  var pts=0;
+  if(ok){
+    correctCount++; streak++;
+    pts=streak>=3?20:10; score+=pts;
+    document.getElementById('correct-count').textContent=correctCount;
+    document.getElementById('score').textContent=score;
+    document.getElementById('streak').textContent=streak;
+    document.getElementById('feedback').textContent='🎉 ຖືກຕ້ອງ! ເກັ່ງຫຼາຍ!';
+    document.getElementById('feedback').className='feedback ok';
+    document.getElementById('stars').textContent=streak>=5?'⭐⭐⭐':streak>=3?'⭐⭐':'⭐';
+    ansHistory.push('ok'); lastOk=true; lastPts=pts;
+    playCorrectSound();
+    if(streak>=3)launchConfetti();
+  } else {
+    streak=0;
+    document.getElementById('streak').textContent='0';
+    document.getElementById('feedback').textContent='💡 ຄຳຕອບແມ່ນ '+correctAnswer;
+    document.getElementById('feedback').className='feedback no';
+    ansHistory.push('no'); lastOk=false; lastPts=0;
+    playWrongSound();
+  }
+  renderHistory();
+  document.getElementById('next-btn').style.display='block';
+  return pts;
+}
+
+function checkAnswer(chosen,btn){
+  if(answered)return;
+  answered=true;
+  var ok=(chosen===correctAnswer);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok){
+    document.querySelectorAll('.ans-btn').forEach(function(b){
+      if(parseInt(b.textContent)===correctAnswer)b.classList.add('correct');
+    });
+  }
+  document.querySelectorAll('.ans-btn').forEach(function(b){b.disabled=true;b.style.pointerEvents='none';});
+  var pts=applyResult(ok);
+  setTimeout(function(){openPopup(ok,pts);},400);
+}
+
+function checkInput(){
+  if(answered)return;
+  var val=parseInt(document.getElementById('ans-input').value);
+  if(isNaN(val))return;
+  answered=true;
+  var ok=(val===correctAnswer);
+  document.getElementById('ans-input').style.borderColor=ok?'#5BAD6F':'#E85D5D';
+  var pts=applyResult(ok);
+  setTimeout(function(){openPopup(ok,pts);},400);
+}
+
+// ── Popup ──
+function openPopup(ok,pts){
+  if(ok===undefined){ok=lastOk;pts=lastPts;}
+  var icon,title,sub,badge;
+  if(ok){
+    var icons=['🎉','🌟','🏆','🥳','✨','🎊'];
+    icon=icons[Math.floor(Math.random()*icons.length)];
+    title=streak>=5?'ອາດມາກ! ສຸດຍອດ!':streak>=3?'ເກັ່ງຫຼາຍ!':'ຖືກຕ້ອງ!';
+    sub=streak>=3?'🔥 ຕໍ່ເນື່ອງ '+streak+' ຄຳ!':'ດີຫຼາຍ ເດີ!';
+    badge='⭐ +'+pts+' ຄະແນນ';
+  } else {
+    icon='💡';
+    title='ໄດ້ຮຽນຮູ້ແລ້ວ!';
+    sub='ຄຳຕອບແມ່ນ: '+correctAnswer;
+    badge='💪 ຄ່ອຍໆ ພະຍາຍາມ!';
+  }
+  document.getElementById('popup-icon').textContent=icon;
+  document.getElementById('popup-title').textContent=title;
+  document.getElementById('popup-sub').textContent=sub;
+  document.getElementById('popup-badge').textContent=badge;
+  document.getElementById('popup-overlay').classList.add('show');
+}
+
+function closePopup(){
+  document.getElementById('popup-overlay').classList.remove('show');
+}
+
+function popupNext(){
+  document.getElementById('popup-overlay').classList.remove('show');
+  setTimeout(nextQuestion,120);
+}
+
+document.getElementById('popup-overlay').addEventListener('click',function(e){
+  if(e.target===this)closePopup();
+});
+
+// ── History ──
+function renderHistory(){
+  var last=ansHistory.slice(-20);
+  var h=document.getElementById('history');
+  h.innerHTML='';
+  last.forEach(function(r){
+    var d=document.createElement('span');
+    d.className='hist-dot';
+    d.style.background=r==='ok'?'#5BAD6F':'#E85D5D';
+    d.textContent=r==='ok'?'✓':'✗';
+    h.appendChild(d);
+  });
+}
+
+// ── Confetti ──
+function launchConfetti(){
+  var wrap=document.getElementById('confetti-wrap');
+  wrap.innerHTML='';
+  for(var i=0;i<30;i++){
+    var p=document.createElement('div');
+    p.className='confetti-piece';
+    p.style.left=randInt(5,95)+'%'; p.style.top='-12px';
+    p.style.background=confColors[randInt(0,confColors.length-1)];
+    p.style.width=randInt(7,14)+'px'; p.style.height=randInt(7,14)+'px';
+    p.style.borderRadius=randInt(0,1)?'50%':'3px';
+    p.style.animationDelay=(i*0.04)+'s';
+    p.style.animationDuration=(0.9+Math.random()*0.6)+'s';
+    wrap.appendChild(p);
+  }
+  setTimeout(function(){wrap.innerHTML='';},2400);
+}
+
+document.getElementById('ans-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter')checkInput();
+});
+
+// ຕັ້ງຄ່າປຸ່ມສຽງເລີ່ມຕົ້ນ ຕາມການຕັ້ງຄ່າທີ່ບັນທຶກໄວ້
+(function(){
+  var btn = document.getElementById('sound-btn');
+  if(btn && !soundOn){
+    btn.textContent = '🔇';
+    btn.classList.add('muted');
+  }
+})();
+
+nextQuestion();
 </script>
 </body>
 </html>
