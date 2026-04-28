@@ -1295,11 +1295,11 @@ function numToChinese(n){
 var TTS_CONFIG = {
   th: {
     lang: 'th-TH', fallbacks: ['th'],
-    rate: 0.62, pitch: 1.12,
+    rate: 0.75, pitch: 1.12,
     sym: {'+':'บวก','−':'ลบ','-':'ลบ','×':'คูณ','x':'คูณ','*':'คูณ','÷':'หาร','/':'หาร'},
     num: numToThai,
     // ໃສ່ ", " ເພື່ອໃຫ້ engine ຫຍຸດເລັກນ້ອຍ ເດັກຟັງທັນ
-    join: function(a, op, b){ return a+', '+op+', '+b+', เท่ากับเท่าไหร่'; }
+    join: function(a, op, b){ return a+', '+op+', '+b+', เท่ากับเท่าใด'; }
   },
   en: {
     lang: 'en-US', fallbacks: ['en-US','en-GB','en'],
@@ -1524,7 +1524,7 @@ function playCorrectSound(){
 
   // ຄຳສັນລະເສີນ ແຕ່ລະພາສາ (ຫຼາຍຄຳ ໃຫ້ສຸ່ມ ບໍ່ຈຳເຈ)
   var praises = {
-    th: ['ถูกต้อง เก่งหลาย ชมเชย','สุดยอด ชมเชย'],
+    th: ['ถูกต้อง เก่งหลาย ชมเชย','ถูกต้อง เก่งจังเลย ชมเชย','ถูกต้อง สุดยอด ชมเชย'],
     en: ['Great job!','Well done!','Correct very good'],
     zh: ['你很棒  下次再加油','真棒','太棒了','你真聪明','非常好','你最棒了']
   };
