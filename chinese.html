@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ຮຽນພາສາຈີນ ມ່ວນໆ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;700;800;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Phetsarath OT';
+    src: local('Phetsarath OT'), local('Phetsarath_OT'), local('Phetsarath'),
+         url('https://cdn.jsdelivr.net/gh/lao-dictionary/lao-fonts@master/Phetsarath_OT.ttf') format('truetype');
+    font-weight: normal; font-style: normal; font-display: swap;
+  }
+  :root {
+    --bg: #FFF8EE; --card: #FFFFFF;
+    --purple: #7C6FCD; --purple-light: #EEE9FF;
+    --green: #5BAD6F; --green-light: #E6F7EA;
+    --red: #E85D5D; --red-light: #FDEAEA;
+    --blue: #4FA3E0; --blue-light: #E0F0FF;
+    --yellow: #F9C74F;
+    --text: #3A2E5A; --text-soft: #7B6F9A;
+    --border: #E8DFF8;
+    --shadow: 0 4px 16px rgba(232,93,93,0.13);
+    --radius: 20px; --radius-lg: 28px;
+    --cn: #D63A3A; --cn-light: #FFE4E4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    background: var(--bg); min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 10% 20%, #FFE0E0 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, #FFEFB8 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, #FFF5E5 0%, transparent 60%);
+  }
+  .app {
+    max-width: 600px; margin: 0 auto;
+    padding: clamp(10px,3vw,20px);
+    min-height: 100vh; display: flex; flex-direction: column;
+    gap: clamp(10px,2.5vw,16px); position: relative;
+  }
+  .sound-btn {
+    position: absolute;
+    top: clamp(10px,3vw,20px); right: clamp(10px,3vw,20px);
+    width: clamp(38px,9vw,44px); height: clamp(38px,9vw,44px);
+    border-radius: 50%; border: 2.5px solid var(--border);
+    background: var(--card); color: var(--text);
+    font-size: clamp(15px,4vw,20px); cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    z-index: 10; transition: all 0.15s;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; padding: 0;
+  }
+  .sound-btn:active { transform: scale(0.9); }
+  .sound-btn.muted { background: #FDEAEA; border-color: var(--red); opacity: 0.85; }
+
+  .menu-btn {
+    position: absolute;
+    top: clamp(10px,3vw,20px); left: clamp(10px,3vw,20px);
+    width: clamp(38px,9vw,44px); height: clamp(38px,9vw,44px);
+    border-radius: 50%; border: 2.5px solid var(--border);
+    background: var(--card); color: var(--cn);
+    font-size: clamp(18px,5vw,24px); cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    z-index: 30; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; padding: 0; font-weight: 900;
+  }
+  .menu-btn:active { transform: scale(0.9); }
+  .menu-btn.open { background: var(--cn); color: #fff; border-color: var(--cn); }
+
+  .menu-overlay {
+    position: fixed; inset: 0;
+    background: rgba(58,46,90,0.45);
+    z-index: 50; display: none;
+    backdrop-filter: blur(3px);
+  }
+  .menu-overlay.show { display: block; animation: fade-in 0.18s; }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  .menu-panel {
+    position: fixed;
+    top: clamp(62px,14vw,76px); left: clamp(10px,3vw,20px);
+    background: var(--card); border: 2.5px solid var(--cn);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(58,46,90,0.28);
+    padding: clamp(10px,2.5vw,14px);
+    z-index: 60; display: none;
+    min-width: clamp(220px,60vw,280px);
+    animation: slide-down 0.22s ease-out;
+  }
+  .menu-panel.show { display: block; }
+  @keyframes slide-down {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .menu-title {
+    font-size: clamp(13px,3.4vw,15px); font-weight: 900;
+    color: var(--cn); text-align: center;
+    padding: 4px 0 8px; border-bottom: 2px dashed var(--border);
+    margin-bottom: 8px;
+  }
+  .menu-item {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: clamp(10px,2.5vw,14px);
+    margin-bottom: 6px;
+    border: 2px solid var(--border); border-radius: var(--radius);
+    background: var(--card); color: var(--text);
+    font-size: clamp(14px,3.6vw,16px); font-weight: 800;
+    cursor: pointer; text-align: left;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    transition: all 0.15s; text-decoration: none;
+  }
+  .menu-item:last-child { margin-bottom: 0; }
+  .menu-item:hover { background: var(--cn-light); border-color: var(--cn); }
+  .menu-item:active { transform: scale(0.97); }
+  .menu-item.current {
+    background: var(--cn-light); border-color: var(--cn);
+    color: var(--cn); cursor: default;
+  }
+  .menu-item.current::after { content: ' ✓'; margin-left: auto; font-weight: 900; }
+  .menu-item .menu-ico {
+    font-size: clamp(20px,5vw,24px); line-height: 1;
+    width: clamp(34px,8vw,40px); height: clamp(34px,8vw,40px);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; flex-shrink: 0;
+  }
+  .menu-item.mi-en .menu-ico { background: var(--blue-light); }
+  .menu-item.mi-math .menu-ico { background: var(--purple-light); }
+  .menu-item.mi-cn .menu-ico { background: var(--cn-light); }
+  .menu-item.mi-lo .menu-ico { background: #FFF4D6; }
+  .menu-item.mi-co .menu-ico { background: #FFEEDD; }
+
+  .header { text-align: center; padding: clamp(6px,2vw,14px) 0 2px; }
+  .header-icon { font-size: clamp(36px,10vw,56px); display: block; margin-bottom: 4px; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .header-title { font-size: clamp(22px,6.5vw,34px); font-weight: 900; color: var(--cn); }
+  .header-sub { font-size: clamp(11px,3vw,14px); color: var(--text-soft); font-weight: 600; }
+
+  .topic-tabs {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(6px,1.8vw,10px);
+  }
+  .topic-btn {
+    padding: clamp(9px,2.4vw,14px) 6px;
+    border: 2.5px solid var(--border); border-radius: var(--radius);
+    background: var(--card); color: var(--text-soft);
+    font-size: clamp(11px,3vw,14px); font-weight: 800;
+    cursor: pointer; text-align: center; transition: all 0.18s;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    line-height: 1.25;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .topic-btn .topic-ico { font-size: clamp(18px,5vw,26px); display: block; line-height: 1; }
+  .topic-btn:active { transform: scale(0.95); }
+  .topic-btn.active {
+    background: var(--cn-light); border-color: var(--cn); color: var(--cn);
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(214,58,58,0.22);
+  }
+
+  .topic-title-bar {
+    background: var(--card); border-radius: var(--radius);
+    padding: clamp(10px,2.6vw,14px) clamp(14px,3vw,20px);
+    box-shadow: var(--shadow); border: 2px solid var(--border);
+    display: flex; align-items: center; gap: 10px; justify-content: center;
+  }
+  .topic-title-bar .tt-ico { font-size: clamp(22px,5.5vw,30px); line-height: 1; }
+  .topic-title-bar .tt-text {
+    font-size: clamp(15px,4vw,19px); font-weight: 900; color: var(--cn);
+  }
+  .topic-title-bar .tt-sub {
+    font-size: clamp(11px,2.8vw,13px); color: var(--text-soft); font-weight: 700;
+    margin-left: 6px;
+  }
+
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(95px,24vw,120px), 1fr));
+    gap: clamp(8px,2vw,12px);
+  }
+  .item-card {
+    background: var(--card); border: 3px solid var(--border);
+    border-radius: var(--radius); padding: clamp(10px,2.5vw,14px) 6px;
+    text-align: center; cursor: pointer;
+    transition: all 0.18s;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.06);
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; min-height: clamp(130px,32vw,160px);
+    user-select: none; position: relative; overflow: hidden;
+  }
+  .item-card::before {
+    content: '🔊'; position: absolute;
+    top: 6px; right: 8px; font-size: clamp(11px,2.8vw,14px);
+    opacity: 0.5;
+  }
+  .item-card:active { transform: scale(0.95) translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.06); }
+  .item-card:hover { border-color: var(--cn); background: var(--cn-light); }
+  .item-card.speaking {
+    background: var(--cn); border-color: var(--cn); color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 14px rgba(214,58,58,0.4), 0 0 0 4px rgba(214,58,58,0.25);
+    animation: pulse-card 0.9s ease-in-out infinite;
+  }
+  .item-card.speaking::before { color: #fff; opacity: 1; }
+  .item-card.speaking .item-pinyin,
+  .item-card.speaking .item-lao { color: rgba(255,255,255,0.9); }
+  @keyframes pulse-card {
+    0%, 100% { transform: scale(1.04); }
+    50%      { transform: scale(1.10); }
+  }
+  .item-emoji { font-size: clamp(26px,7vw,38px); line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
+  .item-cn {
+    font-size: clamp(20px,5.5vw,28px); font-weight: 900;
+    color: inherit; line-height: 1.1;
+    font-family: 'Noto Sans SC', 'Phetsarath OT', sans-serif;
+  }
+  .item-card.speaking .item-cn { color: #fff; }
+  .item-pinyin {
+    font-size: clamp(11px,3vw,14px); font-weight: 800;
+    color: var(--cn); line-height: 1.1;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-style: italic;
+  }
+  .item-lao {
+    font-size: clamp(10px,2.6vw,12px); color: var(--text-soft); font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .info-tip {
+    text-align: center; font-size: clamp(11px,3vw,13px);
+    color: var(--text-soft); font-weight: 700;
+    background: var(--card); border-radius: var(--radius);
+    padding: clamp(8px,2vw,12px); border: 2px dashed var(--border);
+  }
+
+
+  /* Pinyin items - big pinyin display */
+  .item-card.pinyin .item-emoji {
+    font-size: clamp(36px,9vw,52px);
+    font-weight: 900;
+    color: var(--cn);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    margin-bottom: 4px;
+  }
+  .item-card.pinyin.speaking .item-emoji { color: #fff; }
+  .item-card.pinyin .item-cn {
+    font-size: clamp(15px,4vw,20px);
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .item-card.pinyin {
+    min-height: clamp(140px,34vw,170px);
+  }
+  @media (max-width: 360px) {
+    .topic-tabs { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <button class="sound-btn" id="sound-btn" onclick="toggleSound()" title="ເປີດ/ປິດສຽງ">🔊</button>
+  <button class="menu-btn" id="menu-btn" onclick="toggleMenu(event)" title="ເມນູ" aria-label="ເມນູ">☰</button>
+  <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+  <div class="menu-panel" id="menu-panel" role="menu" aria-label="ເລືອກວິຊາ">
+    <a class="menu-item" href="index.html" style="background:#FFF1E0;color:#7C6FCD;">
+      <span class="mi-icon" style="font-size:22px;">🏠</span><span>ຫນ້າຫຼັກ</span>
+    </a>
+    <div class="menu-title">📚 ເລືອກວິຊາທີ່ຢາກຮຽນ</div>
+    <a class="menu-item mi-en" href="javascript:void(0)" onclick="navigateTo('english')">
+      <span class="menu-ico">🔤</span>
+      <span>ຮຽນພາສາອັງກິດ</span>
+    </a>
+    <a class="menu-item mi-math" href="javascript:void(0)" onclick="navigateTo('math')">
+      <span class="menu-ico">🧮</span>
+      <span>ຮຽນຄະນິດສາດ</span>
+    </a>
+    <button class="menu-item mi-cn current" type="button" onclick="closeMenu()">
+      <span class="menu-ico">🀄</span>
+      <span>ຮຽນພາສາຈີນ</span>
+    </button>
+    <a class="menu-item mi-lo" href="javascript:void(0)" onclick="navigateTo('hienkhien')">
+      <span class="menu-ico">🇱🇦</span>
+      <span>ຮຽນພາສາລາວ</span>
+    </a>
+    <a class="menu-item mi-co" href="javascript:void(0)" onclick="navigateTo('labaiyc')">
+      <span class="menu-ico">🎨</span>
+      <span>ລະບາຍສີ</span>
+    </a>
+  </div>
+
+  <div class="header">
+    <span class="header-icon">🀄</span>
+    <div class="header-title">ຮຽນພາສາຈີນ</div>
+    <div class="header-sub">ແຕະທີ່ຮູບ ເພື່ອຟັງສຽງອ່ານ 🌟 DeDyDeMy 🌟</div>
+  </div>
+
+  <div class="topic-tabs" id="topic-tabs">
+    <button class="topic-btn active" data-topic="numbers" onclick="selectTopic('numbers')">
+      <span class="topic-ico">🔢</span><span>ຕົວເລກ 一-十</span>
+    </button>
+    <button class="topic-btn" data-topic="fruits" onclick="selectTopic('fruits')">
+      <span class="topic-ico">🍎</span><span>ໝາກໄມ້</span>
+    </button>
+    <button class="topic-btn" data-topic="body" onclick="selectTopic('body')">
+      <span class="topic-ico">👤</span><span>ຮ່າງກາຍ</span>
+    </button>
+    <button class="topic-btn" data-topic="colors" onclick="selectTopic('colors')">
+      <span class="topic-ico">🎨</span><span>ສີ</span>
+    </button>
+    <button class="topic-btn" data-topic="days" onclick="selectTopic('days')">
+      <span class="topic-ico">📅</span><span>ວັນໃນອາທິດ</span>
+    </button>
+    <button class="topic-btn" data-topic="months" onclick="selectTopic('months')">
+      <span class="topic-ico">🗓️</span><span>ເດືອນ</span>
+    </button>
+    <button class="topic-btn" data-topic="pinyin_tones" onclick="selectTopic('pinyin_tones')">
+      <span class="topic-ico">🎵</span><span>ສຽງ 4 ຊັ້ນ</span>
+    </button>
+    <button class="topic-btn" data-topic="pinyin_initials" onclick="selectTopic('pinyin_initials')">
+      <span class="topic-ico">🔡</span><span>拼音 ຕົ້ນ</span>
+    </button>
+    <button class="topic-btn" data-topic="pinyin_finals" onclick="selectTopic('pinyin_finals')">
+      <span class="topic-ico">🅰️</span><span>拼音 ທ້າຍ</span>
+    </button>
+    <button class="topic-btn" data-topic="greetings" onclick="selectTopic('greetings')">
+      <span class="topic-ico">👋</span><span>ການທັກທາຍ</span>
+    </button>
+    <button class="topic-btn" data-topic="family" onclick="selectTopic('family')">
+      <span class="topic-ico">👨‍👩‍👧</span><span>ຄອບຄົວ</span>
+    </button>
+    <button class="topic-btn" data-topic="food" onclick="selectTopic('food')">
+      <span class="topic-ico">🍚</span><span>ອາຫານ</span>
+    </button>
+    <button class="topic-btn" data-topic="animals" onclick="selectTopic('animals')">
+      <span class="topic-ico">🐶</span><span>ສັດ</span>
+    </button>
+    <button class="topic-btn" data-topic="school" onclick="selectTopic('school')">
+      <span class="topic-ico">🎒</span><span>ໂຮງຮຽນ</span>
+    </button>
+    <button class="topic-btn" data-topic="verbs" onclick="selectTopic('verbs')">
+      <span class="topic-ico">🏃</span><span>ການກະທຳ</span>
+    </button>
+    <button class="topic-btn" data-topic="phrases" onclick="selectTopic('phrases')">
+      <span class="topic-ico">💬</span><span>ປະໂຫຍກໃຊ້ປະຈຳວັນ</span>
+    </button>
+  </div>
+
+  <div class="topic-title-bar">
+    <span class="tt-ico" id="tt-ico">🔢</span>
+    <span class="tt-text" id="tt-text">ຕົວເລກ 一 - 十</span>
+    <span class="tt-sub" id="tt-sub">10 ຄຳ</span>
+  </div>
+
+  <div class="items-grid" id="items-grid"></div>
+
+  <div class="info-tip">💡 ກົດທີ່ກ່ອງເພື່ອຟັງສຽງອ່ານພາສາຈີນ</div>
+</div>
+
+<script>
+var soundOn = true;
+function toggleSound(){
+  soundOn = !soundOn;
+  var btn = document.getElementById('sound-btn');
+  if(soundOn){ btn.textContent = '🔊'; btn.classList.remove('muted'); }
+  else { btn.textContent = '🔇'; btn.classList.add('muted'); window.speechSynthesis.cancel(); }
+}
+
+function toggleMenu(e){
+  if(e) e.stopPropagation();
+  var panel = document.getElementById('menu-panel');
+  if(panel.classList.contains('show')){ closeMenu(); } else { openMenu(); }
+}
+function openMenu(){
+  document.getElementById('menu-btn').classList.add('open');
+  document.getElementById('menu-panel').classList.add('show');
+  document.getElementById('menu-overlay').classList.add('show');
+}
+function closeMenu(){
+  document.getElementById('menu-btn').classList.remove('open');
+  document.getElementById('menu-panel').classList.remove('show');
+  document.getElementById('menu-overlay').classList.remove('show');
+}
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeMenu();
+});
+
+/* === TTS - ປັບສຳລັບເດັກນ້ອຍຮຽນພາສາຈີນ ຊ້າ + ຄົມ === */
+var voicesReady = false;
+function loadVoices(){
+  var v = window.speechSynthesis.getVoices();
+  voicesReady = v && v.length > 0;
+}
+if('speechSynthesis' in window){
+  try{ window.speechSynthesis.getVoices(); }catch(e){}
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  setTimeout(loadVoices, 500);
+  setTimeout(loadVoices, 1500);
+}
+
+function pickBestVoice(lang){
+  var voices = window.speechSynthesis.getVoices() || [];
+  if(!voices.length) return null;
+  var langPrefix = lang.toLowerCase().substr(0,2);
+  var candidates = voices.filter(function(v){
+    return v.lang && v.lang.toLowerCase().substr(0,2) === langPrefix;
+  });
+  if(!candidates.length) return null;
+  function score(v){
+    var s = 0;
+    var name = (v.name||'').toLowerCase();
+    var vlang = (v.lang||'').toLowerCase();
+    if(vlang === lang.toLowerCase()) s += 100;
+    // ສຳລັບພາສາຈີນ ໃຫ້ priority zh-CN ສູງສຸດ (ຈີນກາງ)
+    if(langPrefix === 'zh'){
+      if(vlang === 'zh-cn' || vlang === 'zh_cn') s += 80;
+      else if(vlang.indexOf('zh-cn')>=0) s += 60;
+      else if(vlang.indexOf('zh-tw')>=0) s += 20;
+    }
+    if(name.indexOf('natural')>=0) s += 50;
+    if(name.indexOf('neural')>=0) s += 50;
+    if(name.indexOf('premium')>=0) s += 45;
+    if(name.indexOf('enhanced')>=0) s += 40;
+    if(name.indexOf('online')>=0) s += 30;
+    if(name.indexOf('google')>=0) s += 35;
+    if(name.indexOf('microsoft')>=0) s += 30;
+    if(name.indexOf('apple')>=0) s += 25;
+    if(name.indexOf('female')>=0) s += 15;
+    if(name.indexOf('woman')>=0) s += 15;
+    // ຊື່ສຽງຜູ້ຍິງພາສາຈີນທີ່ຮູ້ຈັກ
+    if(/(tingting|yating|sin-?ji|huihui|hanhan|xiaoxiao|xiaoyi|tracy|li-?mu|mei-?jia|yaoyao|kangkang)/i.test(v.name||'')) s += 12;
+    if(/(samantha|karen|zira|aria|jenny|emma)/i.test(v.name||'')) s += 6;
+    if(v.default) s += 3;
+    return s;
+  }
+  candidates.sort(function(a,b){ return score(b) - score(a); });
+  return candidates[0];
+}
+
+/* ດຶງເອົາສະເພາະຕົວອັກສອນຈີນ ຈາກຂໍ້ຄວາມ (ສຳລັບໃຫ້ TTS ອ່ານຊັດເຈນ) */
+function extractChinese(text){
+  if(!text) return text;
+  var m = text.match(/[\u4e00-\u9fff]+/);
+  return m ? m[0] : text;
+}
+
+var currentSpeakingEl = null;
+function speak(text, lang, el){
+  if(!soundOn) return;
+  if(!('speechSynthesis' in window)) return;
+  var voices = window.speechSynthesis.getVoices();
+  if(!voices.length){
+    setTimeout(function(){ speak(text, lang, el); }, 250);
+    return;
+  }
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  if(currentSpeakingEl){ currentSpeakingEl.classList.remove('speaking'); }
+  if(el){ el.classList.add('speaking'); currentSpeakingEl = el; }
+
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || 'zh-CN';
+  var v = pickBestVoice(lang || 'zh-CN');
+  if(v){ u.voice = v; u.lang = v.lang; }
+  // ── ປັບໃຫ້ເດັກນ້ອຍຮຽນຟັງເຂົ້າໃຈ ──
+  u.rate = 0.55;   // ຊ້າຫຼາຍ ໃຫ້ເດັກຟັງທັນ ໂດຍສະເພາະພາສາຈີນ
+  u.pitch = 1.15;  // pitch ສູງ ສຽງຄົມຕັດຫູ
+  u.volume = 1.0;
+  u.onend = function(){ if(el) el.classList.remove('speaking'); if(currentSpeakingEl === el) currentSpeakingEl = null; };
+  u.onerror = function(){ if(el) el.classList.remove('speaking'); };
+  setTimeout(function(){
+    try{ window.speechSynthesis.speak(u); }catch(e){}
+  }, 60);
+}
+
+var topics = {
+  numbers: {
+    icon: '🔢', title: 'ຕົວເລກ 一 - 十 (Numbers)',
+    items: [
+      {emoji:'1️⃣', cn:'一', py:'yī',    lao:'ໜຶ່ງ (1)'},
+      {emoji:'2️⃣', cn:'二', py:'èr',    lao:'ສອງ (2)'},
+      {emoji:'3️⃣', cn:'三', py:'sān',   lao:'ສາມ (3)'},
+      {emoji:'4️⃣', cn:'四', py:'sì',    lao:'ສີ່ (4)'},
+      {emoji:'5️⃣', cn:'五', py:'wǔ',    lao:'ຫ້າ (5)'},
+      {emoji:'6️⃣', cn:'六', py:'liù',   lao:'ຫົກ (6)'},
+      {emoji:'7️⃣', cn:'七', py:'qī',    lao:'ເຈັດ (7)'},
+      {emoji:'8️⃣', cn:'八', py:'bā',    lao:'ແປດ (8)'},
+      {emoji:'9️⃣', cn:'九', py:'jiǔ',   lao:'ເກົ້າ (9)'},
+      {emoji:'🔟', cn:'十', py:'shí',   lao:'ສິບ (10)'}
+    ]
+  },
+  fruits: {
+    icon: '🍎', title: 'ໝາກໄມ້ (水果)',
+    items: [
+      {emoji:'🍎', cn:'苹果',   py:'píng guǒ',     lao:'ໝາກໂປມ'},
+      {emoji:'🍌', cn:'香蕉',   py:'xiāng jiāo',   lao:'ໝາກກ້ວຍ'},
+      {emoji:'🍊', cn:'橙子',   py:'chéng zi',     lao:'ໝາກກ້ຽງ'},
+      {emoji:'🥭', cn:'芒果',   py:'máng guǒ',     lao:'ໝາກມ່ວງ'},
+      {emoji:'🍇', cn:'葡萄',   py:'pú táo',       lao:'ໝາກອະງຸ່ນ'},
+      {emoji:'🍉', cn:'西瓜',   py:'xī guā',       lao:'ໝາກໂມ'},
+      {emoji:'🍓', cn:'草莓',   py:'cǎo méi',      lao:'ສະຕໍເບີຣີ'},
+      {emoji:'🍍', cn:'菠萝',   py:'bō luó',       lao:'ໝາກນັດ'},
+      {emoji:'🥥', cn:'椰子',   py:'yē zi',        lao:'ໝາກພ້າວ'},
+      {emoji:'🍑', cn:'桃子',   py:'táo zi',       lao:'ໝາກທ້ໍ'},
+      {emoji:'🍐', cn:'梨',     py:'lí',           lao:'ໝາກແພຣ໌'},
+      {emoji:'🍒', cn:'樱桃',   py:'yīng táo',     lao:'ໝາກເຊີຣີ'},
+      {emoji:'🍋', cn:'柠檬',   py:'níng méng',    lao:'ໝາກນາວ'},
+      {emoji:'🥝', cn:'猕猴桃', py:'mí hóu táo',   lao:'ໝາກກີວີ'}
+    ]
+  },
+  body: {
+    icon: '👤', title: 'ຮ່າງກາຍ (身体)',
+    items: [
+      {emoji:'👶', cn:'头',  py:'tóu',     lao:'ຫົວ'},
+      {emoji:'👁️', cn:'眼睛', py:'yǎn jīng', lao:'ຕາ'},
+      {emoji:'👃', cn:'鼻子', py:'bí zi',   lao:'ດັງ'},
+      {emoji:'👄', cn:'嘴巴', py:'zuǐ ba',  lao:'ປາກ'},
+      {emoji:'👂', cn:'耳朵', py:'ěr duo',  lao:'ຫູ'},
+      {emoji:'🦷', cn:'牙齿', py:'yá chǐ',  lao:'ແຂ້ວ'},
+      {emoji:'👅', cn:'舌头', py:'shé tou', lao:'ລີ້ນ'},
+      {emoji:'💇', cn:'头发', py:'tóu fà',  lao:'ຜົມ'},
+      {emoji:'❤️', cn:'心',  py:'xīn',     lao:'ຫົວໃຈ'},
+      {emoji:'✋', cn:'手',  py:'shǒu',    lao:'ມື'},
+      {emoji:'💪', cn:'手臂', py:'shǒu bì', lao:'ແຂນ'},
+      {emoji:'🦵', cn:'腿',  py:'tuǐ',     lao:'ຂາ'},
+      {emoji:'🦶', cn:'脚',  py:'jiǎo',    lao:'ຕີນ'},
+      {emoji:'👆', cn:'手指', py:'shǒu zhǐ', lao:'ນິ້ວມື'}
+    ]
+  },
+  colors: {
+    icon: '🎨', title: 'ສີ (颜色)',
+    items: [
+      {emoji:'🟥', cn:'红色',  py:'hóng sè', lao:'ສີແດງ',    bg:'#FFCCCC'},
+      {emoji:'🟧', cn:'橙色',  py:'chéng sè', lao:'ສີສົ້ມ',    bg:'#FFD9B3'},
+      {emoji:'🟨', cn:'黄色',  py:'huáng sè', lao:'ສີເຫຼືອງ',  bg:'#FFF4B3'},
+      {emoji:'🟩', cn:'绿色',  py:'lǜ sè',   lao:'ສີຂຽວ',    bg:'#CCEFCC'},
+      {emoji:'🟦', cn:'蓝色',  py:'lán sè',  lao:'ສີຟ້າ',     bg:'#CCE0FF'},
+      {emoji:'🟪', cn:'紫色',  py:'zǐ sè',   lao:'ສີມ່ວງ',   bg:'#E0CCFF'},
+      {emoji:'🟫', cn:'棕色',  py:'zōng sè', lao:'ສີນ້ຳຕານ',  bg:'#D9BFA0'},
+      {emoji:'⬛', cn:'黑色',  py:'hēi sè',  lao:'ສີດຳ',     bg:'#444', fg:'#fff'},
+      {emoji:'⬜', cn:'白色',  py:'bái sè',  lao:'ສີຂາວ',    bg:'#fff'},
+      {emoji:'🩷', cn:'粉色',  py:'fěn sè',  lao:'ສີບົວ',    bg:'#FFD1E8'},
+      {emoji:'🩶', cn:'灰色',  py:'huī sè',  lao:'ສີເທົາ',   bg:'#D8D8D8'}
+    ]
+  },
+  days: {
+    icon: '📅', title: 'ວັນຈັນ - ວັນອາທິດ (星期)',
+    items: [
+      {emoji:'1️⃣', cn:'星期一', py:'xīng qī yī',   lao:'ວັນຈັນ'},
+      {emoji:'2️⃣', cn:'星期二', py:'xīng qī èr',   lao:'ວັນອັງຄານ'},
+      {emoji:'3️⃣', cn:'星期三', py:'xīng qī sān',  lao:'ວັນພຸດ'},
+      {emoji:'4️⃣', cn:'星期四', py:'xīng qī sì',   lao:'ວັນພະຫັດ'},
+      {emoji:'5️⃣', cn:'星期五', py:'xīng qī wǔ',   lao:'ວັນສຸກ'},
+      {emoji:'6️⃣', cn:'星期六', py:'xīng qī liù',  lao:'ວັນເສົາ'},
+      {emoji:'7️⃣', cn:'星期日', py:'xīng qī rì',   lao:'ວັນອາທິດ'}
+    ]
+  },
+  months: {
+    icon: '🗓️', title: 'ເດືອນ 1 - 12 (月份)',
+    items: [
+      {emoji:'❄️', cn:'一月',  py:'yī yuè',     lao:'ມັງກອນ'},
+      {emoji:'💝', cn:'二月',  py:'èr yuè',     lao:'ກຸມພາ'},
+      {emoji:'🌷', cn:'三月',  py:'sān yuè',    lao:'ມີນາ'},
+      {emoji:'🌧️', cn:'四月',  py:'sì yuè',     lao:'ເມສາ'},
+      {emoji:'🌸', cn:'五月',  py:'wǔ yuè',     lao:'ພຶດສະພາ'},
+      {emoji:'☀️', cn:'六月',  py:'liù yuè',    lao:'ມິຖຸນາ'},
+      {emoji:'🏖️', cn:'七月',  py:'qī yuè',     lao:'ກໍລະກົດ'},
+      {emoji:'🌻', cn:'八月',  py:'bā yuè',     lao:'ສິງຫາ'},
+      {emoji:'🍂', cn:'九月',  py:'jiǔ yuè',    lao:'ກັນຍາ'},
+      {emoji:'🎃', cn:'十月',  py:'shí yuè',    lao:'ຕຸລາ'},
+      {emoji:'🦃', cn:'十一月', py:'shí yī yuè', lao:'ພະຈິກ'},
+      {emoji:'🎄', cn:'十二月', py:'shí èr yuè', lao:'ທັນວາ'}
+    ]
+  },
+  pinyin_tones: {
+    icon: '🎵', title: 'ສຽງ 4 ຊັ້ນ (4 Tones - 四声)',
+    isPinyin: true,
+    items: [
+      {pinyin:'mā', cn:'妈 (ແມ່)',  py:'1st tone — flat ¯',       lao:'ສຽງ 1: ລະດັບ ສູງເລົ້າ'},
+      {pinyin:'má', cn:'麻 (ປ່ານ)', py:'2nd tone — rising ´',     lao:'ສຽງ 2: ຂຶ້ນ (ຄຳຖາມ)'},
+      {pinyin:'mǎ', cn:'马 (ມ້າ)',  py:'3rd tone — fall-rise ˇ',  lao:'ສຽງ 3: ລົງແລ້ວຂຶ້ນ'},
+      {pinyin:'mà', cn:'骂 (ດ່າ)',  py:'4th tone — falling \`',    lao:'ສຽງ 4: ລົງແຮງ'},
+      {pinyin:'ma', cn:'吗 (ບໍ່ມີສຽງ)', py:'neutral tone',        lao:'ສຽງເບົາ ບໍ່ມີວັນນະຍຸດ'},
+      {pinyin:'bā', cn:'八 (8)',    py:'1st tone',                lao:'ຕົວຢ່າງສຽງ 1'},
+      {pinyin:'bá', cn:'拔 (ດຶງ)',  py:'2nd tone',                lao:'ຕົວຢ່າງສຽງ 2'},
+      {pinyin:'bǎ', cn:'把 (ກຳ)',   py:'3rd tone',                lao:'ຕົວຢ່າງສຽງ 3'},
+      {pinyin:'bà', cn:'爸 (ພໍ່)',  py:'4th tone',                lao:'ຕົວຢ່າງສຽງ 4'}
+    ]
+  },
+  pinyin_initials: {
+    icon: '🔡', title: 'ພະຍັນຊະນະຕົ້ນ (Initials - 声母)',
+    isPinyin: true,
+    items: [
+      {pinyin:'b',  cn:'爸 bà',    py:'like "b" in boy',       lao:'ບໍ່ມີລົມ — ໃກ້ຄຽງ ປ'},
+      {pinyin:'p',  cn:'怕 pà',    py:'like "p" in pop',       lao:'ມີລົມ — ໃກ້ຄຽງ ຜ'},
+      {pinyin:'m',  cn:'妈 mā',    py:'like "m" in mom',       lao:'ສຽງ ມ'},
+      {pinyin:'f',  cn:'飞 fēi',   py:'like "f" in fun',       lao:'ສຽງ ຟ'},
+      {pinyin:'d',  cn:'大 dà',    py:'like "d" in dog',       lao:'ໃກ້ຄຽງ ຕ (ບໍ່ມີລົມ)'},
+      {pinyin:'t',  cn:'他 tā',    py:'like "t" in top',       lao:'ໃກ້ຄຽງ ທ (ມີລົມ)'},
+      {pinyin:'n',  cn:'你 nǐ',    py:'like "n" in no',        lao:'ສຽງ ນ'},
+      {pinyin:'l',  cn:'六 liù',   py:'like "l" in love',      lao:'ສຽງ ລ'},
+      {pinyin:'g',  cn:'哥 gē',    py:'like "g" in go',        lao:'ໃກ້ຄຽງ ກ (ບໍ່ມີລົມ)'},
+      {pinyin:'k',  cn:'看 kàn',   py:'like "k" in kite',      lao:'ໃກ້ຄຽງ ຂ (ມີລົມ)'},
+      {pinyin:'h',  cn:'好 hǎo',   py:'like "h" in hi',        lao:'ສຽງ ຫ'},
+      {pinyin:'j',  cn:'鸡 jī',    py:'like "j" in jeep',      lao:'ສຽງ ຈ (ບາງ)'},
+      {pinyin:'q',  cn:'七 qī',    py:'like "ch" in cheese',   lao:'ສຽງ ຈ (ມີລົມ)'},
+      {pinyin:'x',  cn:'西 xī',    py:'like "sh" in she',      lao:'ສຽງ ຊ (ບາງ)'},
+      {pinyin:'zh', cn:'中 zhōng', py:'like "j" in joke',      lao:'ສຽງ ຈ (ມ້ວນລີ້ນ)'},
+      {pinyin:'ch', cn:'吃 chī',   py:'like "ch" in church',   lao:'ສຽງ ຈ (ມ້ວນ + ມີລົມ)'},
+      {pinyin:'sh', cn:'是 shì',   py:'like "sh" in shoe',     lao:'ສຽງ ຊ (ມ້ວນລີ້ນ)'},
+      {pinyin:'r',  cn:'人 rén',   py:'like "r" in run',       lao:'ສຽງ ຣ (ມ້ວນ)'},
+      {pinyin:'z',  cn:'字 zì',    py:'like "ds" in beds',     lao:'ສຽງ ຈ ສັ້ນ'},
+      {pinyin:'c',  cn:'菜 cài',   py:'like "ts" in cats',     lao:'ສຽງ ຈ + ລົມ'},
+      {pinyin:'s',  cn:'三 sān',   py:'like "s" in sun',       lao:'ສຽງ ສ'},
+      {pinyin:'y',  cn:'一 yī',    py:'like "y" in yes',       lao:'ສຽງ ຍ'},
+      {pinyin:'w',  cn:'我 wǒ',    py:'like "w" in we',        lao:'ສຽງ ວ'}
+    ]
+  },
+  pinyin_finals: {
+    icon: '🅰️', title: 'ສະຫຼະທ້າຍ (Finals - 韵母)',
+    isPinyin: true,
+    items: [
+      {pinyin:'a',   cn:'啊 a',     py:'like "a" in father',  lao:'ສຽງ ອາ'},
+      {pinyin:'o',   cn:'哦 ó',     py:'like "o" in or',      lao:'ສຽງ ໂອ'},
+      {pinyin:'e',   cn:'饿 è',     py:'like "uh" in duh',    lao:'ສຽງ ເອີ'},
+      {pinyin:'i',   cn:'一 yī',    py:'like "ee" in see',    lao:'ສຽງ ອີ'},
+      {pinyin:'u',   cn:'五 wǔ',    py:'like "oo" in food',   lao:'ສຽງ ອູ'},
+      {pinyin:'ü',   cn:'女 nǚ',    py:'like German "ü"',     lao:'ສຽງ ອື່ (ປາກຈູບ)'},
+      {pinyin:'ai',  cn:'爱 ài',    py:'like "i" in like',    lao:'ສຽງ ໄອ'},
+      {pinyin:'ei',  cn:'杯 bēi',   py:'like "ay" in say',    lao:'ສຽງ ເອີ້'},
+      {pinyin:'ao',  cn:'好 hǎo',   py:'like "ow" in cow',    lao:'ສຽງ ເອົາ'},
+      {pinyin:'ou',  cn:'狗 gǒu',   py:'like "oh" in oh',     lao:'ສຽງ ໂອ້'},
+      {pinyin:'an',  cn:'安 ān',    py:'like "an" in fan',    lao:'ສຽງ ອານ'},
+      {pinyin:'en',  cn:'本 běn',   py:'like "un" in fun',    lao:'ສຽງ ເອີ້ນ'},
+      {pinyin:'ang', cn:'忙 máng',  py:'like "ong" softer',   lao:'ສຽງ ອາງ'},
+      {pinyin:'eng', cn:'冷 lěng',  py:'like "ung" in lung',  lao:'ສຽງ ເອີງ'},
+      {pinyin:'ong', cn:'红 hóng',  py:'like "oong"',         lao:'ສຽງ ອົງ'},
+      {pinyin:'er',  cn:'二 èr',    py:'like "are" curled',   lao:'ສຽງ ເອີ (ມ້ວນ)'}
+    ]
+  },
+  greetings: {
+    icon: '👋', title: 'ການທັກທາຍ (问候)',
+    items: [
+      {emoji:'👋', cn:'你好',     py:'nǐ hǎo',          lao:'ສະບາຍດີ'},
+      {emoji:'🙋', cn:'您好',     py:'nín hǎo',         lao:'ສະບາຍດີ (ສຸພາບ)'},
+      {emoji:'👋', cn:'再见',     py:'zài jiàn',        lao:'ລາກ່ອນ'},
+      {emoji:'🌅', cn:'早上好',   py:'zǎo shàng hǎo',   lao:'ສະບາຍດີຕອນເຊົ້າ'},
+      {emoji:'☀️', cn:'下午好',   py:'xià wǔ hǎo',      lao:'ສະບາຍດີຕອນບ່າຍ'},
+      {emoji:'🌇', cn:'晚上好',   py:'wǎn shàng hǎo',   lao:'ສະບາຍດີຕອນແລງ'},
+      {emoji:'🌙', cn:'晚安',     py:'wǎn ān',          lao:'ຣາຕີສະຫວັດ'},
+      {emoji:'🙏', cn:'谢谢',     py:'xiè xie',         lao:'ຂອບໃຈ'},
+      {emoji:'😊', cn:'不客气',   py:'bú kè qi',        lao:'ຍິນດີ'},
+      {emoji:'🙇', cn:'对不起',   py:'duì bù qǐ',       lao:'ຂໍໂທດ'},
+      {emoji:'🤲', cn:'没关系',   py:'méi guān xi',     lao:'ບໍ່ເປັນຫຍັງ'},
+      {emoji:'✅', cn:'是',       py:'shì',             lao:'ແມ່ນ'},
+      {emoji:'❌', cn:'不是',     py:'bú shì',          lao:'ບໍ່ແມ່ນ'},
+      {emoji:'🙏', cn:'请',       py:'qǐng',            lao:'ກະລຸນາ'},
+      {emoji:'😀', cn:'你好吗?',  py:'nǐ hǎo ma?',      lao:'ສະບາຍດີບໍ?'},
+      {emoji:'😄', cn:'我很好',   py:'wǒ hěn hǎo',      lao:'ຂ້ອຍສະບາຍດີ'},
+      {emoji:'❓', cn:'你叫什么名字?', py:'nǐ jiào shén me míng zi?', lao:'ເຈົ້າຊື່ຫຍັງ?'},
+      {emoji:'🆔', cn:'我叫...',  py:'wǒ jiào ...',     lao:'ຂ້ອຍຊື່...'},
+      {emoji:'🤝', cn:'认识你很高兴', py:'rèn shi nǐ hěn gāo xìng', lao:'ຍິນດີທີ່ໄດ້ຮູ້ຈັກ'},
+      {emoji:'👋', cn:'明天见',   py:'míng tiān jiàn',  lao:'ພົບກັນມື້ອື່ນ'}
+    ]
+  },
+  family: {
+    icon: '👨‍👩‍👧', title: 'ຄອບຄົວ (家庭)',
+    items: [
+      {emoji:'👨‍👩‍👧', cn:'家人',  py:'jiā rén',     lao:'ຄອບຄົວ'},
+      {emoji:'👨', cn:'爸爸',      py:'bà ba',        lao:'ພໍ່'},
+      {emoji:'👩', cn:'妈妈',      py:'mā ma',        lao:'ແມ່'},
+      {emoji:'👴', cn:'爷爷',      py:'yé ye',        lao:'ປູ່ (ພໍ່ຂອງພໍ່)'},
+      {emoji:'👵', cn:'奶奶',      py:'nǎi nai',      lao:'ຍ່າ (ແມ່ຂອງພໍ່)'},
+      {emoji:'🧓', cn:'外公',      py:'wài gōng',     lao:'ຕາ (ພໍ່ຂອງແມ່)'},
+      {emoji:'👵', cn:'外婆',      py:'wài pó',       lao:'ຍາຍ (ແມ່ຂອງແມ່)'},
+      {emoji:'👦', cn:'哥哥',      py:'gē ge',        lao:'ອ້າຍ'},
+      {emoji:'🧒', cn:'弟弟',      py:'dì di',        lao:'ນ້ອງຊາຍ'},
+      {emoji:'👧', cn:'姐姐',      py:'jiě jie',      lao:'ເອື້ອຍ'},
+      {emoji:'👶', cn:'妹妹',      py:'mèi mei',      lao:'ນ້ອງສາວ'},
+      {emoji:'👶', cn:'宝宝',      py:'bǎo bao',      lao:'ນ້ອຍ'},
+      {emoji:'👨‍🦱', cn:'儿子',   py:'ér zi',        lao:'ລູກຊາຍ'},
+      {emoji:'👩‍🦱', cn:'女儿',   py:'nǚ ér',        lao:'ລູກສາວ'},
+      {emoji:'🤵', cn:'丈夫',      py:'zhàng fu',     lao:'ຜົວ'},
+      {emoji:'👰', cn:'妻子',      py:'qī zi',        lao:'ເມຍ'},
+      {emoji:'🧑', cn:'叔叔',      py:'shū shu',      lao:'ອາ / ລຸງ'},
+      {emoji:'👩', cn:'阿姨',      py:'ā yí',         lao:'ນ້າ / ປ້າ'},
+      {emoji:'👫', cn:'朋友',      py:'péng you',     lao:'ໝູ່'}
+    ]
+  },
+  food: {
+    icon: '🍚', title: 'ອາຫານ &amp; ເຄື່ອງດື່ມ (食物)',
+    items: [
+      {emoji:'🍚', cn:'米饭',  py:'mǐ fàn',     lao:'ເຂົ້າ'},
+      {emoji:'🍜', cn:'面条',  py:'miàn tiáo',  lao:'ໝີ່ / ເຝີ'},
+      {emoji:'🍞', cn:'面包',  py:'miàn bāo',   lao:'ເຂົ້າຈີ່'},
+      {emoji:'🍳', cn:'鸡蛋',  py:'jī dàn',     lao:'ໄຂ່ໄກ່'},
+      {emoji:'🥩', cn:'肉',    py:'ròu',        lao:'ຊີ້ນ'},
+      {emoji:'🍗', cn:'鸡肉',  py:'jī ròu',     lao:'ຊີ້ນໄກ່'},
+      {emoji:'🐟', cn:'鱼',    py:'yú',         lao:'ປາ'},
+      {emoji:'🥓', cn:'猪肉',  py:'zhū ròu',    lao:'ຊີ້ນໝູ'},
+      {emoji:'🐄', cn:'牛肉',  py:'niú ròu',    lao:'ຊີ້ນງົວ'},
+      {emoji:'🥕', cn:'蔬菜',  py:'shū cài',    lao:'ຜັກ'},
+      {emoji:'🥣', cn:'汤',    py:'tāng',       lao:'ແກງ / ຊຸບ'},
+      {emoji:'🧂', cn:'盐',    py:'yán',        lao:'ເກືອ'},
+      {emoji:'🍬', cn:'糖',    py:'táng',       lao:'ນ້ຳຕານ'},
+      {emoji:'🌶️', cn:'辣椒', py:'là jiāo',    lao:'ໝາກເຜັດ'},
+      {emoji:'💧', cn:'水',    py:'shuǐ',       lao:'ນ້ຳ'},
+      {emoji:'🥛', cn:'牛奶',  py:'niú nǎi',    lao:'ນົມ'},
+      {emoji:'🍵', cn:'茶',    py:'chá',        lao:'ນ້ຳຊາ'},
+      {emoji:'☕', cn:'咖啡',   py:'kā fēi',     lao:'ກາເຟ'},
+      {emoji:'🧃', cn:'果汁',  py:'guǒ zhī',    lao:'ນ້ຳໝາກໄມ້'},
+      {emoji:'🍺', cn:'啤酒',  py:'pí jiǔ',     lao:'ເບຍ'},
+      {emoji:'🍦', cn:'冰淇淋',py:'bīng qí lín',lao:'ໄອສະກີມ'},
+      {emoji:'🍰', cn:'蛋糕',  py:'dàn gāo',    lao:'ເຄ້ກ'}
+    ]
+  },
+  animals: {
+    icon: '🐶', title: 'ສັດ (动物)',
+    items: [
+      {emoji:'🐶', cn:'狗',    py:'gǒu',        lao:'ໝາ'},
+      {emoji:'🐱', cn:'猫',    py:'māo',        lao:'ແມວ'},
+      {emoji:'🐭', cn:'老鼠',  py:'lǎo shǔ',    lao:'ໜູ'},
+      {emoji:'🐰', cn:'兔子',  py:'tù zi',      lao:'ກະຕ່າຍ'},
+      {emoji:'🐦', cn:'鸟',    py:'niǎo',       lao:'ນົກ'},
+      {emoji:'🐟', cn:'鱼',    py:'yú',         lao:'ປາ'},
+      {emoji:'🐔', cn:'鸡',    py:'jī',         lao:'ໄກ່'},
+      {emoji:'🦆', cn:'鸭子',  py:'yā zi',      lao:'ເປັດ'},
+      {emoji:'🐮', cn:'牛',    py:'niú',        lao:'ງົວ'},
+      {emoji:'🐷', cn:'猪',    py:'zhū',        lao:'ໝູ'},
+      {emoji:'🐴', cn:'马',    py:'mǎ',         lao:'ມ້າ'},
+      {emoji:'🐑', cn:'羊',    py:'yáng',       lao:'ແກະ'},
+      {emoji:'🦁', cn:'狮子',  py:'shī zi',     lao:'ສິງ'},
+      {emoji:'🐯', cn:'老虎',  py:'lǎo hǔ',     lao:'ເສືອ'},
+      {emoji:'🐘', cn:'大象',  py:'dà xiàng',   lao:'ຊ້າງ'},
+      {emoji:'🐵', cn:'猴子',  py:'hóu zi',     lao:'ລິງ'},
+      {emoji:'🐻', cn:'熊',    py:'xióng',      lao:'ໝີ'},
+      {emoji:'🐼', cn:'熊猫',  py:'xióng māo',  lao:'ໝີແພນດ້າ'},
+      {emoji:'🐍', cn:'蛇',    py:'shé',        lao:'ງູ'},
+      {emoji:'🐸', cn:'青蛙',  py:'qīng wā',    lao:'ກົບ'},
+      {emoji:'🦋', cn:'蝴蝶',  py:'hú dié',     lao:'ແມງກະເບື້ອ'},
+      {emoji:'🐝', cn:'蜜蜂',  py:'mì fēng',    lao:'ເຜິ້ງ'},
+      {emoji:'🐢', cn:'乌龟',  py:'wū guī',     lao:'ເຕົ່າ'},
+      {emoji:'🐉', cn:'龙',    py:'lóng',       lao:'ມັງກອນ'}
+    ]
+  },
+  school: {
+    icon: '🎒', title: 'ໂຮງຮຽນ (学校)',
+    items: [
+      {emoji:'🏫', cn:'学校',     py:'xué xiào',   lao:'ໂຮງຮຽນ'},
+      {emoji:'👨‍🏫', cn:'老师',  py:'lǎo shī',   lao:'ຄູ / ອາຈານ'},
+      {emoji:'🧑‍🎓', cn:'学生',  py:'xué sheng', lao:'ນັກຮຽນ'},
+      {emoji:'📚', cn:'书',       py:'shū',        lao:'ປຶ້ມ'},
+      {emoji:'📓', cn:'本子',     py:'běn zi',     lao:'ປຶ້ມບັນທຶກ'},
+      {emoji:'✏️', cn:'铅笔',    py:'qiān bǐ',    lao:'ສໍ'},
+      {emoji:'🖊️', cn:'钢笔',    py:'gāng bǐ',    lao:'ບິກ'},
+      {emoji:'🧽', cn:'橡皮',     py:'xiàng pí',   lao:'ຢາງລົບ'},
+      {emoji:'📏', cn:'尺子',     py:'chǐ zi',     lao:'ໄມ້ບັນທັດ'},
+      {emoji:'🎒', cn:'书包',     py:'shū bāo',    lao:'ກະເປົ໋າ'},
+      {emoji:'🪑', cn:'椅子',     py:'yǐ zi',      lao:'ຕັ່ງ'},
+      {emoji:'🛋️', cn:'桌子',    py:'zhuō zi',    lao:'ໂຕະ'},
+      {emoji:'⏰', cn:'时钟',     py:'shí zhōng',  lao:'ໂມງ'},
+      {emoji:'📋', cn:'纸',       py:'zhǐ',        lao:'ເຈ້ຍ'},
+      {emoji:'🖍️', cn:'蜡笔',    py:'là bǐ',      lao:'ສໍສີ'},
+      {emoji:'🔢', cn:'数学',     py:'shù xué',    lao:'ຄະນິດສາດ'},
+      {emoji:'📖', cn:'读',       py:'dú',         lao:'ອ່ານ'},
+      {emoji:'✍️', cn:'写',       py:'xiě',       lao:'ຂຽນ'},
+      {emoji:'🏆', cn:'作业',     py:'zuò yè',     lao:'ວຽກບ້ານ'},
+      {emoji:'🧪', cn:'课',       py:'kè',         lao:'ບົດຮຽນ / ວິຊາ'}
+    ]
+  },
+  verbs: {
+    icon: '🏃', title: 'ການກະທຳ (动词)',
+    items: [
+      {emoji:'🍽️', cn:'吃',     py:'chī',        lao:'ກິນ'},
+      {emoji:'🥤', cn:'喝',      py:'hē',         lao:'ດື່ມ'},
+      {emoji:'😴', cn:'睡觉',    py:'shuì jiào',  lao:'ນອນ'},
+      {emoji:'🧘', cn:'坐',      py:'zuò',        lao:'ນັ່ງ'},
+      {emoji:'🧍', cn:'站',      py:'zhàn',       lao:'ຢືນ'},
+      {emoji:'🚶', cn:'走',      py:'zǒu',        lao:'ຍ່າງ'},
+      {emoji:'🏃', cn:'跑',      py:'pǎo',        lao:'ແລ່ນ'},
+      {emoji:'➡️', cn:'去',      py:'qù',         lao:'ໄປ'},
+      {emoji:'⬅️', cn:'来',      py:'lái',        lao:'ມາ'},
+      {emoji:'👀', cn:'看',      py:'kàn',        lao:'ເບິ່ງ'},
+      {emoji:'👂', cn:'听',      py:'tīng',       lao:'ຟັງ'},
+      {emoji:'🗣️', cn:'说',     py:'shuō',       lao:'ເວົ້າ'},
+      {emoji:'📖', cn:'读',      py:'dú',         lao:'ອ່ານ'},
+      {emoji:'✍️', cn:'写',     py:'xiě',         lao:'ຂຽນ'},
+      {emoji:'🎮', cn:'玩',      py:'wán',        lao:'ຫຼິ້ນ'},
+      {emoji:'📚', cn:'学习',    py:'xué xí',     lao:'ຮຽນ'},
+      {emoji:'😂', cn:'笑',      py:'xiào',       lao:'ຫົວ'},
+      {emoji:'😢', cn:'哭',      py:'kū',         lao:'ໄຫ້'},
+      {emoji:'❤️', cn:'爱',      py:'ài',         lao:'ຮັກ'},
+      {emoji:'🤝', cn:'帮助',    py:'bāng zhù',   lao:'ຊ່ວຍ'},
+      {emoji:'🛁', cn:'洗',      py:'xǐ',         lao:'ລ້າງ / ອາບນ້ຳ'},
+      {emoji:'💼', cn:'工作',    py:'gōng zuò',   lao:'ເຮັດວຽກ'},
+      {emoji:'💭', cn:'想',      py:'xiǎng',      lao:'ຄິດ'},
+      {emoji:'🤲', cn:'给',      py:'gěi',        lao:'ໃຫ້'}
+    ]
+  },
+  phrases: {
+    icon: '💬', title: 'ປະໂຫຍກໃຊ້ປະຈຳວັນ (常用句子)',
+    items: [
+      {emoji:'❤️', cn:'我爱你',         py:'wǒ ài nǐ',                lao:'ຂ້ອຍຮັກເຈົ້າ'},
+      {emoji:'🍽️', cn:'我们吃饭吧',    py:'wǒ men chī fàn ba',       lao:'ໄປກິນເຂົ້າກັນ'},
+      {emoji:'🥤', cn:'我渴了',         py:'wǒ kě le',                lao:'ຂ້ອຍຫິວນ້ຳ'},
+      {emoji:'🍔', cn:'我饿了',         py:'wǒ è le',                 lao:'ຂ້ອຍຫິວເຂົ້າ'},
+      {emoji:'😴', cn:'我累了',         py:'wǒ lèi le',               lao:'ຂ້ອຍເມື່ອຍ'},
+      {emoji:'🤒', cn:'我生病了',       py:'wǒ shēng bìng le',        lao:'ຂ້ອຍບໍ່ສະບາຍ'},
+      {emoji:'🤔', cn:'我不知道',       py:'wǒ bù zhī dào',           lao:'ຂ້ອຍບໍ່ຮູ້'},
+      {emoji:'❓', cn:'这是什么?',     py:'zhè shì shén me?',        lao:'ນີ້ແມ່ນຫຍັງ?'},
+      {emoji:'📍', cn:'在哪里?',       py:'zài nǎ lǐ?',              lao:'ຢູ່ໃສ?'},
+      {emoji:'⏰', cn:'几点了?',       py:'jǐ diǎn le?',             lao:'ຈັກໂມງແລ້ວ?'},
+      {emoji:'💰', cn:'多少钱?',       py:'duō shao qián?',          lao:'ລາຄາເທົ່າໃດ?'},
+      {emoji:'🆘', cn:'请帮我',         py:'qǐng bāng wǒ',            lao:'ກະລຸນາຊ່ວຍຂ້ອຍ'},
+      {emoji:'🎉', cn:'生日快乐',       py:'shēng rì kuài lè',        lao:'ສຸກສັນວັນເກີດ'},
+      {emoji:'🎊', cn:'新年快乐',       py:'xīn nián kuài lè',        lao:'ສຸກສັນປີໃໝ່'},
+      {emoji:'🌟', cn:'祝你好运',       py:'zhù nǐ hǎo yùn',          lao:'ໂຊກດີ'},
+      {emoji:'👏', cn:'你真棒',         py:'nǐ zhēn bàng',            lao:'ເຈົ້າເກັ່ງຫຼາຍ'},
+      {emoji:'🙅', cn:'我不明白',       py:'wǒ bù míng bai',          lao:'ຂ້ອຍບໍ່ເຂົ້າໃຈ'},
+      {emoji:'🗣️', cn:'请说慢一点',    py:'qǐng shuō màn yī diǎn',   lao:'ກະລຸນາເວົ້າຊ້າໆ'},
+      {emoji:'👋', cn:'明天见',         py:'míng tiān jiàn',          lao:'ພົບກັນມື້ອື່ນ'},
+      {emoji:'🛌', cn:'做个好梦',       py:'zuò gè hǎo mèng',         lao:'ຝັນດີ'}
+    ]
+  }
+
+};
+
+var currentTopic = 'numbers';
+function selectTopic(key){
+  if(!topics[key]) return;
+  currentTopic = key;
+  document.querySelectorAll('.topic-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-topic') === key);
+  });
+  renderTopic();
+}
+
+function renderTopic(){
+  var t = topics[currentTopic];
+  document.getElementById('tt-ico').textContent = t.icon;
+  document.getElementById('tt-text').textContent = t.title;
+  document.getElementById('tt-sub').textContent = t.items.length + ' ຄຳ';
+  var grid = document.getElementById('items-grid');
+  grid.innerHTML = '';
+  t.items.forEach(function(item){
+    var card = document.createElement('div');
+    card.className = 'item-card';
+    if(t.isPinyin) card.classList.add('pinyin');
+    if(item.bg){ card.style.background = item.bg; }
+    if(item.fg){ card.style.color = item.fg; }
+    var emojiEl = document.createElement('div');
+    emojiEl.className = 'item-emoji';
+    emojiEl.textContent = t.isPinyin ? item.pinyin : item.emoji;
+    var cnEl = document.createElement('div');
+    cnEl.className = 'item-cn';
+    cnEl.textContent = item.cn;
+    var pyEl = document.createElement('div');
+    pyEl.className = 'item-pinyin';
+    pyEl.textContent = item.py;
+    var laoEl = document.createElement('div');
+    laoEl.className = 'item-lao';
+    laoEl.textContent = item.lao;
+    card.appendChild(emojiEl);
+    card.appendChild(cnEl);
+    card.appendChild(pyEl);
+    card.appendChild(laoEl);
+    card.addEventListener('click', function(){
+      var spokenText;
+      if(t.isPinyin){
+        // ສຳລັບ pinyin: ໃຫ້ TTS ອ່ານຕົວອັກສອນຈີນຈາກ cn (ຊັດເຈນກວ່າອ່ານ pinyin ດຽວ)
+        // ເຊັ່ນ "爸 bà" → ອ່ານ "爸"; ສຳລັບ tones "妈 (ແມ່)" → ອ່ານ "妈"
+        var cnChar = extractChinese(item.cn);
+        // ສຳລັບ tones, ອ່ານ pinyin ກ່ອນ ແລະ tone ຈະຖືກອອກສຽງຖືກຕ້ອງ
+        spokenText = cnChar || item.pinyin || item.cn;
+      } else {
+        spokenText = item.cn;
+      }
+      speak(spokenText, 'zh-CN', card);
+    });
+    grid.appendChild(card);
+  });
+}
+
+renderTopic();
+</script>
+<script>
+function navigateTo(name){
+  try {
+    if(window.parent && window.parent !== window){
+      window.parent.postMessage({type:'switchView', view: name}, '*');
+      return;
+    }
+  } catch(e){}
+  window.location.href = name + '.html';
+}
+</script>
+</body>
+</html>

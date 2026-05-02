@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ຮຽນພາສາລາວ ມ່ວນໆ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Phetsarath OT';
+    src: local('Phetsarath OT'), local('Phetsarath_OT'), local('Phetsarath'),
+         url('https://cdn.jsdelivr.net/gh/lao-dictionary/lao-fonts@master/Phetsarath_OT.ttf') format('truetype');
+    font-weight: normal; font-style: normal; font-display: swap;
+  }
+  :root {
+    --bg: #FFFBF0; --card: #FFFFFF;
+    --purple: #7C6FCD; --purple-light: #EEE9FF;
+    --green: #5BAD6F; --green-light: #E6F7EA;
+    --red: #E85D5D; --red-light: #FDEAEA;
+    --blue: #4FA3E0; --blue-light: #E0F0FF;
+    --yellow: #F9C74F;
+    --text: #3A2E5A; --text-soft: #7B6F9A;
+    --border: #F1E2B6;
+    --shadow: 0 4px 16px rgba(200,144,43,0.18);
+    --radius: 20px; --radius-lg: 28px;
+    --lo: #C8902B; --lo-light: #FFF4D6; --lo-dark: #8C5F0E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    background: var(--bg); min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 12% 18%, #FFEAA7 0%, transparent 42%),
+      radial-gradient(circle at 88% 82%, #FFE0B0 0%, transparent 42%),
+      radial-gradient(circle at 50% 50%, #FFF8E5 0%, transparent 60%);
+  }
+  .app {
+    max-width: 600px; margin: 0 auto;
+    padding: clamp(10px,3vw,20px);
+    min-height: 100vh; display: flex; flex-direction: column;
+    gap: clamp(10px,2.5vw,16px); position: relative;
+  }
+  .sound-btn, .menu-btn {
+    position: absolute;
+    top: clamp(10px,3vw,20px);
+    width: clamp(38px,9vw,44px); height: clamp(38px,9vw,44px);
+    border-radius: 50%; border: 2.5px solid var(--border);
+    background: var(--card);
+    font-size: clamp(15px,4vw,20px); cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    z-index: 10; transition: all 0.15s;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; padding: 0;
+  }
+  .sound-btn { right: clamp(10px,3vw,20px); color: var(--text); }
+  .menu-btn  { left: clamp(10px,3vw,20px); color: var(--lo); z-index: 30; font-weight: 900; font-size: clamp(18px,5vw,24px); }
+  .sound-btn:active, .menu-btn:active { transform: scale(0.9); }
+  .sound-btn.muted { background: #FDEAEA; border-color: var(--red); opacity: 0.85; }
+  .menu-btn.open { background: var(--lo); color: #fff; border-color: var(--lo); }
+
+  .menu-overlay { position: fixed; inset: 0; background: rgba(58,46,90,0.45); z-index: 50; display: none; backdrop-filter: blur(3px); }
+  .menu-overlay.show { display: block; animation: fade-in 0.18s; }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  .menu-panel {
+    position: fixed; top: clamp(62px,14vw,76px); left: clamp(10px,3vw,20px);
+    background: var(--card); border: 2.5px solid var(--lo);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(58,46,90,0.28);
+    padding: clamp(10px,2.5vw,14px);
+    z-index: 60; display: none;
+    min-width: clamp(220px,60vw,280px);
+    animation: slide-down 0.22s ease-out;
+  }
+  .menu-panel.show { display: block; }
+  @keyframes slide-down { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .menu-title { font-size: clamp(13px,3.4vw,15px); font-weight: 900; color: var(--lo); text-align: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1.5px dashed var(--border); }
+  .menu-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: clamp(8px,2.2vw,12px) clamp(10px,2.5vw,14px);
+    border-radius: 14px; text-decoration: none;
+    color: var(--text); font-weight: 800; font-size: clamp(13px,3.6vw,16px);
+    transition: all 0.15s; border: 2px solid transparent;
+    background: #FAF7F2; margin-bottom: 6px; cursor: pointer;
+    width: 100%; text-align: left;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+  }
+  .menu-item:last-child { margin-bottom: 0; }
+  .menu-item:active { transform: scale(0.97); }
+  .menu-item.current { background: var(--lo-light); border-color: var(--lo); color: var(--lo); cursor: default; }
+  .menu-ico {
+    font-size: clamp(18px,5vw,22px);
+    width: clamp(32px,8vw,38px); height: clamp(32px,8vw,38px);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; flex-shrink: 0;
+  }
+  .menu-item.mi-en .menu-ico { background: var(--blue-light); }
+  .menu-item.mi-math .menu-ico { background: var(--purple-light); }
+  .menu-item.mi-cn .menu-ico { background: #FFE4E4; }
+  .menu-item.mi-lo .menu-ico { background: var(--lo-light); }
+  .menu-item.mi-co .menu-ico { background: #FFEEDD; }
+
+  .header { text-align: center; padding: clamp(6px,2vw,14px) 0 2px; }
+  .header-icon { font-size: clamp(36px,10vw,56px); display: block; margin-bottom: 4px; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .header-title { font-size: clamp(22px,6.5vw,34px); font-weight: 900; color: var(--lo); }
+  .header-sub { font-size: clamp(11px,3vw,13px); color: var(--text-soft); margin-top: 2px; }
+
+  .topic-tabs {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: clamp(5px,1.2vw,8px); margin-bottom: 4px;
+  }
+  .topic-btn {
+    border-radius: 18px; border: 2.5px solid var(--border);
+    background: var(--card); color: var(--text);
+    font-weight: 800; font-size: clamp(11px,3vw,14px);
+    padding: clamp(8px,2vw,12px) clamp(4px,1vw,8px);
+    cursor: pointer; transition: all 0.15s;
+    line-height: 1.2; display: flex; flex-direction: column;
+    align-items: center; gap: 4px; min-height: 64px; justify-content: center;
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+  }
+  .topic-btn .topic-ico { font-size: clamp(18px,5vw,26px); display: block; line-height: 1; }
+  .topic-btn:active { transform: scale(0.95); }
+  .topic-btn.active { background: var(--lo); color: #fff; border-color: var(--lo); box-shadow: var(--shadow); }
+
+  .topic-title-bar {
+    background: var(--lo-light); border-radius: 24px;
+    padding: clamp(8px,2vw,12px) clamp(12px,3vw,18px);
+    text-align: center; border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tt-ico { font-size: clamp(18px,5vw,22px); }
+  .tt-text { font-size: clamp(14px,4vw,18px); font-weight: 900; color: var(--lo-dark); }
+  .tt-sub { font-size: clamp(11px,3vw,13px); color: var(--text-soft); font-weight: 700; }
+
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(clamp(120px,30vw,160px), 1fr));
+    gap: clamp(8px,2vw,14px);
+  }
+  .item-card {
+    background: var(--card); border: 2.5px solid var(--border);
+    border-radius: var(--radius); padding: clamp(10px,2.5vw,14px);
+    text-align: center; cursor: pointer; transition: all 0.18s;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.06);
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(4px,1vw,6px);
+    position: relative; overflow: hidden;
+    min-height: clamp(120px,30vw,150px);
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+  }
+  .item-card::before {
+    content: '🔊'; position: absolute;
+    top: clamp(4px,1.5vw,8px); right: clamp(4px,1.5vw,8px);
+    font-size: clamp(11px,3vw,14px); opacity: 0.4;
+  }
+  .item-card:active { transform: scale(0.95) translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.06); }
+  .item-card:hover { border-color: var(--lo); background: var(--lo-light); }
+  .item-card.speaking {
+    background: var(--lo); border-color: var(--lo-dark);
+    color: #fff; transform: scale(1.04);
+    box-shadow: 0 6px 18px rgba(200,144,43,0.4);
+  }
+  .item-card.speaking::before { color: #fff; opacity: 1; }
+  .item-card.speaking .item-word { color: rgba(255,255,255,0.95); }
+  .item-card.speaking .item-meaning { color: rgba(255,255,255,0.85); }
+
+  .item-letter {
+    font-size: clamp(48px,13vw,72px);
+    line-height: 1; font-weight: 900; color: var(--lo);
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.12));
+    margin-bottom: 2px;
+  }
+  .item-card.speaking .item-letter { color: #fff; }
+  .item-word {
+    font-size: clamp(16px,4.5vw,22px);
+    font-weight: 900; color: var(--text); line-height: 1.1;
+  }
+  .item-meaning {
+    font-size: clamp(11px,3vw,13px);
+    color: var(--text-soft); font-weight: 600; line-height: 1.25;
+  }
+
+  /* Layout for items with emoji icon (consonants) */
+  .item-top {
+    display: flex; align-items: center; justify-content: center;
+    gap: clamp(6px,1.5vw,10px); width: 100%;
+  }
+  .item-top .item-letter {
+    font-size: clamp(40px,11vw,58px); flex: 0 0 auto;
+  }
+  .item-pic {
+    font-size: clamp(34px,9vw,48px); line-height: 1;
+    flex: 0 0 auto; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.18));
+  }
+  .item-pic-svg {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: clamp(48px,12vw,64px); height: clamp(32px,8vw,42px);
+    border-radius: 4px; overflow: hidden;
+    border: 1.5px solid rgba(0,0,0,0.18);
+    background: #fff;
+  }
+  .item-pic-svg svg { width: 100%; height: 100%; display: block; }
+  .items-grid.with-emoji .item-card {
+    min-height: clamp(140px,34vw,170px);
+  }
+
+  /* Special layout for vowels (smaller letter+circle) */
+  .items-grid.vowels .item-letter {
+    font-size: clamp(40px,11vw,58px);
+  }
+  /* Tones layout */
+  .items-grid.tones .item-letter {
+    font-size: clamp(46px,13vw,68px);
+    color: var(--red);
+  }
+  .items-grid.tones .item-card {
+    border-color: #FFD3D3;
+    background: linear-gradient(180deg, #FFFFFF 60%, #FFF4F4 100%);
+  }
+  .items-grid.tones .item-card.speaking .item-letter { color: #fff; }
+  .items-grid.vowels .item-letter::before {
+    content: 'ອ'; opacity: 0.25; margin-right: 2px;
+    color: var(--text-soft);
+  }
+  .items-grid.vowels .item-letter.no-prefix::before { content: ''; }
+
+  /* Numbers layout */
+  .items-grid.numbers .item-card {
+    min-height: clamp(110px,28vw,140px);
+  }
+  .items-grid.numbers .item-letter {
+    font-size: clamp(44px,12vw,64px);
+  }
+
+  .info-tip {
+    background: var(--lo-light); border-radius: 18px;
+    padding: clamp(8px,2vw,12px) clamp(12px,3vw,16px);
+    border: 2px dashed var(--lo);
+    color: var(--lo-dark); font-weight: 800;
+    font-size: clamp(11px,3vw,13px);
+    text-align: center; margin-top: 6px;
+  }
+
+  /* Combine UI (ປະສົມ ພະຍັນຊະນະ + ສະຫຼະ) */
+  .items-grid.combine {
+    display: block;
+  }
+  .combine-box {
+    background: var(--card); border: 2.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: clamp(12px,3vw,18px);
+    display: flex; flex-direction: column;
+    gap: clamp(8px,2vw,14px);
+    box-shadow: var(--shadow);
+  }
+  .combine-label {
+    font-weight: 900; color: var(--lo-dark);
+    font-size: clamp(13px,3.5vw,16px);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cl-num {
+    background: var(--lo); color: #fff;
+    width: clamp(22px,5.5vw,28px); height: clamp(22px,5.5vw,28px);
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: clamp(11px,3vw,14px); font-weight: 900;
+  }
+  .combine-row {
+    display: flex; flex-wrap: wrap; gap: clamp(4px,1.2vw,8px);
+  }
+  .chip {
+    border: 2px solid var(--border); background: #FFFCF2;
+    border-radius: 12px;
+    padding: clamp(5px,1.4vw,9px) clamp(7px,2vw,12px);
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    font-size: clamp(16px,4.6vw,22px); font-weight: 900;
+    color: var(--text); cursor: pointer; transition: all 0.15s;
+    min-width: clamp(34px,9vw,42px); line-height: 1.1;
+  }
+  .chip:active { transform: scale(0.92); }
+  .chip:hover { border-color: var(--lo); }
+  .chip.active {
+    background: var(--lo); color: #fff; border-color: var(--lo-dark);
+    box-shadow: 0 4px 10px rgba(200,144,43,0.4);
+  }
+  .chip.cons-compound {
+    background: #FFF1E0; border-color: #F0B870; color: #8C5F0E;
+    border-style: dashed;
+  }
+  .chip.cons-compound.active {
+    background: var(--lo-dark); color: #fff; border-color: var(--lo-dark);
+    border-style: solid;
+  }
+  .chip.tone-chip {
+    background: #FFF0F0; border-color: #FFC9C9; color: var(--red);
+    min-width: clamp(38px,10vw,48px);
+  }
+  .chip.tone-chip.active {
+    background: var(--red); color: #fff; border-color: #B23A3A;
+  }
+  .chip.final-chip {
+    background: #E6F7EA; border-color: #BFE4C8; color: #3B6D11;
+  }
+  .chip.final-chip.active {
+    background: var(--green); color: #fff; border-color: #3B6D11;
+  }
+  .cl-opt {
+    color: var(--text-soft); font-style: normal;
+    font-weight: 700; font-size: 0.85em;
+  }
+  .combine-result {
+    background: var(--lo-light); border: 2.5px dashed var(--lo);
+    border-radius: var(--radius-lg);
+    padding: clamp(14px,3.5vw,22px) clamp(10px,2.5vw,16px);
+    text-align: center; min-height: clamp(120px,30vw,160px);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: clamp(6px,1.5vw,10px);
+    margin-top: clamp(4px,1vw,8px);
+  }
+  .cr-hint {
+    font-size: clamp(13px,3.5vw,16px); color: var(--text-soft);
+    font-weight: 700;
+  }
+  .cr-letter {
+    font-size: clamp(54px,16vw,90px); line-height: 1;
+    font-weight: 900; color: var(--lo-dark);
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.15));
+  }
+  .cr-label {
+    font-size: clamp(12px,3.4vw,15px); color: var(--text-soft);
+    font-weight: 800;
+  }
+  .cr-speak {
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    background: var(--lo); color: #fff; border: none;
+    padding: clamp(10px,2.5vw,14px) clamp(20px,5vw,28px);
+    border-radius: 999px; font-weight: 900;
+    font-size: clamp(14px,3.8vw,17px); cursor: pointer;
+    box-shadow: 0 4px 12px rgba(200,144,43,0.4);
+    transition: all 0.15s; margin-top: clamp(2px,0.5vw,4px);
+  }
+  .cr-speak:active { transform: scale(0.95); }
+  .cr-speak:disabled {
+    background: #DDD; color: #888; cursor: not-allowed;
+    box-shadow: none; transform: none;
+  }
+  .cr-word {
+    font-size: clamp(40px,11vw,68px); line-height: 1.05;
+    font-weight: 900; color: var(--lo-dark);
+    word-break: keep-all; overflow-wrap: anywhere;
+    max-width: 100%;
+    filter: drop-shadow(0 3px 4px rgba(0,0,0,0.18));
+    border-bottom: 2px dashed var(--lo);
+    padding-bottom: clamp(4px,1vw,8px);
+    margin-bottom: clamp(2px,0.5vw,4px);
+  }
+  .cr-wordsub {
+    font-size: clamp(11px,3vw,13px); color: var(--text-soft);
+    font-weight: 700;
+  }
+  .cr-preview {
+    font-size: clamp(14px,4vw,18px);
+    padding: clamp(4px,1vw,8px) 0;
+    color: var(--text);
+  }
+  .cr-prev-label { color: var(--text-soft); font-weight: 700; font-size: 0.85em; }
+  .cr-prev-text {
+    font-size: clamp(28px,8vw,42px); font-weight: 900;
+    color: var(--lo-dark); margin-left: 6px;
+    vertical-align: middle;
+  }
+  .cr-btnrow {
+    display: flex; gap: clamp(4px,1.2vw,8px);
+    flex-wrap: wrap; justify-content: center;
+    margin-top: clamp(4px,1vw,8px);
+  }
+  .cr-btn {
+    font-family: 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    border: 2px solid var(--border); background: #FFFFFF;
+    border-radius: 14px;
+    padding: clamp(6px,1.6vw,10px) clamp(10px,2.5vw,16px);
+    font-weight: 800; font-size: clamp(12px,3.4vw,15px);
+    cursor: pointer; transition: all 0.15s;
+    color: var(--text);
+  }
+  .cr-btn:active { transform: scale(0.95); }
+  .cr-btn:disabled {
+    opacity: 0.4; cursor: not-allowed;
+  }
+  .cr-add { background: var(--lo); color: #fff; border-color: var(--lo-dark); }
+  .cr-add:disabled { background: #DDD; color: #888; border-color: #CCC; }
+  .cr-pop { background: #FFF1E0; color: #8C5F0E; border-color: #F0B870; }
+  .cr-clr { background: #FFEFEF; color: var(--red); border-color: #FFC9C9; }
+
+  @media (max-width: 360px) {
+    .topic-tabs { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <button class="sound-btn" id="sound-btn" onclick="toggleSound()" title="ເປີດ/ປິດສຽງ">🔊</button>
+  <button class="menu-btn" id="menu-btn" onclick="toggleMenu(event)" title="ເມນູ" aria-label="ເມນູ">☰</button>
+  <div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+  <div class="menu-panel" id="menu-panel" role="menu" aria-label="ເລືອກວິຊາ">
+    <a class="menu-item" href="index.html" style="background:#FFF1E0;color:#7C6FCD;">
+      <span class="mi-icon" style="font-size:22px;">🏠</span><span>ຫນ້າຫຼັກ</span>
+    </a>
+    <div class="menu-title">📚 ເລືອກວິຊາທີ່ຢາກຮຽນ</div>
+    <a class="menu-item mi-en" href="javascript:void(0)" onclick="navigateTo('english')">
+      <span class="menu-ico">🔤</span>
+      <span>ຮຽນພາສາອັງກິດ</span>
+    </a>
+    <a class="menu-item mi-math" href="javascript:void(0)" onclick="navigateTo('math')">
+      <span class="menu-ico">🧮</span>
+      <span>ຮຽນຄະນິດສາດ</span>
+    </a>
+    <a class="menu-item mi-cn" href="javascript:void(0)" onclick="navigateTo('chinese')">
+      <span class="menu-ico">🀄</span>
+      <span>ຮຽນພາສາຈີນ</span>
+    </a>
+    <button class="menu-item mi-lo current" type="button" onclick="closeMenu()">
+      <span class="menu-ico">🇱🇦</span>
+      <span>ຮຽນພາສາລາວ</span>
+    </button>
+    <a class="menu-item mi-co" href="javascript:void(0)" onclick="navigateTo('labaiyc')">
+      <span class="menu-ico">🎨</span>
+      <span>ລະບາຍສີ</span>
+    </a>
+  </div>
+
+  <div class="header">
+    <span class="header-icon">🇱🇦</span>
+    <div class="header-title">ຮຽນພາສາລາວ</div>
+    <div class="header-sub">ແຕະທີ່ຮູບ ເພື່ອຟັງສຽງອ່ານ 🌟 DeDyDeMy 🌟</div>
+  </div>
+
+  <div class="topic-tabs" id="topic-tabs">
+    <button class="topic-btn active" data-topic="consonants" onclick="selectTopic('consonants')">
+      <span class="topic-ico">ກ</span><span>ພະຍັນຊະນະ</span>
+    </button>
+    <button class="topic-btn" data-topic="vowels" onclick="selectTopic('vowels')">
+      <span class="topic-ico">າ</span><span>ສະຫຼະ</span>
+    </button>
+    <button class="topic-btn" data-topic="numbers" onclick="selectTopic('numbers')">
+      <span class="topic-ico">໑</span><span>ຕົວເລກ</span>
+    </button>
+    <button class="topic-btn" data-topic="tones" onclick="selectTopic('tones')">
+      <span class="topic-ico">່້</span><span>ວັນນະຍຸດ</span>
+    </button>
+    <button class="topic-btn" data-topic="combine" onclick="selectTopic('combine')">
+      <span class="topic-ico">ກາ</span><span>ປະສົມ</span>
+    </button>
+  </div>
+
+  <div class="topic-title-bar">
+    <span class="tt-ico" id="tt-ico">ກ</span>
+    <span class="tt-text" id="tt-text">ພະຍັນຊະນະລາວ</span>
+    <span class="tt-sub" id="tt-sub">27 ຕົວ</span>
+  </div>
+
+  <div class="items-grid" id="items-grid"></div>
+
+  <div class="info-tip">💡 ກົດທີ່ກ່ອງເພື່ອຟັງສຽງອ່ານ</div>
+</div>
+
+<script>
+/* === Sound on/off === */
+var soundOn = true;
+function toggleSound(){
+  soundOn = !soundOn;
+  var btn = document.getElementById('sound-btn');
+  if(soundOn){ btn.textContent = '🔊'; btn.classList.remove('muted'); }
+  else { btn.textContent = '🔇'; btn.classList.add('muted'); window.speechSynthesis.cancel(); }
+}
+
+/* === Menu === */
+function toggleMenu(e){
+  if(e) e.stopPropagation();
+  var panel = document.getElementById('menu-panel');
+  if(panel.classList.contains('show')){ closeMenu(); } else { openMenu(); }
+}
+function openMenu(){
+  document.getElementById('menu-btn').classList.add('open');
+  document.getElementById('menu-panel').classList.add('show');
+  document.getElementById('menu-overlay').classList.add('show');
+}
+function closeMenu(){
+  document.getElementById('menu-btn').classList.remove('open');
+  document.getElementById('menu-panel').classList.remove('show');
+  document.getElementById('menu-overlay').classList.remove('show');
+}
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeMenu();
+});
+
+/* === TTS — ໃຊ້ສຽງໄທແທນ ເພາະພາສາລາວສຽງໃກ້ຄຽງ === */
+var voicesReady = false;
+function loadVoices(){
+  var v = window.speechSynthesis.getVoices();
+  voicesReady = v && v.length > 0;
+}
+if('speechSynthesis' in window){
+  try{ window.speechSynthesis.getVoices(); }catch(e){}
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  setTimeout(loadVoices, 500);
+  setTimeout(loadVoices, 1500);
+}
+
+function pickBestVoice(lang){
+  var voices = window.speechSynthesis.getVoices() || [];
+  if(!voices.length) return null;
+  var langPrefix = lang.toLowerCase().substr(0,2);
+  var candidates = voices.filter(function(v){
+    return v.lang && v.lang.toLowerCase().substr(0,2) === langPrefix;
+  });
+  if(!candidates.length) return null;
+  function score(v){
+    var s = 0;
+    var name = (v.name||'').toLowerCase();
+    if(v.lang.toLowerCase() === lang.toLowerCase()) s += 100;
+    if(name.indexOf('natural')>=0) s += 50;
+    if(name.indexOf('neural')>=0) s += 50;
+    if(name.indexOf('premium')>=0) s += 45;
+    if(name.indexOf('enhanced')>=0) s += 40;
+    if(name.indexOf('online')>=0) s += 30;
+    if(name.indexOf('google')>=0) s += 35;
+    if(name.indexOf('microsoft')>=0) s += 30;
+    if(name.indexOf('apple')>=0) s += 25;
+    if(name.indexOf('female')>=0) s += 15;
+    if(name.indexOf('woman')>=0) s += 15;
+    if(/(premwadee|narisa|kanya|achara|niwat)/i.test(v.name||'')) s += 12;
+    if(v.default) s += 3;
+    return s;
+  }
+  candidates.sort(function(a,b){ return score(b) - score(a); });
+  return candidates[0];
+}
+
+var currentSpeakingEl = null;
+function speak(text, el){
+  if(!soundOn) return;
+  if(!('speechSynthesis' in window)) return;
+  var voices = window.speechSynthesis.getVoices();
+  if(!voices.length){
+    setTimeout(function(){ speak(text, el); }, 250);
+    return;
+  }
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  if(currentSpeakingEl){ currentSpeakingEl.classList.remove('speaking'); }
+  if(el){ el.classList.add('speaking'); currentSpeakingEl = el; }
+
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'th-TH';
+  var v = pickBestVoice('th-TH');
+  if(v){ u.voice = v; u.lang = v.lang; }
+  u.rate = 0.78;   // ໄວປານກາງ ຟັງໄດ້ຊັດ
+  u.pitch = 1.12;
+  u.volume = 1.0;
+  u.onend = function(){ if(el) el.classList.remove('speaking'); if(currentSpeakingEl === el) currentSpeakingEl = null; };
+  u.onerror = function(){ if(el) el.classList.remove('speaking'); };
+  setTimeout(function(){
+    try{ window.speechSynthesis.speak(u); }catch(e){}
+  }, 60);
+}
+
+/* === ຂໍ້ມູນ ພະຍັນຊະນະ ສະຫຼະ ແລະ ຕົວເລກພາສາລາວ === */
+/* spoken = ໃຊ້ອັກສອນໄທໃຫ້ engine ອ່ານສຽງໃກ້ຄຽງລາວ */
+var topics = {
+  consonants: {
+    icon: 'ກ', title: 'ພະຍັນຊະນະລາວ', subKey: 'ຕົວ',
+    hasEmoji: true,
+    items: [
+      {lao:'ກ', emoji:'🐔', word:'ໄກ່',    meaning:'ສັດປີກ',          spoken:'กอ ไก่'},
+      {lao:'ຂ', emoji:'🥚', word:'ໄຂ່',    meaning:'ໄຂ່ໄກ່',           spoken:'ขอ ไข่'},
+      {lao:'ຄ', emoji:'🐃', word:'ຄວາຍ', meaning:'ສັດໃຫຍ່ມີເຂົາ',     spoken:'คอ ควาย'},
+      {lao:'ງ', emoji:'🐄', word:'ງົວ',    meaning:'ງົວ',              spoken:'งอ งัว'},
+      {lao:'ຈ', emoji:'🥛', word:'ຈອກ',   meaning:'ຈອກນ້ຳ',          spoken:'จอ จอก'},
+      {lao:'ສ', emoji:'🐅', word:'ເສືອ',   meaning:'ສັດນັກລ່າ',        spoken:'สอ เสือ'},
+      {lao:'ຊ', emoji:'🐘', word:'ຊ້າງ',   meaning:'ສັດໃຫຍ່ມີງວງ',    spoken:'ซอ ช้าง'},
+      {lao:'ຍ', emoji:'🦟', word:'ຍຸງ',    meaning:'ແມງດູດເລືອດ',     spoken:'ยอ ยุง'},
+      {lao:'ດ', emoji:'🧒', word:'ເດັກ',   meaning:'ເດັກນ້ອຍ',         spoken:'ดอ เด็ก'},
+      {lao:'ຕ', emoji:'👁️', word:'ຕາ',    meaning:'ຕາເບິ່ງ',          spoken:'ตอ ตา'},
+      {lao:'ຖ', emoji:'👜', word:'ຖົງພາຍ', meaning:'ຖົງເກາະແຂນ',     spoken:'ถอ ถุง'},
+      {lao:'ທ', emoji:'<svg viewBox=\"0 0 60 40\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"60\" height=\"10\" y=\"0\" fill=\"#CE1126\"/><rect width=\"60\" height=\"20\" y=\"10\" fill=\"#002868\"/><rect width=\"60\" height=\"10\" y=\"30\" fill=\"#CE1126\"/><circle cx=\"30\" cy=\"20\" r=\"7\" fill=\"#FFFFFF\"/></svg>', word:'ທຸງ',    meaning:'ທຸງຊາດລາວ',       spoken:'ทอ ทุง'},
+      {lao:'ນ', emoji:'🐦', word:'ນົກ',    meaning:'ນົກບິນ',           spoken:'นอ นก'},
+      {lao:'ບ', emoji:'🐐', word:'ແບ້',    meaning:'ແບ້ (ສັດ)',        spoken:'บอ แบะ'},
+      {lao:'ປ', emoji:'🐟', word:'ປາ',    meaning:'ປາໃນນ້ຳ',         spoken:'ปอ ปลา'},
+      {lao:'ຜ', emoji:'🐝', word:'ເຜິ້ງ',   meaning:'ແມງຜຶ້ງ',          spoken:'เผึ้ง'},
+      {lao:'ຝ', emoji:'🌧️', word:'ຝົນ',    meaning:'ຝົນຕົກ',          spoken:'ฝอ ฝน'},
+      {lao:'ພ', emoji:'⛰️', word:'ພູ',    meaning:'ພູເຂົາ',           spoken:'พอ ภู'},
+      {lao:'ຟ', emoji:'🔥', word:'ໄຟ',    meaning:'ໄຟຮ້ອນ',          spoken:'ฟอ ไฟ'},
+      {lao:'ມ', emoji:'🐱', word:'ແມວ',  meaning:'ແມວ',             spoken:'มอ แมว'},
+      {lao:'ຢ', emoji:'💊', word:'ຢາ',    meaning:'ຢາປິ່ນປົວ',         spoken:'ยอ ยา'},
+      {lao:'ຣ', emoji:'🔔', word:'ຣະຄັງ',  meaning:'ຣະຄັງດັງກ່ອງ',     spoken:'รอ ระฆัง'},
+      {lao:'ລ', emoji:'🐒', word:'ລີງ',    meaning:'ສັດຄ້າຍຄົນ',       spoken:'ลอ ลิง'},
+      {lao:'ວ', emoji:'🪭', word:'ວີ',    meaning:'ພັດລົມ',           spoken:'วอ วี'},
+      {lao:'ຫ', emoji:'🦢', word:'ຫ່ານ',  meaning:'ສັດປີກໃຫຍ່',       spoken:'หอ ห่าน'},
+      {lao:'ອ', emoji:'🥣', word:'ໂອ',    meaning:'ຖ້ວຍໂອ',          spoken:'ออ โอ'},
+      {lao:'ຮ', emoji:'🏠', word:'ເຮືອນ', meaning:'ບ່ອນຢູ່ອາໄສ',      spoken:'ฮอ เฮือน'}
+    ]
+  },
+  vowels: {
+    icon: 'າ', title: 'ສະຫຼະພາສາລາວ', subKey: 'ສະຫຼະ',
+    isVowels: true,
+    items: [
+      {lao:'ະ',    word:'ອະ',   meaning:'ສຽງສັ້ນ',         spoken:'สระ อะ'},
+      {lao:'າ',    word:'ອາ',   meaning:'ສຽງຍາວ',         spoken:'สระ อา'},
+      {lao:'ິ',    word:'ອິ',    meaning:'ສຽງສັ້ນ',         spoken:'สระ อิ'},
+      {lao:'ີ',    word:'ອີ',    meaning:'ສຽງຍາວ',         spoken:'สระ อี'},
+      {lao:'ຶ',    word:'ອຶ',    meaning:'ສຽງສັ້ນ',         spoken:'สระ อึ'},
+      {lao:'ື',    word:'ອື',    meaning:'ສຽງຍາວ',         spoken:'สระ อือ'},
+      {lao:'ຸ',    word:'ອຸ',    meaning:'ສຽງສັ້ນ',         spoken:'สระ อุ'},
+      {lao:'ູ',    word:'ອູ',    meaning:'ສຽງຍາວ',         spoken:'สระ อู'},
+      {lao:'ເະ',   word:'ເອະ',  meaning:'ສຽງສັ້ນ',         spoken:'สระ เอะ'},
+      {lao:'ເ',    word:'ເອ',   meaning:'ສຽງຍາວ',         spoken:'สระ เอ'},
+      {lao:'ແະ',   word:'ແອະ',  meaning:'ສຽງສັ້ນ',         spoken:'สระ แอะ'},
+      {lao:'ແ',    word:'ແອ',   meaning:'ສຽງຍາວ',         spoken:'สระ แอ'},
+      {lao:'ໂະ',   word:'ໂອະ',  meaning:'ສຽງສັ້ນ',         spoken:'สระ โอะ'},
+      {lao:'ໂ',    word:'ໂອ',   meaning:'ສຽງຍາວ',         spoken:'สระ โอ'},
+      {lao:'ເາະ',  word:'ເອາະ', meaning:'ສຽງສັ້ນ',         spoken:'สระ เอาะ'},
+      {lao:'ໍ',    word:'ອໍ',    meaning:'ສຽງຍາວ',         spoken:'สระ ออ'},
+      {lao:'ເິ',   word:'ເອິ',   meaning:'ສຽງສັ້ນ',         spoken:'สระ เออะ'},
+      {lao:'ເີ',   word:'ເອີ',   meaning:'ສຽງຍາວ',         spoken:'สระ เออ'},
+      {lao:'ເັຍ',  word:'ເອັຍ',  meaning:'ປະສົມ ສັ້ນ',      spoken:'สระ เอียะ'},
+      {lao:'ເຍ',   word:'ເອຍ',  meaning:'ປະສົມ ຍາວ',     spoken:'สระ เอีย'},
+      {lao:'ເຶອ',  word:'ເອຶອ',  meaning:'ປະສົມ ສັ້ນ',      spoken:'สระ เอือะ'},
+      {lao:'ເືອ',  word:'ເອືອ',  meaning:'ປະສົມ ຍາວ',     spoken:'สระ เอือ'},
+      {lao:'ົວະ',  word:'ອົວະ',  meaning:'ປະສົມ ສັ້ນ',      spoken:'สระ อัวะ'},
+      {lao:'ົວ',   word:'ອົວ',   meaning:'ປະສົມ ຍາວ',     spoken:'สระ อัว'},
+      {lao:'ັ',    word:'ກັນ',  meaning:'ໄມ້ກັນ (ມີສະກົດ)', spoken:'สระ อัน เช่น กัน'},
+      {lao:'ົ',    word:'ກົງ',  meaning:'ໄມ້ກົງ (ມີສະກົດ)', spoken:'สระ อง เช่น กง'},
+      {lao:'ໄ',    word:'ໄອ',   meaning:'ໄມ້ມະລາຍ',       spoken:'สระ ไอ'},
+      {lao:'ໃ',    word:'ໃອ',   meaning:'ໄມ້ມ້ວນ',         spoken:'สระ ใอ'},
+      {lao:'ເາ',   word:'ເອົາ',  meaning:'ສຽງປະສົມ',       spoken:'สระ เอา'},
+      {lao:'ຳ',    word:'ອຳ',   meaning:'ມີຕົວ ມ ສະກົດ',   spoken:'สระ อำ'}
+    ]
+  },
+  numbers: {
+    icon: '໑', title: 'ຕົວເລກ ໐ - ໑໐', subKey: 'ໂຕ',
+    isNumbers: true,
+    items: [
+      {lao:'໐',   word:'0 ສູນ',    meaning:'ສູນ',     spoken:'เลข ศูนย์'},
+      {lao:'໑',   word:'1 ໜຶ່ງ',   meaning:'ໜຶ່ງ',    spoken:'เลข หนึ่ง'},
+      {lao:'໒',   word:'2 ສອງ',   meaning:'ສອງ',    spoken:'เลข สอง'},
+      {lao:'໓',   word:'3 ສາມ',   meaning:'ສາມ',    spoken:'เลข สาม'},
+      {lao:'໔',   word:'4 ສີ່',    meaning:'ສີ່',     spoken:'เลข สี่'},
+      {lao:'໕',   word:'5 ຫ້າ',    meaning:'ຫ້າ',    spoken:'เลข ห้า'},
+      {lao:'໖',   word:'6 ຫົກ',    meaning:'ຫົກ',    spoken:'เลข หก'},
+      {lao:'໗',   word:'7 ເຈັດ',   meaning:'ເຈັດ',   spoken:'เลข เจ็ด'},
+      {lao:'໘',   word:'8 ແປດ',   meaning:'ແປດ',   spoken:'เลข แปด'},
+      {lao:'໙',   word:'9 ເກົ້າ',   meaning:'ເກົ້າ',   spoken:'เลข เก้า'},
+      {lao:'໑໐',  word:'10 ສິບ',  meaning:'ສິບ',    spoken:'เลข สิบ'}
+    ]
+  },
+  tones: {
+    icon: '່້', title: 'ວັນນະຍຸດພາສາລາວ', subKey: 'ໂຕ',
+    isTones: true,
+    items: [
+      {lao:'ກາ',  mark:'',  word:'ສຽງສາມັນ',     meaning:'ບໍ່ມີວັນນະຍຸດ',      spoken:'กา'},
+      {lao:'ກ່າ',  mark:'່', word:'ໄມ້ເອກ',       meaning:'ສຽງເອກ (ຕ່ຳ)',       spoken:'ก่า'},
+      {lao:'ກ້າ',  mark:'້', word:'ໄມ້ໂທ',       meaning:'ສຽງໂທ (ລົງ)',        spoken:'ก้า'},
+      {lao:'ກ໊າ',  mark:'໊', word:'ໄມ້ຕີ',         meaning:'ສຽງຕີ (ສູງ)',        spoken:'ก๊า'},
+      {lao:'ກ໋າ',  mark:'໋', word:'ໄມ້ຈັດຕະວາ',   meaning:'ສຽງຈັດຕະວາ (ຂຶ້ນ)',  spoken:'ก๋า'}
+    ]
+  },
+  combine: {
+    icon: 'ກາ', title: 'ປະສົມ ພະຍັນຊະນະ + ສະຫຼະ', subKey: 'ຄຳ',
+    isCombine: true,
+    items: []
+  }
+};
+
+/* === ຂໍ້ມູນສຳລັບໜ້າ ປະສົມ ===
+   thai = ຕົວທຽບໄທສຳລັບ TTS  |  laoPre/laoPost = ສ່ວນຫົວ/ຫາງສະຫຼະ */
+var COMBINE_CONS = [
+  {lao:'ກ', thai:'ก'}, {lao:'ຂ', thai:'ข'}, {lao:'ຄ', thai:'ค'}, {lao:'ງ', thai:'ง'},
+  {lao:'ຈ', thai:'จ'}, {lao:'ສ', thai:'ส'}, {lao:'ຊ', thai:'ซ'}, {lao:'ຍ', thai:'ย'},
+  {lao:'ດ', thai:'ด'}, {lao:'ຕ', thai:'ต'}, {lao:'ຖ', thai:'ถ'}, {lao:'ທ', thai:'ท'},
+  {lao:'ນ', thai:'น'}, {lao:'ບ', thai:'บ'}, {lao:'ປ', thai:'ป'}, {lao:'ຜ', thai:'ผ'},
+  {lao:'ຝ', thai:'ฝ'}, {lao:'ພ', thai:'พ'}, {lao:'ຟ', thai:'ฟ'}, {lao:'ມ', thai:'ม'},
+  {lao:'ຢ', thai:'ย'}, {lao:'ຣ', thai:'ร'}, {lao:'ລ', thai:'ล'}, {lao:'ວ', thai:'ว'},
+  {lao:'ຫ', thai:'ห'}, {lao:'ອ', thai:'อ'}, {lao:'ຮ', thai:'ฮ'},
+  // ── ພະຍັນຊະນະ "ຫ ນຳ" ປະສົມ 6 ໂຕ ──
+  {lao:'ຫງ', thai:'หง', compound:true},
+  {lao:'ຫຍ', thai:'หย', compound:true},
+  {lao:'ຫວ', thai:'หว', compound:true},
+  {lao:'ໜ',  thai:'หน', compound:true},
+  {lao:'ໝ',  thai:'หม', compound:true},
+  {lao:'ຫຼ',  thai:'หล', compound:true}
+];
+
+/* ສະຫຼະ — ແບ່ງ 3 ຕຳແໜ່ງ:
+   laoPre  = ກ່ອນພະຍັນຊະນະ (ເ ແ ໂ ໄ ໃ)
+   laoMid  = ເທິງ/ລຸ່ມພະຍັນຊະນະ (ິ ີ ຶ ື ຸ ູ ັ ົ ໍ) ຢູ່ກ່ອນວັນນະຍຸດ
+   laoPost = ຫຼັງວັນນະຍຸດ (ະ າ ຳ ວ ຍ ອ) */
+var COMBINE_VOWELS = [
+  {key:'a',   label:'◌ະ',  laoPre:'',  laoMid:'',  laoPost:'ະ',  thaiPre:'',  thaiMid:'',  thaiPost:'ะ'},
+  {key:'aa',  label:'◌າ',  laoPre:'',  laoMid:'',  laoPost:'າ',  thaiPre:'',  thaiMid:'',  thaiPost:'า'},
+  {key:'i',   label:'◌ິ',  laoPre:'',  laoMid:'ິ',  laoPost:'',   thaiPre:'',  thaiMid:'ิ',  thaiPost:''},
+  {key:'ii',  label:'◌ີ',  laoPre:'',  laoMid:'ີ',  laoPost:'',   thaiPre:'',  thaiMid:'ี',  thaiPost:''},
+  {key:'ue',  label:'◌ຶ',  laoPre:'',  laoMid:'ຶ',  laoPost:'',   thaiPre:'',  thaiMid:'ึ',  thaiPost:''},
+  {key:'uue', label:'◌ື',  laoPre:'',  laoMid:'ື',  laoPost:'',   thaiPre:'',  thaiMid:'ื',  thaiPost:'อ'},
+  {key:'u',   label:'◌ຸ',  laoPre:'',  laoMid:'ຸ',  laoPost:'',   thaiPre:'',  thaiMid:'ุ',  thaiPost:''},
+  {key:'uu',  label:'◌ູ',  laoPre:'',  laoMid:'ູ',  laoPost:'',   thaiPre:'',  thaiMid:'ู',  thaiPost:''},
+  {key:'e',   label:'ເ◌',  laoPre:'ເ', laoMid:'',  laoPost:'',   thaiPre:'เ', thaiMid:'',  thaiPost:''},
+  {key:'ae',  label:'ແ◌',  laoPre:'ແ', laoMid:'',  laoPost:'',   thaiPre:'แ', thaiMid:'',  thaiPost:''},
+  {key:'o',   label:'ໂ◌',  laoPre:'ໂ', laoMid:'',  laoPost:'',   thaiPre:'โ', thaiMid:'',  thaiPost:''},
+  {key:'ai1', label:'ໄ◌',  laoPre:'ໄ', laoMid:'',  laoPost:'',   thaiPre:'ไ', thaiMid:'',  thaiPost:''},
+  {key:'ai2', label:'ໃ◌',  laoPre:'ໃ', laoMid:'',  laoPost:'',   thaiPre:'ใ', thaiMid:'',  thaiPost:''},
+  {key:'or',  label:'◌ໍ',  laoPre:'',  laoMid:'ໍ',  laoPost:'',   thaiPre:'',  thaiMid:'',  thaiPost:'อ'},
+  {key:'am',  label:'◌ຳ',  laoPre:'',  laoMid:'',  laoPost:'ຳ',  thaiPre:'',  thaiMid:'',  thaiPost:'ำ'},
+  {key:'ua',  label:'◌ົວ', laoPre:'',  laoMid:'ົ',  laoPost:'ວ', thaiPre:'',  thaiMid:'ั',  thaiPost:'ว'},
+  // ── ໄມ້ກັນ ໄມ້ກົງ ປ່ອຍຫວ່າງ ໃຫ້ເລືອກສະກົດເອງ ──
+  {key:'han', label:'◌ັ',  laoPre:'',  laoMid:'ັ',  laoPost:'',   thaiPre:'',  thaiMid:'ั',  thaiPost:''},
+  {key:'kong',label:'◌ົ',  laoPre:'',  laoMid:'ົ',  laoPost:'',   thaiPre:'',  thaiMid:'',  thaiPost:''}
+];
+
+/* ── ຕົວສະກົດ (final consonant) ── */
+var COMBINE_FINALS = [
+  {lao:'ກ', thai:'ก'}, {lao:'ງ', thai:'ง'}, {lao:'ຍ', thai:'ย'}, {lao:'ດ', thai:'ด'},
+  {lao:'ນ', thai:'น'}, {lao:'ບ', thai:'บ'}, {lao:'ມ', thai:'ม'}, {lao:'ວ', thai:'ว'}
+];
+
+var COMBINE_TONES = [
+  {key:'none', label:'◌',   mark:'',  thaiMark:'',  hint:'ບໍ່ມີ'},
+  {key:'ek',   label:'◌່', mark:'່', thaiMark:'่', hint:'ໄມ້ເອກ'},
+  {key:'tho',  label:'◌້', mark:'້', thaiMark:'้', hint:'ໄມ້ໂທ'},
+  {key:'tri',  label:'◌໊', mark:'໊', thaiMark:'๊', hint:'ໄມ້ຕີ'},
+  {key:'jat',  label:'◌໋', mark:'໋', thaiMark:'๋', hint:'ໄມ້ຈັດຕະວາ'}
+];
+
+var selectedCons = null, selectedVow = null, selectedTone = null, selectedFinal = null;
+var wordBuffer = []; // ສະສົມຄຳໄດ້ສູງສຸດ 10 ພະຍາງ
+var WORD_MAX = 10;
+
+function renderCombineUI(grid){
+  grid.innerHTML = '';
+  var box = document.createElement('div');
+  box.className = 'combine-box';
+
+  // Step 1: consonants
+  var l1 = document.createElement('div');
+  l1.className = 'combine-label';
+  l1.innerHTML = '<span class="cl-num">1</span> ເລືອກພະຍັນຊະນະ';
+  box.appendChild(l1);
+  var consRow = document.createElement('div');
+  consRow.className = 'combine-row';
+  COMBINE_CONS.forEach(function(c){
+    var btn = document.createElement('button');
+    btn.className = 'chip cons-chip' + (c.compound ? ' cons-compound' : '');
+    btn.textContent = c.lao;
+    btn.setAttribute('data-key', c.lao);
+    btn.onclick = function(){ selectCons(c, btn); };
+    consRow.appendChild(btn);
+  });
+  box.appendChild(consRow);
+
+  // Step 2: vowels
+  var l2 = document.createElement('div');
+  l2.className = 'combine-label';
+  l2.innerHTML = '<span class="cl-num">2</span> ເລືອກສະຫຼະ';
+  box.appendChild(l2);
+  var vowRow = document.createElement('div');
+  vowRow.className = 'combine-row';
+  COMBINE_VOWELS.forEach(function(v){
+    var btn = document.createElement('button');
+    btn.className = 'chip vow-chip';
+    btn.textContent = v.label;
+    btn.setAttribute('data-key', v.key);
+    btn.onclick = function(){ selectVow(v, btn); };
+    vowRow.appendChild(btn);
+  });
+  box.appendChild(vowRow);
+
+  // Step 3: tone marks (optional)
+  var l3 = document.createElement('div');
+  l3.className = 'combine-label';
+  l3.innerHTML = '<span class="cl-num">3</span> ໃສ່ວັນນະຍຸດ <em class="cl-opt">(ຖ້າຕ້ອງການ)</em>';
+  box.appendChild(l3);
+  var toneRow = document.createElement('div');
+  toneRow.className = 'combine-row';
+  COMBINE_TONES.forEach(function(t){
+    var btn = document.createElement('button');
+    btn.className = 'chip tone-chip';
+    btn.textContent = t.label;
+    btn.setAttribute('data-key', t.key);
+    btn.onclick = function(){ selectTone(t, btn); };
+    toneRow.appendChild(btn);
+  });
+  box.appendChild(toneRow);
+
+  // Step 4: final consonant (ຕົວສະກົດ) — optional
+  var l4 = document.createElement('div');
+  l4.className = 'combine-label';
+  l4.innerHTML = '<span class="cl-num">4</span> ຕົວສະກົດ <em class="cl-opt">(ຖ້າຕ້ອງການ — ສຳລັບ ໄມ້ັ ໄມ້ົ ແລະ ອື່ນໆ)</em>';
+  box.appendChild(l4);
+  var finalRow = document.createElement('div');
+  finalRow.className = 'combine-row';
+  COMBINE_FINALS.forEach(function(f){
+    var btn = document.createElement('button');
+    btn.className = 'chip final-chip';
+    btn.textContent = f.lao;
+    btn.setAttribute('data-key', f.lao);
+    btn.onclick = function(){ selectFinal(f, btn); };
+    finalRow.appendChild(btn);
+  });
+  box.appendChild(finalRow);
+
+  // Result display
+  var result = document.createElement('div');
+  result.className = 'combine-result';
+  result.id = 'combine-result';
+  box.appendChild(result);
+
+  grid.appendChild(box);
+  selectedCons = null; selectedVow = null; selectedTone = null; selectedFinal = null;
+  wordBuffer = [];
+  updateCombineResult();
+}
+
+function selectCons(c, btn){
+  selectedCons = c;
+  document.querySelectorAll('.cons-chip').forEach(function(b){
+    b.classList.toggle('active', b === btn);
+  });
+  updateCombineResult();
+  // ອ່ານສຽງພະຍັນຊະນະທັນທີ
+  if(c){ speak(c.thai + 'อ', btn); }
+}
+
+function selectVow(v, btn){
+  selectedVow = v;
+  document.querySelectorAll('.vow-chip').forEach(function(b){
+    b.classList.toggle('active', b === btn);
+  });
+  updateCombineResult();
+  // ອ່ານສຽງສະຫຼະທັນທີ ໂດຍປະສົມກັບ ອ
+  var thaiSyll = (v.thaiPre || '') + 'อ' + (v.thaiPost || '');
+  speak(thaiSyll, btn);
+}
+
+function selectTone(t, btn){
+  // ກົດຊ້ຳເພື່ອຍົກເລີກ
+  if(selectedTone && selectedTone.key === t.key){
+    selectedTone = null;
+    btn.classList.remove('active');
+  } else {
+    selectedTone = t;
+    document.querySelectorAll('.tone-chip').forEach(function(b){
+      b.classList.toggle('active', b === btn);
+    });
+  }
+  updateCombineResult();
+}
+
+function selectFinal(f, btn){
+  // ກົດຊ້ຳເພື່ອຍົກເລີກ
+  if(selectedFinal && selectedFinal.lao === f.lao){
+    selectedFinal = null;
+    btn.classList.remove('active');
+  } else {
+    selectedFinal = f;
+    document.querySelectorAll('.final-chip').forEach(function(b){
+      b.classList.toggle('active', b === btn);
+    });
+  }
+  updateCombineResult();
+  // ອ່ານສຽງສະກົດ
+  if(selectedFinal){ speak('ตัว ' + f.thai, btn); }
+}
+
+function buildCurrentSyllable(){
+  if(!selectedCons || !selectedVow) return null;
+  var v = selectedVow, t = selectedTone, f = selectedFinal;
+  // Lao Unicode order: pre + cons + mid(above-vowel) + tone + post + final
+  var laoStr  = (v.laoPre  || '') + selectedCons.lao  + (v.laoMid  || '') + (t ? t.mark     : '') + (v.laoPost  || '') + (f ? f.lao  : '');
+  var thaiStr = (v.thaiPre || '') + selectedCons.thai + (v.thaiMid || '') + (t ? t.thaiMark : '') + (v.thaiPost || '') + (f ? f.thai : '');
+  return {lao: laoStr, thai: thaiStr};
+}
+
+function getWordLao(){
+  return wordBuffer.map(function(s){ return s.lao; }).join('');
+}
+function getWordThai(){
+  return wordBuffer.map(function(s){ return s.thai; }).join('');
+}
+
+function addSyllable(){
+  var s = buildCurrentSyllable();
+  if(!s) return;
+  if(wordBuffer.length >= WORD_MAX) return;
+  wordBuffer.push(s);
+  // ລ້າງການເລືອກ ເພື່ອພ້ອມໃສ່ພະຍາງຕໍ່ໄປ
+  selectedCons = null; selectedVow = null; selectedTone = null; selectedFinal = null;
+  document.querySelectorAll('.cons-chip, .vow-chip, .tone-chip, .final-chip').forEach(function(b){
+    b.classList.remove('active');
+  });
+  updateCombineResult();
+  // ອ່ານພະຍາງທີ່ຫາກໍ່ເພີ່ມ
+  speak(s.thai);
+}
+
+function popSyllable(){
+  if(wordBuffer.length === 0) return;
+  wordBuffer.pop();
+  updateCombineResult();
+}
+
+function clearWord(){
+  wordBuffer = [];
+  selectedCons = null; selectedVow = null; selectedTone = null; selectedFinal = null;
+  document.querySelectorAll('.cons-chip, .vow-chip, .tone-chip, .final-chip').forEach(function(b){
+    b.classList.remove('active');
+  });
+  updateCombineResult();
+}
+
+function speakWord(){
+  var thai = getWordThai();
+  if(!thai) return;
+  speak(thai);
+}
+
+function updateCombineResult(){
+  var r = document.getElementById('combine-result');
+  if(!r) return;
+  r.innerHTML = '';
+  var current = buildCurrentSyllable();
+
+  // ຄຳສະສົມໃຫຍ່ — ຖ້າມີ
+  if(wordBuffer.length > 0){
+    var wordRow = document.createElement('div');
+    wordRow.className = 'cr-word';
+    wordRow.textContent = getWordLao();
+    r.appendChild(wordRow);
+    var wordSub = document.createElement('div');
+    wordSub.className = 'cr-wordsub';
+    wordSub.textContent = wordBuffer.length + ' / ' + WORD_MAX + ' ພະຍາງ';
+    r.appendChild(wordSub);
+  }
+
+  // ພະຍາງປະຈຸບັນ (ກຳລັງສ້າງ) ຫຼື hint
+  var preview = document.createElement('div');
+  preview.className = 'cr-preview';
+  if(current){
+    preview.innerHTML = '<span class="cr-prev-label">ພະຍາງປະຈຸບັນ:</span> <span class="cr-prev-text">' + current.lao + '</span>';
+  } else if(wordBuffer.length === 0){
+    preview.innerHTML = '<span class="cr-hint">👇 ກົດເລືອກພະຍັນຊະນະ ແລະ ສະຫຼະ</span>';
+  } else if(!selectedCons){
+    preview.innerHTML = '<span class="cr-hint">⬆️ ເລືອກພະຍັນຊະນະ ເພື່ອເພີ່ມພະຍາງ</span>';
+  } else {
+    preview.innerHTML = '<span class="cr-hint">⬆️ ເລືອກສະຫຼະ ເພື່ອເພີ່ມພະຍາງ</span>';
+  }
+  r.appendChild(preview);
+
+  // ປຸ່ມ ➕ ⌫ ✕
+  var btnRow = document.createElement('div');
+  btnRow.className = 'cr-btnrow';
+
+  var addBtn = document.createElement('button');
+  addBtn.className = 'cr-btn cr-add';
+  addBtn.textContent = '➕ ເພີ່ມພະຍາງ';
+  addBtn.disabled = !current || wordBuffer.length >= WORD_MAX;
+  addBtn.onclick = addSyllable;
+  btnRow.appendChild(addBtn);
+
+  var popBtn = document.createElement('button');
+  popBtn.className = 'cr-btn cr-pop';
+  popBtn.textContent = '⌫ ລົບ';
+  popBtn.disabled = wordBuffer.length === 0;
+  popBtn.onclick = popSyllable;
+  btnRow.appendChild(popBtn);
+
+  var clrBtn = document.createElement('button');
+  clrBtn.className = 'cr-btn cr-clr';
+  clrBtn.textContent = '✕ ລ້າງ';
+  clrBtn.disabled = wordBuffer.length === 0 && !current;
+  clrBtn.onclick = clearWord;
+  btnRow.appendChild(clrBtn);
+  r.appendChild(btnRow);
+
+  // ປຸ່ມຟັງສຽງໃຫຍ່ — ຄຳສະສົມ ຫຼື ພະຍາງປະຈຸບັນ
+  var speakBtn = document.createElement('button');
+  speakBtn.className = 'cr-speak';
+  if(wordBuffer.length > 0){
+    speakBtn.textContent = '🔊 ກົດຟັງສຽງຄຳ';
+    speakBtn.onclick = function(){ speak(getWordThai(), speakBtn); };
+  } else if(current){
+    speakBtn.textContent = '🔊 ກົດຟັງສຽງພະຍາງ';
+    speakBtn.onclick = function(){ speak(current.thai, speakBtn); };
+  } else {
+    speakBtn.textContent = '🔊 ເລືອກກ່ອນ';
+    speakBtn.disabled = true;
+  }
+  r.appendChild(speakBtn);
+}
+
+var currentTopic = 'consonants';
+function selectTopic(key){
+  if(!topics[key]) return;
+  currentTopic = key;
+  document.querySelectorAll('.topic-btn').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-topic') === key);
+  });
+  renderTopic();
+}
+
+function renderTopic(){
+  var t = topics[currentTopic];
+  document.getElementById('tt-ico').textContent = t.icon;
+  document.getElementById('tt-text').textContent = t.title;
+  var grid = document.getElementById('items-grid');
+  grid.classList.toggle('vowels', !!t.isVowels);
+  grid.classList.toggle('numbers', !!t.isNumbers);
+  grid.classList.toggle('tones', !!t.isTones);
+  grid.classList.toggle('with-emoji', !!t.hasEmoji);
+  grid.classList.toggle('combine', !!t.isCombine);
+  if(t.isCombine){
+    document.getElementById('tt-sub').textContent = '27 × 16 = ປະສົມສຽງ';
+    renderCombineUI(grid);
+    return;
+  }
+  document.getElementById('tt-sub').textContent = t.items.length + ' ' + (t.subKey || 'ໂຕ');
+  grid.innerHTML = '';
+  t.items.forEach(function(item){
+    var card = document.createElement('div');
+    card.className = 'item-card';
+    // ໂຕອັກສອນ + ຮູບປະກອບ ໃຫ້ເດັກສັງເກດງ່າຍ
+    if(t.hasEmoji && item.emoji){
+      var topRow = document.createElement('div');
+      topRow.className = 'item-top';
+      var letterEl = document.createElement('span');
+      letterEl.className = 'item-letter';
+      letterEl.textContent = item.lao;
+      var emojiEl = document.createElement('span');
+      emojiEl.className = 'item-pic';
+      // ຮອງຮັບ SVG inline (ສຳລັບທຸງຊາດ ແລະ ຮູບສະເພາະອື່ນໆ)
+      if(item.emoji.indexOf('<svg') === 0){
+        emojiEl.classList.add('item-pic-svg');
+        emojiEl.innerHTML = item.emoji;
+      } else {
+        emojiEl.textContent = item.emoji;
+      }
+      topRow.appendChild(letterEl);
+      topRow.appendChild(emojiEl);
+      card.appendChild(topRow);
+    } else {
+      var letterEl = document.createElement('div');
+      letterEl.className = 'item-letter';
+      letterEl.textContent = item.lao;
+      card.appendChild(letterEl);
+    }
+    var wordEl = document.createElement('div');
+    wordEl.className = 'item-word';
+    wordEl.textContent = item.word;
+    var meaningEl = document.createElement('div');
+    meaningEl.className = 'item-meaning';
+    meaningEl.textContent = item.meaning;
+    card.appendChild(wordEl);
+    card.appendChild(meaningEl);
+    card.addEventListener('click', function(){
+      speak(item.spoken, card);
+    });
+    grid.appendChild(card);
+  });
+}
+
+renderTopic();
+</script>
+<script>
+function navigateTo(name){
+  try {
+    if(window.parent && window.parent !== window){
+      window.parent.postMessage({type:'switchView', view: name}, '*');
+      return;
+    }
+  } catch(e){}
+  window.location.href = name + '.html';
+}
+</script>
+</body>
+</html>
