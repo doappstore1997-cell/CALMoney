@@ -440,11 +440,54 @@
     50% { box-shadow: 0 6px 30px rgba(0,184,148,0.6), 0 0 40px rgba(0,184,148,0.3); }
   }
   .score-display.celebrating { animation: pulse-good 1s ease-in-out 2; }
+
+  /* Top bar — home button */
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; gap: 10px; flex-wrap: wrap;
+  }
+  .home-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, #fd79a8, #e84393);
+    color: white; border: none; border-radius: 14px;
+    padding: 10px 16px; font-size: 1em; font-weight: bold;
+    cursor: pointer; text-decoration: none;
+    box-shadow: 0 4px 10px rgba(232,67,147,0.35);
+    transition: transform 0.18s;
+    font-family: 'Comic Sans MS', 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+  }
+  .home-btn:active { transform: scale(0.96); }
+  .home-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(232,67,147,0.45); }
+  .home-btn-alt { background: linear-gradient(135deg, #7C6FCD, #5b4ec5); box-shadow: 0 4px 10px rgba(124,111,205,0.35); }
+  /* Quick tools above canvas */
+  .canvas-tools {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .canvas-tools .qbtn {
+    padding: 10px 18px;
+    font-size: 0.95em;
+    color: white;
+    border: none; border-radius: 14px;
+    cursor: pointer; font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    font-family: 'Comic Sans MS', 'Phetsarath OT', 'Noto Sans Lao', sans-serif;
+    transition: transform 0.15s;
+  }
+  .canvas-tools .qbtn:active { transform: scale(0.96); }
+  .canvas-tools .q-eraser { background: linear-gradient(135deg, #fdcb6e, #e17055); }
+  .canvas-tools .q-eraser.active { background: linear-gradient(135deg, #d63031, #e84393); transform: scale(0.97); }
+  .canvas-tools .q-clear { background: linear-gradient(135deg, #636e72, #2d3436); }
+  .canvas-tools .q-score { background: linear-gradient(135deg, #00b894, #00cec9); }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>🖍️ ເກມລະບາຍສີ <span class="age-badge">DeDyDeMy</span></h1>
+  <div class="top-bar">
+    <a class="home-btn" href="index.html">🏠 ຫນ້າຫຼັກ</a>
+    <a class="home-btn home-btn-alt" href="index.html">📚 ເລືອກວິຊາຮຽນ</a>
+  </div>
+  <h1>🖍️ ເກມລະບາຍສີ <span class="age-badge">DedyDemy</span></h1>
   <p class="subtitle">ເລືອກຮູບ ແລ້ວແຕ້ມໆເອົາໃຫ້ສວຍງາມ! 🌈</p>
   <div class="mix-tip">💡 ລະບາຍຕາມສີຮູບຕົວຢ່າງໃຫ້ຄ້າຍຄືທີ່ສຸດ ຈຶ່ງຈະໄດ້ຄະແນນສູງ! ປະສົມສີໄດ້: ເຫຼືອງ+ແດງ=ສົ້ມ • ຟ້າ+ເຫຼືອງ=ຂຽວ</div>
 
@@ -456,6 +499,11 @@
         <div class="reference-label">👀 ຮູບຕົວຢ່າງ:</div>
         <div class="reference-img" id="refImg"></div>
         <div class="reference-hint" id="refHint"></div>
+      </div>
+      <div class="canvas-tools">
+        <button type="button" class="qbtn q-eraser" id="eraserBtnTop" onclick="toggleEraser()">🧽 ຍາງລົບ</button>
+        <button type="button" class="qbtn q-clear" onclick="clearAll()">🔄 ເລີ່ມໃໝ່</button>
+        <button type="button" class="qbtn q-score" onclick="showFinalScore()">✨ ໃຫ້ຄະແນນ</button>
       </div>
       <div class="canvas-stack">
         <canvas id="drawCanvas"></canvas>
@@ -833,304 +881,7 @@ const PICS = [
               <ellipse cx="200" cy="240" rx="20" ry="14" fill="#2d3436"/>
               <path d="M195 300 Q200 320 205 300 Z" fill="#fd79a8"/>`
   },
-  {
-    name: 'ກະຕ່າຍ', emoji: '🐰',
-    hint: 'ໂຕສີຂາວ ຫູຍາວສີຊົມພູ',
-    outline: `<circle cx="200" cy="240" r="110" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <ellipse cx="155" cy="100" rx="28" ry="80" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <ellipse cx="245" cy="100" rx="28" ry="80" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <ellipse cx="155" cy="105" rx="14" ry="60" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <ellipse cx="245" cy="105" rx="14" ry="60" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="170" cy="225" r="14" fill="#2d3436"/>
-              <circle cx="230" cy="225" r="14" fill="#2d3436"/>
-              <circle cx="166" cy="221" r="4" fill="#ffffff"/>
-              <circle cx="226" cy="221" r="4" fill="#ffffff"/>
-              <ellipse cx="200" cy="265" rx="14" ry="10" fill="#2d3436"/>
-              <path d="M200 275 L200 290 M200 290 Q188 300 178 295 M200 290 Q212 300 222 295" fill="none" stroke="#2d3436" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M180 305 L175 325 L195 320 Z M220 305 L225 325 L205 320 Z" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <ellipse cx="135" cy="250" rx="15" ry="8" fill="#fd79a8" opacity="0.4"/>
-              <ellipse cx="265" cy="250" rx="15" ry="8" fill="#fd79a8" opacity="0.4"/>
-              <line x1="180" y1="278" x2="155" y2="275" stroke="#2d3436" stroke-width="2"/>
-              <line x1="180" y1="285" x2="155" y2="290" stroke="#2d3436" stroke-width="2"/>
-              <line x1="220" y1="278" x2="245" y2="275" stroke="#2d3436" stroke-width="2"/>
-              <line x1="220" y1="285" x2="245" y2="290" stroke="#2d3436" stroke-width="2"/>`,
-    colored: `<ellipse cx="155" cy="100" rx="28" ry="80" fill="#ffffff"/>
-              <ellipse cx="245" cy="100" rx="28" ry="80" fill="#ffffff"/>
-              <ellipse cx="155" cy="105" rx="14" ry="60" fill="#fd79a8"/>
-              <ellipse cx="245" cy="105" rx="14" ry="60" fill="#fd79a8"/>
-              <circle cx="200" cy="240" r="110" fill="#ffffff"/>
-              <ellipse cx="200" cy="265" rx="14" ry="10" fill="#fd79a8"/>`
-  },
-
-  // ============ WILD ANIMALS ============
-  {
-    name: 'ໝີ', emoji: '🐻',
-    hint: 'ໂຕສີນ້ຳຕານ ປາກສີຄຣີມ',
-    outline: `<circle cx="200" cy="220" r="120" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <circle cx="115" cy="135" r="35" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <circle cx="285" cy="135" r="35" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <circle cx="115" cy="135" r="18" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="285" cy="135" r="18" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <ellipse cx="200" cy="260" rx="60" ry="50" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <ellipse cx="200" cy="240" rx="18" ry="13" fill="#2d3436"/>
-              <path d="M200 253 L200 280" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <path d="M200 280 Q183 292 173 282 M200 280 Q217 292 227 282" fill="none" stroke="#2d3436" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="160" cy="200" r="12" fill="#2d3436"/>
-              <circle cx="240" cy="200" r="12" fill="#2d3436"/>
-              <circle cx="156" cy="196" r="3" fill="#ffffff"/>
-              <circle cx="236" cy="196" r="3" fill="#ffffff"/>
-              <path d="M195 247 L205 247" stroke="#ffffff" stroke-width="2"/>`,
-    colored: `<circle cx="115" cy="135" r="35" fill="#8b4513"/>
-              <circle cx="285" cy="135" r="35" fill="#8b4513"/>
-              <circle cx="115" cy="135" r="18" fill="#fdcb6e"/>
-              <circle cx="285" cy="135" r="18" fill="#fdcb6e"/>
-              <circle cx="200" cy="220" r="120" fill="#8b4513"/>
-              <ellipse cx="200" cy="260" rx="60" ry="50" fill="#fdcb6e"/>
-              <ellipse cx="200" cy="240" rx="18" ry="13" fill="#2d3436"/>`
-  },
-  {
-    name: 'ສິງໂຕ', emoji: '🦁',
-    hint: 'ຂົນສີນ້ຳຕານອ້ອມຮອບ ໜ້າສີເຫຼືອງ',
-    outline: `<circle cx="80" cy="180" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="120" cy="130" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="170" cy="105" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="230" cy="105" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="280" cy="130" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="320" cy="180" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="340" cy="230" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="320" cy="280" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="280" cy="315" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="230" cy="335" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="170" cy="335" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="120" cy="315" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="80" cy="280" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="60" cy="230" r="32" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <circle cx="200" cy="220" r="95" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <ellipse cx="170" cy="210" rx="14" ry="18" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <ellipse cx="230" cy="210" rx="14" ry="18" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="170" cy="213" r="6" fill="#2d3436"/>
-              <circle cx="230" cy="213" r="6" fill="#2d3436"/>
-              <ellipse cx="200" cy="245" rx="22" ry="14" fill="#2d3436"/>
-              <path d="M200 259 L200 280 M200 280 Q180 295 170 285 M200 280 Q220 295 230 285" fill="none" stroke="#2d3436" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="155" y1="255" x2="120" y2="255" stroke="#2d3436" stroke-width="2"/>
-              <line x1="155" y1="265" x2="120" y2="270" stroke="#2d3436" stroke-width="2"/>
-              <line x1="245" y1="255" x2="280" y2="255" stroke="#2d3436" stroke-width="2"/>
-              <line x1="245" y1="265" x2="280" y2="270" stroke="#2d3436" stroke-width="2"/>`,
-    colored: `<g fill="#8b4513">
-              <circle cx="80" cy="180" r="32"/><circle cx="120" cy="130" r="32"/>
-              <circle cx="170" cy="105" r="32"/><circle cx="230" cy="105" r="32"/>
-              <circle cx="280" cy="130" r="32"/><circle cx="320" cy="180" r="32"/>
-              <circle cx="340" cy="230" r="32"/><circle cx="320" cy="280" r="32"/>
-              <circle cx="280" cy="315" r="32"/><circle cx="230" cy="335" r="32"/>
-              <circle cx="170" cy="335" r="32"/><circle cx="120" cy="315" r="32"/>
-              <circle cx="80" cy="280" r="32"/><circle cx="60" cy="230" r="32"/>
-              </g>
-              <circle cx="200" cy="220" r="95" fill="#f1c40f"/>
-              <ellipse cx="200" cy="245" rx="22" ry="14" fill="#2d3436"/>`
-  },
-  {
-    name: 'ເສືອ', emoji: '🐯',
-    hint: 'ໂຕສີສົ້ມ ມີລາຍສີດຳ ຮອບປາກຂາວ',
-    outline: `<circle cx="200" cy="215" r="125" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <path d="M115 130 L100 65 L180 115 Z" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M285 130 L300 65 L220 115 Z" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M125 120 L115 90 L155 110 Z" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <path d="M275 120 L285 90 L245 110 Z" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <path d="M170 100 L165 130 M195 95 L195 125 M205 95 L205 125 M230 100 L235 130" stroke="#2d3436" stroke-width="6" stroke-linecap="round" fill="none"/>
-              <path d="M75 195 L100 200 L75 215" stroke="#2d3436" stroke-width="6" stroke-linecap="round" fill="none"/>
-              <path d="M325 195 L300 200 L325 215" stroke="#2d3436" stroke-width="6" stroke-linecap="round" fill="none"/>
-              <path d="M85 245 L105 245" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <path d="M315 245 L295 245" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <ellipse cx="160" cy="200" rx="14" ry="18" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <ellipse cx="240" cy="200" rx="14" ry="18" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="160" cy="203" r="6" fill="#2d3436"/>
-              <circle cx="240" cy="203" r="6" fill="#2d3436"/>
-              <path d="M185 245 L215 245 L200 262 Z" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <path d="M200 262 L200 280 M200 280 Q180 295 170 285 M200 280 Q220 295 230 285" fill="none" stroke="#2d3436" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="120" y1="265" x2="80" y2="260" stroke="#2d3436" stroke-width="2"/>
-              <line x1="120" y1="278" x2="80" y2="285" stroke="#2d3436" stroke-width="2"/>
-              <line x1="280" y1="265" x2="320" y2="260" stroke="#2d3436" stroke-width="2"/>
-              <line x1="280" y1="278" x2="320" y2="285" stroke="#2d3436" stroke-width="2"/>`,
-    colored: `<circle cx="200" cy="215" r="125" fill="#e67e22"/>
-              <path d="M115 130 L100 65 L180 115 Z" fill="#e67e22"/>
-              <path d="M285 130 L300 65 L220 115 Z" fill="#e67e22"/>
-              <path d="M125 120 L115 90 L155 110 Z" fill="#fd79a8"/>
-              <path d="M275 120 L285 90 L245 110 Z" fill="#fd79a8"/>
-              <ellipse cx="200" cy="265" rx="55" ry="35" fill="#ffffff"/>
-              <path d="M170 100 L165 130 M195 95 L195 125 M205 95 L205 125 M230 100 L235 130" stroke="#2d3436" stroke-width="9" fill="none"/>
-              <path d="M75 195 L100 200 L75 215" stroke="#2d3436" stroke-width="9" fill="none"/>
-              <path d="M325 195 L300 200 L325 215" stroke="#2d3436" stroke-width="9" fill="none"/>
-              <path d="M185 245 L215 245 L200 262 Z" fill="#fd79a8"/>`
-  },
-  {
-    name: 'ກົບ', emoji: '🐸',
-    hint: 'ໂຕສີຂຽວ ຕາໃຫຍ່ ປາກສີຄຣີມ',
-    outline: `<ellipse cx="200" cy="240" rx="140" ry="105" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <circle cx="140" cy="140" r="42" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <circle cx="260" cy="140" r="42" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <circle cx="140" cy="148" r="22" fill="#ffffff" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="260" cy="148" r="22" fill="#ffffff" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="140" cy="148" r="11" fill="#2d3436"/>
-              <circle cx="260" cy="148" r="11" fill="#2d3436"/>
-              <circle cx="136" cy="143" r="3" fill="#ffffff"/>
-              <circle cx="256" cy="143" r="3" fill="#ffffff"/>
-              <ellipse cx="180" cy="245" rx="6" ry="9" fill="#2d3436"/>
-              <ellipse cx="220" cy="245" rx="6" ry="9" fill="#2d3436"/>
-              <path d="M120 280 Q200 320 280 280" fill="none" stroke="#2d3436" stroke-width="5" stroke-linecap="round"/>
-              <path d="M70 320 Q40 290 60 250 Q80 270 90 290" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M330 320 Q360 290 340 250 Q320 270 310 290" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <ellipse cx="200" cy="275" rx="40" ry="10" fill="#fd79a8" opacity="0.4"/>`,
-    colored: `<ellipse cx="200" cy="240" rx="140" ry="105" fill="#2ecc71"/>
-              <circle cx="140" cy="140" r="42" fill="#2ecc71"/>
-              <circle cx="260" cy="140" r="42" fill="#2ecc71"/>
-              <path d="M70 320 Q40 290 60 250 Q80 270 90 290 Z" fill="#27ae60"/>
-              <path d="M330 320 Q360 290 340 250 Q320 270 310 290 Z" fill="#27ae60"/>
-              <circle cx="140" cy="148" r="22" fill="#ffffff"/>
-              <circle cx="260" cy="148" r="22" fill="#ffffff"/>
-              <circle cx="140" cy="148" r="11" fill="#2d3436"/>
-              <circle cx="260" cy="148" r="11" fill="#2d3436"/>`
-  },
-  {
-    name: 'ນົກເພັງກວິນ', emoji: '🐧',
-    hint: 'ຕົວສີດຳ ທ້ອງຂາວ ຈະງອຍສີສົ້ມ',
-    outline: `<ellipse cx="200" cy="225" rx="115" ry="150" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <ellipse cx="200" cy="245" rx="80" ry="120" fill="none" stroke="#2d3436" stroke-width="4"/>
-              <ellipse cx="170" cy="150" rx="14" ry="18" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <ellipse cx="230" cy="150" rx="14" ry="18" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="170" cy="155" r="7" fill="#2d3436"/>
-              <circle cx="230" cy="155" r="7" fill="#2d3436"/>
-              <circle cx="167" cy="151" r="2" fill="#ffffff"/>
-              <circle cx="227" cy="151" r="2" fill="#ffffff"/>
-              <path d="M180 185 L220 185 L200 210 Z" fill="none" stroke="#2d3436" stroke-width="4" stroke-linejoin="round"/>
-              <path d="M85 230 Q60 270 80 320 L120 290 Z" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M315 230 Q340 270 320 320 L280 290 Z" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M165 370 L155 385 L195 380 L195 365 Z" fill="none" stroke="#2d3436" stroke-width="4" stroke-linejoin="round"/>
-              <path d="M235 370 L245 385 L205 380 L205 365 Z" fill="none" stroke="#2d3436" stroke-width="4" stroke-linejoin="round"/>
-              <ellipse cx="160" cy="240" rx="12" ry="6" fill="#fd79a8" opacity="0.4"/>
-              <ellipse cx="240" cy="240" rx="12" ry="6" fill="#fd79a8" opacity="0.4"/>`,
-    colored: `<ellipse cx="200" cy="225" rx="115" ry="150" fill="#2d3436"/>
-              <path d="M85 230 Q60 270 80 320 L120 290 Z" fill="#2d3436"/>
-              <path d="M315 230 Q340 270 320 320 L280 290 Z" fill="#2d3436"/>
-              <ellipse cx="200" cy="245" rx="80" ry="120" fill="#ffffff"/>
-              <path d="M180 185 L220 185 L200 210 Z" fill="#e67e22"/>
-              <path d="M165 370 L155 385 L195 380 L195 365 Z" fill="#e67e22"/>
-              <path d="M235 370 L245 385 L205 380 L205 365 Z" fill="#e67e22"/>`
-  },
-  {
-    name: 'ຊ້າງ', emoji: '🐘',
-    hint: 'ໂຕສີຂີ້ເຖົ່າ ງາສີຂາວ',
-    outline: `<ellipse cx="200" cy="220" rx="135" ry="115" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <path d="M75 180 Q30 130 50 90 Q90 80 110 130 Z" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <path d="M325 180 Q370 130 350 90 Q310 80 290 130 Z" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <path d="M85 165 Q70 145 65 115" fill="none" stroke="#2d3436" stroke-width="3" opacity="0.5"/>
-              <path d="M315 165 Q330 145 335 115" fill="none" stroke="#2d3436" stroke-width="3" opacity="0.5"/>
-              <path d="M200 270 Q165 320 175 365 Q190 385 210 370 Q205 345 215 320" fill="none" stroke="#2d3436" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M170 290 Q165 315 175 320" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <path d="M230 290 Q235 315 225 320" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="160" cy="195" r="11" fill="#2d3436"/>
-              <circle cx="240" cy="195" r="11" fill="#2d3436"/>
-              <circle cx="156" cy="191" r="3" fill="#ffffff"/>
-              <circle cx="236" cy="191" r="3" fill="#ffffff"/>
-              <circle cx="170" cy="225" r="4" fill="#2d3436" opacity="0.4"/>
-              <circle cx="230" cy="225" r="4" fill="#2d3436" opacity="0.4"/>`,
-    colored: `<path d="M75 180 Q30 130 50 90 Q90 80 110 130 Z" fill="#a4b0be"/>
-              <path d="M325 180 Q370 130 350 90 Q310 80 290 130 Z" fill="#a4b0be"/>
-              <ellipse cx="200" cy="220" rx="135" ry="115" fill="#a4b0be"/>
-              <path d="M200 270 Q165 320 175 365 Q190 385 210 370 Q205 345 215 320 Z" fill="#a4b0be"/>
-              <path d="M170 290 Q165 315 175 320 L185 305 Z" fill="#ffffff"/>
-              <path d="M230 290 Q235 315 225 320 L215 305 Z" fill="#ffffff"/>`
-  },
-  {
-    name: 'ຍູນິຄອນ', emoji: '🦄',
-    hint: 'ຕົວສີຂາວ ແຜງຄໍສີຮຸ້ງ ເຂົາສີທອງ',
-    outline: `<ellipse cx="220" cy="240" rx="100" ry="80" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <ellipse cx="115" cy="200" rx="55" ry="75" transform="rotate(-15 115 200)" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <path d="M120 175 L90 110 L155 145 Z" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M125 130 L115 80 L150 115 L160 70 L175 110 L195 50 L195 130 Z" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M170 95 L195 25 L175 95 Z" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M180 50 L185 40 M178 35 L188 28" stroke="#f1c40f" stroke-width="3" stroke-linecap="round"/>
-              <ellipse cx="105" cy="195" rx="6" ry="10" fill="#2d3436"/>
-              <circle cx="100" cy="220" r="4" fill="#2d3436"/>
-              <path d="M85 230 Q80 240 95 245" fill="none" stroke="#2d3436" stroke-width="3" stroke-linecap="round"/>
-              <path d="M180 320 L180 380 M220 320 L220 380 M260 320 L260 380 M300 320 L300 380" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <path d="M310 240 Q360 220 370 280 Q340 280 320 270" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M320 245 Q345 235 350 265 M330 250 Q350 245 355 265" stroke="#fd79a8" stroke-width="3" fill="none"/>`,
-    colored: `<ellipse cx="115" cy="200" rx="55" ry="75" transform="rotate(-15 115 200)" fill="#ffffff"/>
-              <ellipse cx="220" cy="240" rx="100" ry="80" fill="#ffffff"/>
-              <path d="M120 175 L90 110 L155 145 Z" fill="#fd79a8"/>
-              <path d="M125 130 L115 80 L150 115 L160 70 L175 110 L195 50 L195 130 Z" fill="#fd79a8"/>
-              <path d="M170 95 L195 25 L175 95 Z" fill="#f1c40f"/>
-              <path d="M310 240 Q360 220 370 280 Q340 280 320 270 Z" fill="#9b59b6"/>`
-  },
-
-  // ============ VEHICLES / OBJECTS ============
-  {
-    name: 'ລົດ', emoji: '🚗',
-    hint: 'ລົດສີແດງ ປ່ອງຢ້ຽມສີຟ້າ ຢາງສີດຳ',
-    outline: `<path d="M50 260 L80 200 Q100 180 130 180 L155 145 Q170 130 200 130 L260 130 Q280 130 290 145 L320 180 L350 200 Q360 215 360 240 L360 260 L50 260 Z" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <path d="M150 145 Q165 135 185 135 L210 135 L210 175 L130 175 Z" fill="none" stroke="#2d3436" stroke-width="4" stroke-linejoin="round"/>
-              <path d="M220 135 L260 135 Q275 135 285 150 L300 175 L220 175 Z" fill="none" stroke="#2d3436" stroke-width="4" stroke-linejoin="round"/>
-              <circle cx="120" cy="280" r="35" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <circle cx="120" cy="280" r="14" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <circle cx="290" cy="280" r="35" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <circle cx="290" cy="280" r="14" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <ellipse cx="65" cy="225" rx="12" ry="8" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <ellipse cx="345" cy="225" rx="12" ry="8" fill="none" stroke="#2d3436" stroke-width="3"/>
-              <line x1="215" y1="135" x2="215" y2="175" stroke="#2d3436" stroke-width="3"/>`,
-    colored: `<path d="M50 260 L80 200 Q100 180 130 180 L155 145 Q170 130 200 130 L260 130 Q280 130 290 145 L320 180 L350 200 Q360 215 360 240 L360 260 L50 260 Z" fill="#e74c3c"/>
-              <path d="M150 145 Q165 135 185 135 L210 135 L210 175 L130 175 Z" fill="#3498db"/>
-              <path d="M220 135 L260 135 Q275 135 285 150 L300 175 L220 175 Z" fill="#3498db"/>
-              <circle cx="120" cy="280" r="35" fill="#2d3436"/>
-              <circle cx="120" cy="280" r="14" fill="#a4b0be"/>
-              <circle cx="290" cy="280" r="35" fill="#2d3436"/>
-              <circle cx="290" cy="280" r="14" fill="#a4b0be"/>
-              <ellipse cx="65" cy="225" rx="12" ry="8" fill="#f1c40f"/>
-              <ellipse cx="345" cy="225" rx="12" ry="8" fill="#f1c40f"/>`
-  },
-  {
-    name: 'ດວງອາທິດ', emoji: '☀️',
-    hint: 'ດວງສີເຫຼືອງ ມີລັງສີສົ້ມ',
-    outline: `<circle cx="200" cy="200" r="90" fill="none" stroke="#2d3436" stroke-width="5"/>
-              <line x1="200" y1="40" x2="200" y2="90" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <line x1="200" y1="310" x2="200" y2="360" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <line x1="40" y1="200" x2="90" y2="200" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <line x1="310" y1="200" x2="360" y2="200" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <line x1="85" y1="85" x2="120" y2="120" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <line x1="280" y1="280" x2="315" y2="315" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <line x1="315" y1="85" x2="280" y2="120" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <line x1="120" y1="280" x2="85" y2="315" stroke="#2d3436" stroke-width="6" stroke-linecap="round"/>
-              <circle cx="170" cy="190" r="9" fill="#2d3436"/>
-              <circle cx="230" cy="190" r="9" fill="#2d3436"/>
-              <circle cx="167" cy="186" r="3" fill="#ffffff"/>
-              <circle cx="227" cy="186" r="3" fill="#ffffff"/>
-              <path d="M165 225 Q200 250 235 225" fill="none" stroke="#2d3436" stroke-width="5" stroke-linecap="round"/>
-              <ellipse cx="155" cy="225" rx="14" ry="7" fill="#fd79a8" opacity="0.5"/>
-              <ellipse cx="245" cy="225" rx="14" ry="7" fill="#fd79a8" opacity="0.5"/>`,
-    colored: `<line x1="200" y1="40" x2="200" y2="90" stroke="#e67e22" stroke-width="14" stroke-linecap="round"/>
-              <line x1="200" y1="310" x2="200" y2="360" stroke="#e67e22" stroke-width="14" stroke-linecap="round"/>
-              <line x1="40" y1="200" x2="90" y2="200" stroke="#e67e22" stroke-width="14" stroke-linecap="round"/>
-              <line x1="310" y1="200" x2="360" y2="200" stroke="#e67e22" stroke-width="14" stroke-linecap="round"/>
-              <line x1="85" y1="85" x2="120" y2="120" stroke="#e67e22" stroke-width="14" stroke-linecap="round"/>
-              <line x1="280" y1="280" x2="315" y2="315" stroke="#e67e22" stroke-width="14" stroke-linecap="round"/>
-              <line x1="315" y1="85" x2="280" y2="120" stroke="#e67e22" stroke-width="14" stroke-linecap="round"/>
-              <line x1="120" y1="280" x2="85" y2="315" stroke="#e67e22" stroke-width="14" stroke-linecap="round"/>
-              <circle cx="200" cy="200" r="90" fill="#f1c40f"/>`
-  },
-  {
-    name: 'ດາວ', emoji: '⭐',
-    hint: 'ດາວສີເຫຼືອງ ຍິ້ມໆ',
-    outline: `<polygon points="200,50 235,150 340,150 255,210 290,310 200,250 110,310 145,210 60,150 165,150" fill="none" stroke="#2d3436" stroke-width="5" stroke-linejoin="round"/>
-              <circle cx="175" cy="175" r="9" fill="#2d3436"/>
-              <circle cx="225" cy="175" r="9" fill="#2d3436"/>
-              <circle cx="172" cy="171" r="3" fill="#ffffff"/>
-              <circle cx="222" cy="171" r="3" fill="#ffffff"/>
-              <path d="M170 210 Q200 230 230 210" fill="none" stroke="#2d3436" stroke-width="4" stroke-linecap="round"/>
-              <ellipse cx="155" cy="205" rx="13" ry="7" fill="#fd79a8" opacity="0.4"/>
-              <ellipse cx="245" cy="205" rx="13" ry="7" fill="#fd79a8" opacity="0.4"/>`,
-    colored: `<polygon points="200,50 235,150 340,150 255,210 290,310 200,250 110,310 145,210 60,150 165,150" fill="#f1c40f"/>`
-  }
 ];
-
 let selectedColor = COLORS[0].hex;
 let brushSize = 16;
 let isErasing = false;
@@ -1138,16 +889,12 @@ let isDrawing = false;
 let lastX = 0, lastY = 0;
 let currentPic = 0;
 let masks = [];
-
-// Drawing on temp stroke canvas at full alpha, then commit at lower alpha to main canvas
-// to avoid self-overlap darkening within a single stroke.
 const canvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
 let strokeCanvas, strokeCtx;
 const outlineSvg = document.getElementById('outlineSvg');
 const MASK_SIZE = 400;
-const STROKE_ALPHA = 0.55; // lower = more visible mixing
-
+const STROKE_ALPHA = 0.55;
 const sel = document.getElementById('picSelector');
 PICS.forEach((p, i) => {
   const b = document.createElement('button');
@@ -1161,21 +908,17 @@ PICS.forEach((p, i) => {
   };
   sel.appendChild(b);
 });
-
 const crayonsDiv = document.getElementById('crayons');
 COLORS.forEach((c, i) => {
   const d = document.createElement('div');
   d.className = 'crayon' + (i === 0 ? ' selected' : '');
   d.title = c.name;
-  // Use white text for dark colors, dark text for light colors
-  const textColor = isLightColor(c.hex) ? '#2d3436' : '#ffffff';
-  d.innerHTML = `<div class="crayon-tip" style="border-bottom-color:${c.hex}"></div>
-                 <div class="crayon-body" style="background:${c.hex}"></div>
-                 <div class="crayon-name">${c.name}</div>`;
+  d.innerHTML = `<div class="crayon-tip" style="border-bottom-color:${c.hex}"></div><div class="crayon-body" style="background:${c.hex}"></div><div class="crayon-name">${c.name}</div>`;
   d.onclick = () => {
     selectedColor = c.hex;
     isErasing = false;
-    document.getElementById('eraserBtn').classList.remove('active');
+    var _eb1 = document.getElementById('eraserBtn'); if(_eb1) _eb1.classList.remove('active');
+    var _eb2 = document.getElementById('eraserBtnTop'); if(_eb2) _eb2.classList.remove('active');
     document.querySelectorAll('.crayon').forEach(x => x.classList.remove('selected'));
     d.classList.add('selected');
     document.getElementById('selectedColorName').textContent = c.name;
@@ -1183,14 +926,6 @@ COLORS.forEach((c, i) => {
   };
   crayonsDiv.appendChild(d);
 });
-
-function isLightColor(hex) {
-  const r = parseInt(hex.slice(1,3), 16);
-  const g = parseInt(hex.slice(3,5), 16);
-  const b = parseInt(hex.slice(5,7), 16);
-  return (r*299 + g*587 + b*114) / 1000 > 160;
-}
-
 document.querySelectorAll('.size-btn').forEach(b => {
   b.onclick = () => {
     brushSize = parseInt(b.dataset.size);
@@ -1198,12 +933,13 @@ document.querySelectorAll('.size-btn').forEach(b => {
     b.classList.add('active');
   };
 });
-
 function toggleEraser() {
   isErasing = !isErasing;
-  document.getElementById('eraserBtn').classList.toggle('active', isErasing);
+  var b1 = document.getElementById('eraserBtn');
+  var b2 = document.getElementById('eraserBtnTop');
+  if (b1) b1.classList.toggle('active', isErasing);
+  if (b2) b2.classList.toggle('active', isErasing);
 }
-
 function setupCanvas() {
   const rect = canvas.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
@@ -1215,8 +951,6 @@ function setupCanvas() {
   ctx.lineJoin = 'round';
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Stroke buffer
   strokeCanvas = document.createElement('canvas');
   strokeCanvas.width = canvas.width;
   strokeCanvas.height = canvas.height;
@@ -1225,13 +959,11 @@ function setupCanvas() {
   strokeCtx.lineCap = 'round';
   strokeCtx.lineJoin = 'round';
 }
-
 function getPos(e) {
   const rect = canvas.getBoundingClientRect();
   const evt = e.touches ? e.touches[0] : e;
   return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
 }
-
 function clearStrokeBuffer() {
   const dpr = window.devicePixelRatio || 1;
   strokeCtx.setTransform(1, 0, 0, 1, 0, 0);
@@ -1240,7 +972,6 @@ function clearStrokeBuffer() {
   strokeCtx.lineCap = 'round';
   strokeCtx.lineJoin = 'round';
 }
-
 function startDraw(e) {
   e.preventDefault();
   isDrawing = true;
@@ -1259,7 +990,6 @@ function startDraw(e) {
     strokeCtx.fill();
   }
 }
-
 function draw(e) {
   if (!isDrawing) return;
   e.preventDefault();
@@ -1278,37 +1008,26 @@ function draw(e) {
     strokeCtx.moveTo(lastX, lastY);
     strokeCtx.lineTo(p.x, p.y);
     strokeCtx.stroke();
-    // Render preview of the in-progress stroke onto main
     redrawWithStrokePreview();
   }
   lastX = p.x; lastY = p.y;
 }
-
-// Composite the current in-progress stroke onto the main canvas without committing
 let mainSnapshot = null;
 function snapshotMain() {
   mainSnapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
-function restoreMain() {
-  if (mainSnapshot) ctx.putImageData(mainSnapshot, 0, 0);
-}
-
 function redrawWithStrokePreview() {
-  // Draw stroke buffer over the snapshot at lowered alpha for a "wax" look
   if (mainSnapshot) ctx.putImageData(mainSnapshot, 0, 0);
-  const dpr = window.devicePixelRatio || 1;
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.globalAlpha = STROKE_ALPHA;
   ctx.drawImage(strokeCanvas, 0, 0);
   ctx.restore();
 }
-
 function endDraw() {
   if (!isDrawing) return;
   isDrawing = false;
   if (!isErasing) {
-    // Apply real subtractive (paint-like) color mixing where stroke overlaps existing color
     commitStrokeWithMixing();
     snapshotMain();
   } else {
@@ -1316,18 +1035,16 @@ function endDraw() {
   }
   updateLiveScore();
 }
-
-// Subtractive (paint-like) color mixing: yellow + red = orange, blue + yellow = green, etc.
 function commitStrokeWithMixing() {
   const w = canvas.width, h = canvas.height;
   if (!mainSnapshot) return;
-  const baseData = mainSnapshot.data; // base before this stroke
+  const baseData = mainSnapshot.data;
   const strokeImg = strokeCtx.getImageData(0, 0, w, h);
   const sd = strokeImg.data;
   const out = ctx.createImageData(w, h);
   const od = out.data;
   for (let i = 0; i < od.length; i += 4) {
-    const sa = sd[i + 3]; // stroke alpha (0-255)
+    const sa = sd[i + 3];
     const br = baseData[i], bg = baseData[i + 1], bb = baseData[i + 2];
     if (sa === 0) {
       od[i] = br; od[i+1] = bg; od[i+2] = bb; od[i+3] = 255;
@@ -1335,17 +1052,15 @@ function commitStrokeWithMixing() {
     }
     const sr = sd[i], sg = sd[i + 1], sb = sd[i + 2];
     const baseIsWhite = br > 240 && bg > 240 && bb > 240;
-    const a = (sa / 255) * 0.75; // mixing intensity (slightly translucent feel)
+    const a = (sa / 255) * 0.75;
     if (baseIsWhite) {
-      // Just paint over white - normal alpha blend
       od[i]   = Math.round(sr * a + br * (1 - a));
       od[i+1] = Math.round(sg * a + bg * (1 - a));
       od[i+2] = Math.round(sb * a + bb * (1 - a));
     } else {
-      // Subtractive mix in CMY space => paint-like blending
       const c1 = 1 - br/255, m1 = 1 - bg/255, y1 = 1 - bb/255;
       const c2 = 1 - sr/255, m2 = 1 - sg/255, y2 = 1 - sb/255;
-      const k = 0.6 * a; // mixing weight - higher = more aggressive mix
+      const k = 0.6 * a;
       const cn = Math.min(1, c1 + c2 * k);
       const mn = Math.min(1, m1 + m2 * k);
       const yn = Math.min(1, y1 + y2 * k);
@@ -1357,7 +1072,6 @@ function commitStrokeWithMixing() {
   }
   ctx.putImageData(out, 0, 0);
 }
-
 canvas.addEventListener('mousedown', (e) => { snapshotMain(); startDraw(e); });
 canvas.addEventListener('mousemove', draw);
 canvas.addEventListener('mouseup', endDraw);
@@ -1366,11 +1080,8 @@ canvas.addEventListener('touchstart', (e) => { snapshotMain(); startDraw(e); }, 
 canvas.addEventListener('touchmove', draw, { passive: false });
 canvas.addEventListener('touchend', endDraw);
 canvas.addEventListener('touchcancel', endDraw);
-
-// Build mask AND reference RGB from colored SVG
 function buildMaskAndRef(coloredSvgInner) {
   return new Promise((resolve) => {
-    // Render onto white background to get the actual reference colors
     const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="${MASK_SIZE}" height="${MASK_SIZE}"><rect width="100%" height="100%" fill="white"/>${coloredSvgInner}</svg>`;
     const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -1383,11 +1094,8 @@ function buildMaskAndRef(coloredSvgInner) {
       const data = cx.getImageData(0, 0, MASK_SIZE, MASK_SIZE).data;
       const mask = new Uint8Array(MASK_SIZE * MASK_SIZE);
       const refRGB = new Uint8ClampedArray(MASK_SIZE * MASK_SIZE * 3);
-      // Also build mask from a separate render with no white background
-      // For simplicity, treat any non-white pixel as inside.
       for (let i = 0, j = 0; i < data.length; i += 4, j++) {
         const r = data[i], g = data[i + 1], b = data[i + 2];
-        // Inside = not pure white (since reference is colored on white bg)
         const isInside = !(r > 245 && g > 245 && b > 245);
         mask[j] = isInside ? 1 : 0;
         refRGB[j*3]   = r;
@@ -1401,7 +1109,6 @@ function buildMaskAndRef(coloredSvgInner) {
     img.src = url;
   });
 }
-
 let refImages = [];
 async function preloadMasks() {
   for (let i = 0; i < PICS.length; i++) {
@@ -1410,30 +1117,27 @@ async function preloadMasks() {
     refImages[i] = r.refRGB;
   }
 }
-
 function loadPicture(idx) {
   currentPic = idx;
   outlineSvg.innerHTML = PICS[idx].outline;
-  document.getElementById('refImg').innerHTML =
-    `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">${PICS[idx].colored}</svg>`;
+  document.getElementById('refImg').innerHTML = `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">${PICS[idx].colored}</svg>`;
   document.getElementById('refHint').textContent = PICS[idx].hint;
   setupCanvas();
   snapshotMain();
   updateLiveScore();
 }
-
 function calculateScore() {
   const w = canvas.width, h = canvas.height;
   if (w === 0 || h === 0 || !masks[currentPic]) {
     return { score: 0, coveragePct: 0, varietyCount: 0, spillPct: 0, accuracyPct: 0, goodPct: 0,
-             coverageScore: 0, accuracyScore: 0, varietyScore: 0, effortBonus: 0, penalty: 0 };
+             varietyScore: 0, penalty: 0, mainScore: 0 };
   }
   const mask = masks[currentPic];
   const ref = refImages[currentPic];
   const sampleStep = 4;
   let insideTotal = 0, outsideTotal = 0;
   let insideColored = 0, outsideColored = 0;
-  let insideMatched = 0;          // pixels colored AND similar to reference
+  let insideMatched = 0;
   let accuracySum = 0, accuracyCount = 0;
   const colorBuckets = new Set();
   const data = ctx.getImageData(0, 0, w, h).data;
@@ -1453,7 +1157,6 @@ function calculateScore() {
           colorBuckets.add((r >> 5) * 64 + (g >> 5) * 8 + (b >> 5));
           const rr = ref[mIdx*3], rg = ref[mIdx*3+1], rb = ref[mIdx*3+2];
           const dist = Math.sqrt((r-rr)*(r-rr) + (g-rg)*(g-rg) + (b-rb)*(b-rb));
-          // Pixel "matches" reference if distance < 100
           if (dist < 100) insideMatched++;
           const similarity = Math.max(0, 1 - dist / 120);
           accuracySum += similarity;
@@ -1468,42 +1171,23 @@ function calculateScore() {
   const coverage = insideTotal > 0 ? insideColored / insideTotal : 0;
   const spillRatio = outsideTotal > 0 ? outsideColored / outsideTotal : 0;
   const accuracy = accuracyCount > 0 ? accuracySum / accuracyCount : 0;
-  // ສ່ວນສຳຄັນ: % ຂອງພື້ນທີ່ທີ່ລະບາຍຖືກສີ (ທັງລະບາຍ ແລະ ສີຖືກ)
   const goodCoverage = insideTotal > 0 ? insideMatched / insideTotal : 0;
-
-  // ========== ຄະແນນ = % ການລະບາຍຖືກສີຂອງພື້ນທີ່ທັງໝົດ ==========
-  // ຂີດສີດຽວນ້ອຍໆ → coverage 5% → goodCov 5% → ໄດ້ 0-1 ຄະແນນ
-  // ລະບາຍຄົບເຕັມຮູບດ້ວຍສີຖືກ → goodCov 90%+ → ໄດ້ 9-10 ຄະແນນ
-
-  // ຄະແນນຫຼັກຈາກ "good coverage" (ສູງສຸດ 9 ຄະແນນ)
-  // ໃຊ້ linear: 90% = 9 ຄະແນນ
-  let mainScore = goodCoverage * 10; // 0-10 scale before adjustments
-  // ໂບນັດສຳລັບໃຊ້ຫຼາຍສີ (ສູງສຸດ +1)
+  let mainScore = goodCoverage * 10;
   let varietyScore = 0;
   if (colorBuckets.size >= 2) varietyScore = 0.4;
   if (colorBuckets.size >= 3) varietyScore = 0.7;
   if (colorBuckets.size >= 4) varietyScore = 1;
-
-  // ໂທດສີອອກນອກເສັ້ນ - ສູງສຸດ -3, ຍົກເວັ້ນ 1%
   let penalty = 0;
   if (spillRatio > 0.01) {
     penalty = Math.min((spillRatio - 0.01) * 35, 3);
   }
-
   let score = mainScore + varietyScore - penalty;
   score = Math.max(0, score);
-
-  // ການໃຫ້ຄະແນນຍ່ອຍ (ສຳລັບສະແດງ breakdown)
-  const coverageScore = Math.round(Math.min(coverage / 0.85, 1) * 5 * 10) / 10;
-  const accuracyScore = Math.round(Math.min(accuracy / 0.85, 1) * 5 * 10) / 10;
-
-  // ຄະແນນເຕັມ 10 ສຳລັບການລະບາຍດີຫຼາຍ
   if (goodCoverage >= 0.85 && colorBuckets.size >= 3 && spillRatio < 0.015) {
     score = 10;
   } else if (score > 9.5) {
-    score = 9; // ບໍ່ໃຫ້ເຕັມຖ້າເງື່ອນໄຂບໍ່ຄົບ
+    score = 9;
   }
-
   return {
     score: Math.min(Math.round(score), 10),
     coveragePct: Math.round(coverage * 100),
@@ -1511,20 +1195,15 @@ function calculateScore() {
     accuracyPct: Math.round(accuracy * 100),
     goodPct: Math.round(goodCoverage * 100),
     varietyCount: colorBuckets.size,
-    coverageScore: coverageScore,
-    accuracyScore: accuracyScore,
     varietyScore: Math.round(varietyScore * 10) / 10,
-    effortBonus: 0,
     penalty: Math.round(penalty * 10) / 10,
     mainScore: Math.round(mainScore * 10) / 10
   };
 }
-
 function getStars(score) {
   const filled = Math.min(5, Math.round(score / 2));
   return '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
 }
-
 let lastScore = 0;
 function celebrateConfetti() {
   const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#1dd1a1', '#ff9ff3', '#a29bfe', '#fd79a8'];
@@ -1540,7 +1219,6 @@ function celebrateConfetti() {
     setTimeout(function() { c.remove(); }, 4000);
   }
 }
-
 function getMessage(r) {
   if (r.score === 0 && r.coveragePct === 0) return 'ມາລະບາຍສີກັນເຖາະ! 🎨';
   if (r.spillPct >= 6) return 'ສີອອກນອກເສັ້ນຫຼາຍ ລະວັງເບິ່ງ ⚠️';
@@ -1553,12 +1231,10 @@ function getMessage(r) {
   if (r.score === 9) return 'ດີເລີດ! ເກືອບເຕັມຄະແນນແລ້ວ! ✨';
   return 'ຍອດຍ້ຽມແທ້! ໄດ້ຄະແນນເຕັມ! 🏆🎉';
 }
-
 function updateLiveScore() {
   const r = calculateScore();
   const scoreEl = document.getElementById('liveScore');
   const scoreDisplay = document.querySelector('.score-display');
-
   if (r.score > lastScore) {
     scoreEl.classList.remove('pop');
     void scoreEl.offsetWidth;
@@ -1570,14 +1246,11 @@ function updateLiveScore() {
     }
   }
   lastScore = r.score;
-
   scoreEl.textContent = r.score;
   document.getElementById('liveStars').textContent = getStars(r.score);
   document.getElementById('liveMsg').textContent = getMessage(r);
-  document.getElementById('liveDetail').textContent =
-    `ລະບາຍຖືກສີ: ${r.goodPct}% • ລະບາຍ: ${r.coveragePct}% • ສີ: ${r.varietyCount}`;
+  document.getElementById('liveDetail').textContent = `ລະບາຍຖືກສີ: ${r.goodPct}% • ລະບາຍ: ${r.coveragePct}% • ສີ: ${r.varietyCount}`;
 }
-
 function showFinalScore() {
   const r = calculateScore();
   document.getElementById('modalScore').textContent = r.score;
@@ -1588,27 +1261,19 @@ function showFinalScore() {
     r.score >= 7 ? '🎉 ສວຍງາມຫຼາຍ!' :
     r.score >= 5 ? '👏 ເກັ່ງຫຼາຍ!' :
     r.score >= 3 ? '😊 ດີແລ້ວ!' : '💪 ສືບຕໍ່ເລີຍ!';
-
-  let html = `
-    <div class="breakdown-row"><span>🎨 ລະບາຍຖືກສີ (${r.goodPct}% ຂອງພາບ)</span><span>+${r.mainScore}</span></div>
-    <div class="breakdown-row"><span>📊 ລະບາຍທັງໝົດ</span><span>${r.coveragePct}%</span></div>
-    <div class="breakdown-row"><span>🎯 ສີຄ້າຍຄືຮູບຕົວຢ່າງ</span><span>${r.accuracyPct}%</span></div>
-    <div class="breakdown-row"><span>🌈 ໃຊ້ສີຫຼາກຫຼາຍ (${r.varietyCount} ສີ)</span><span>+${r.varietyScore}</span></div>`;
+  let html = `<div class="breakdown-row"><span>🎨 ລະບາຍຖືກສີ (${r.goodPct}% ຂອງພາບ)</span><span>+${r.mainScore}</span></div><div class="breakdown-row"><span>📊 ລະບາຍທັງໝົດ</span><span>${r.coveragePct}%</span></div><div class="breakdown-row"><span>🎯 ສີຄ້າຍຄືຮູບຕົວຢ່າງ</span><span>${r.accuracyPct}%</span></div><div class="breakdown-row"><span>🌈 ໃຊ້ສີຫຼາກຫຼາຍ (${r.varietyCount} ສີ)</span><span>+${r.varietyScore}</span></div>`;
   if (r.penalty > 0) {
     html += `<div class="breakdown-row bad"><span>🚨 ອອກນອກເສັ້ນ (${r.spillPct}%)</span><span>−${r.penalty}</span></div>`;
   }
   document.getElementById('modalBreakdown').innerHTML = html;
   document.getElementById('modal').classList.add('show');
-
   if (r.score >= 8) {
     setTimeout(celebrateConfetti, 300);
     if (r.score === 10) setTimeout(celebrateConfetti, 800);
   }
 }
-
 function closeModal() { document.getElementById('modal').classList.remove('show'); }
 function clearAll() { setupCanvas(); snapshotMain(); updateLiveScore(); }
-
 window.addEventListener('resize', () => {
   const tmp = document.createElement('canvas');
   tmp.width = canvas.width; tmp.height = canvas.height;
@@ -1617,8 +1282,6 @@ window.addEventListener('resize', () => {
   ctx.drawImage(tmp, 0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
   snapshotMain();
 });
-
-// Init
 document.getElementById('selectedColorName').textContent = COLORS[0].name;
 document.getElementById('selectedColorSwatch').style.background = COLORS[0].hex;
 loadPicture(0);
