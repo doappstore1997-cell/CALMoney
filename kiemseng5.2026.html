@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ບົດຮຽນທວນຄືນສອບເສັງເດືອນ 5</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Phetsarath OT', 'Saysettha OT', 'Noto Sans Lao', Arial, sans-serif;
+    background: linear-gradient(135deg, #fff8e1 0%, #ffe0f0 50%, #e0f7ff 100%);
+    color: #333;
+    line-height: 1.8;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  header {
+    text-align: center;
+    background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fad0c4, #a1c4fd);
+    padding: 35px 20px;
+    border-radius: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+  }
+  header h1 {
+    color: #fff;
+    font-size: 2.4em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  header p { color: #fff; font-size: 1.1em; margin-top: 8px; }
+  .container { max-width: 1150px; margin: 0 auto; }
+
+  .toc {
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px 28px;
+    margin-bottom: 25px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    border-top: 6px solid #ff9a9e;
+  }
+  .toc h2 { color: #d63384; margin-bottom: 10px; }
+  .toc ol { padding-left: 25px; }
+  .toc li { margin-bottom: 5px; }
+  .toc a { color: #1d4ed8; text-decoration: none; font-weight: 600; }
+  .toc a:hover { text-decoration: underline; }
+
+  .section {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    border-left: 8px solid #ff7eb9;
+  }
+  .section:nth-child(even) { border-left-color: #7afcff; }
+
+  .section h2 {
+    font-size: 1.7em;
+    margin-bottom: 14px;
+    color: #d63384;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 3px dotted #fce7f3;
+  }
+  .section h3 {
+    color: #6b21a8;
+    font-size: 1.2em;
+    margin: 18px 0 10px;
+  }
+  .section h3::before { content: "📌 "; }
+
+  .section p { margin-bottom: 8px; }
+  .section ul, .section ol { padding-left: 28px; margin-bottom: 12px; }
+  .section li { margin-bottom: 5px; }
+
+  /* ສະຫຼະ ແລະ ວັນນະຍຸດ */
+  .vowel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .vowel-card {
+    background: linear-gradient(135deg, #fff1f8, #fffbe7);
+    border: 2px dashed #ff9a9e;
+    border-radius: 14px;
+    padding: 14px 8px;
+    text-align: center;
+  }
+  .vowel-card .symbol {
+    font-size: 2.2em;
+    color: #d63384;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .vowel-card .example { font-size: 1.1em; color: #555; }
+  .vowel-card .read { font-size: 0.85em; color: #888; display: block; margin-top: 3px; }
+
+  /* ຕົວເລກ 1-90 */
+  .number-table {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    margin: 12px 0;
+  }
+  .num {
+    background: linear-gradient(135deg, #c7f0db, #fef9c7);
+    padding: 8px 4px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    color: #2c6e49;
+    font-size: 0.95em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  }
+  .num.tens {
+    background: linear-gradient(135deg, #ffd6e0, #ffeaa7);
+    color: #c2185b;
+  }
+
+  /* English Alphabet */
+  .alphabet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .alpha {
+    background: linear-gradient(135deg, #ddd6fe, #fef3c7);
+    padding: 12px 4px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: #5b21b6;
+    font-size: 1.4em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    border: 2px solid transparent;
+  }
+  .alpha:hover { border-color: #a78bfa; }
+
+  /* Word cards */
+  .word-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .word-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    border-top: 4px solid #ff9a9e;
+  }
+  .word-card .emoji { font-size: 3em; display: block; }
+  .word-card .lao { font-size: 1.05em; color: #d63384; font-weight: bold; }
+  .word-card .eng { font-size: 0.9em; color: #1d4ed8; display: block; margin-top: 3px; }
+
+  /* Math problems */
+  .math-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .math-q {
+    background: linear-gradient(135deg, #c8f7c5, #fef9c7);
+    padding: 16px;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #2c6e49;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  }
+  .math-q input.ans-input {
+    width: 60px;
+    height: 45px;
+    border: 2px dashed #16a34a;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    color: #d63384;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .math-q input.ans-input:focus {
+    border-color: #d63384;
+    border-style: solid;
+    box-shadow: 0 0 0 3px rgba(214,51,132,0.2);
+  }
+  .math-q input.ans-input.correct {
+    background: #d1fae5;
+    border-color: #16a34a;
+    color: #16a34a;
+  }
+  .math-q input.ans-input.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #dc2626;
+  }
+  .check-btn {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    margin: 10px 5px;
+  }
+  .check-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.2); }
+  .reset-btn {
+    background: linear-gradient(135deg, #94a3b8, #64748b);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    margin: 10px 5px;
+  }
+  .score-display {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #fef3c7;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #b45309;
+    margin: 10px 5px;
+    font-size: 1.1em;
+  }
+
+  /* Multiplication */
+  .mult-wrap {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 12px 0;
+  }
+  .mult-block {
+    background: linear-gradient(135deg, #f5f3ff, #fdf4ff);
+    border-radius: 14px;
+    padding: 16px;
+    border-top: 5px solid #a78bfa;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  }
+  .mult-block h4 {
+    color: #5b21b6;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    text-align: center;
+    padding-bottom: 6px;
+    border-bottom: 2px dotted #ddd6fe;
+  }
+  .mult-block .mult-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mult-line {
+    display: block;
+    background: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    color: #1f2937;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    text-align: center;
+    font-size: 1.05em;
+  }
+  .mult-line:hover {
+    background: #ede9fe;
+    color: #5b21b6;
+  }
+
+  /* Months & Days */
+  .month-table, .day-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    margin: 10px 0;
+  }
+  .month-table th, .day-table th {
+    background: #fce7f3;
+    color: #be185d;
+    padding: 10px;
+  }
+  .month-table td, .day-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #fce7f3;
+  }
+  .month-table tr:nth-child(even) td,
+  .day-table tr:nth-child(even) td { background: #faf5ff; }
+
+  /* Writing practice */
+  .write-box {
+    background: linear-gradient(135deg, #fef3c7, #ffe0f0);
+    border-radius: 14px;
+    padding: 18px;
+    margin: 12px 0;
+    border: 2px dashed #f59e0b;
+  }
+
+  /* ແຖວຂຽນ (1 ແຖວຕໍ່ຕົວອັກສອນ) */
+  .write-row {
+    display: flex;
+    align-items: stretch;
+    background: #fff;
+    border-radius: 12px;
+    margin: 10px 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    overflow: hidden;
+    min-height: 90px;
+  }
+  .write-row .model {
+    flex: 0 0 90px;
+    background: linear-gradient(135deg, #fde68a, #fbbf24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.2em;
+    font-weight: bold;
+    color: #78350f;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    border-right: 3px dashed #f59e0b;
+  }
+  .write-row .practice-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    /* ເສັ້ນແຖວແບບປຶ້ມຫັດຂຽນ: ເສັ້ນເທິງ ກາງ ລຸ່ມ */
+    background-image:
+      linear-gradient(to bottom, transparent 18%, #94a3b8 18%, #94a3b8 19%, transparent 19%),
+      linear-gradient(to bottom, transparent 49%, #cbd5e1 49%, #cbd5e1 50%, transparent 50%),
+      linear-gradient(to bottom, transparent 80%, #94a3b8 80%, #94a3b8 81%, transparent 81%);
+    padding: 0 14px;
+    gap: 14px;
+    flex-wrap: wrap;
+    overflow: hidden;
+    min-height: 90px;
+  }
+  /* ຕົວຈາງສຳລັບໂມ້ຂຽນຕາມ */
+  .trace {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #cbd5e1;
+    line-height: 1;
+    user-select: none;
+  }
+  /* ຫ້ອງຫວ່າງສຳລັບຂຽນເອງ */
+  .empty-slot {
+    width: 50px;
+    height: 60px;
+    border: 1.5px dashed #d1d5db;
+    border-radius: 6px;
+    background: #fafafa;
+    flex-shrink: 0;
+  }
+
+  .stroke-guide {
+    background: #fff7ed;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 8px 0;
+    border-left: 4px solid #fb923c;
+    font-size: 0.95em;
+    color: #7c2d12;
+  }
+  .stroke-guide b { color: #c2410c; }
+
+  /* Coloring section */
+  .coloring {
+    background: linear-gradient(135deg, #d1fae5, #fef3c7);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+  }
+  .tree-scene { display: inline-block; margin: 10px; }
+
+  /* ສະຕູດິໂອລະບາຍສີ */
+  .paint-toolbar {
+    background: #fff;
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    align-items: center;
+  }
+  .paint-toolbar h4 {
+    width: 100%;
+    color: #0f5132;
+    margin-bottom: 4px;
+    font-size: 1em;
+  }
+  .color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+  }
+  .color-swatch {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.15s ease;
+  }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.selected {
+    border-color: #1f2937;
+    transform: scale(1.2);
+    box-shadow: 0 0 0 3px #fde68a, 0 4px 8px rgba(0,0,0,0.25);
+  }
+  .brush-size-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fef3c7;
+    padding: 6px 14px;
+    border-radius: 12px;
+  }
+  .brush-size-control label {
+    font-weight: bold;
+    color: #78350f;
+    font-size: 0.95em;
+  }
+  .brush-size-control input[type="range"] {
+    width: 130px;
+    cursor: pointer;
+  }
+  .brush-preview {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #cbd5e1;
+  }
+  .brush-preview-dot {
+    border-radius: 50%;
+    background: #ef4444;
+  }
+  .paint-tool-btn {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.95em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
+  .paint-tool-btn:hover { transform: translateY(-2px); }
+  .paint-tool-btn.active {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+  }
+  .paint-tool-btn.eraser {
+    background: linear-gradient(135deg, #94a3b8, #64748b);
+  }
+  .paint-tool-btn.eraser.active {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+  }
+  .paint-tool-btn.clear {
+    background: linear-gradient(135deg, #fb7185, #e11d48);
+  }
+  .paint-tool-btn.save {
+    background: linear-gradient(135deg, #34d399, #10b981);
+  }
+
+  .canvas-stage {
+    position: relative;
+    display: inline-block;
+    background: #fff;
+    border-radius: 14px;
+    border: 2px dashed #16a34a;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 100%;
+  }
+  .canvas-stage canvas {
+    display: block;
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .canvas-stage svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+
+  /* Body parts */
+  .body-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .body-item {
+    background: #fff;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    border-bottom: 3px solid #4ecdc4;
+  }
+  .body-item .icon { font-size: 2.2em; }
+  .body-item .lao-name { font-weight: bold; color: #0f766e; display: block; }
+  .body-item .eng-name { font-size: 0.85em; color: #6b7280; }
+
+  /* Special note */
+  .note {
+    background: linear-gradient(135deg, #fff5f7, #fef9c7);
+    border-left: 5px solid #ec4899;
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin: 12px 0;
+    font-style: italic;
+    color: #831843;
+  }
+
+  /* Highlight badge */
+  .badge {
+    display: inline-block;
+    background: #fbbf24;
+    color: #78350f;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-left: 8px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 25px;
+    color: #666;
+    font-size: 0.95em;
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+
+  /* ປຸ່ມລອຍລ້າງສີຈ້ຳ */
+  .floating-clear {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 50px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+    z-index: 1000;
+    transition: all 0.2s;
+  }
+  .floating-clear:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.5);
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.6em; }
+    .section h2 { font-size: 1.35em; }
+    .number-table { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  @media print {
+    body { background: white; }
+    .section { break-inside: avoid; }
+  }
+
+  /* ========= ສະຖານະຈ້ຳແລ້ວ (highlighted) ========= */
+  .clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  .clickable:hover {
+    transform: scale(1.05);
+    filter: brightness(1.05);
+  }
+  .clickable.active {
+    background: linear-gradient(135deg, #fca5a5, #f87171) !important;
+    color: #fff !important;
+    border-color: #dc2626 !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+    transform: scale(1.08);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+  .clickable.active * { color: #fff !important; }
+
+  /* ປຸ່ມລ້າງສີຂອງແຕ່ລະພາກ */
+  .clear-highlights-btn {
+    background: linear-gradient(135deg, #fca5a5, #f87171);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.95em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+    margin-bottom: 10px;
+  }
+  .clear-highlights-btn:hover { transform: translateY(-2px); }
+
+  .hint-tip {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+    border-left: 4px solid #f59e0b;
+  }
+
+  /* ===== ເઍນູຫຼັກ (ສະຫຼັບວິຊາ) ===== */
+  .main-nav {
+    background: #fff;
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    border-top: 6px solid #7C6FCD;
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+  }
+  .main-nav-title {
+    font-size: 0.95em;
+    color: #7B6F9A;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .main-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+  }
+  .main-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 6px;
+    border: 2px solid #E8DFF8;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #3A2E5A;
+    font-weight: 700;
+    font-size: 0.85em;
+    text-align: center;
+    line-height: 1.2;
+    background: #fff;
+    transition: all 0.18s;
+  }
+  .main-nav a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .main-nav a .nav-icon { font-size: 1.6em; line-height: 1; }
+  .nv-home  { border-color:#C5BCFF !important; background:linear-gradient(135deg,#FFF,#EEE9FF) !important; color:#7C6FCD !important; }
+  .nv-exam  { border-color:#FFD966 !important; background:linear-gradient(135deg,#FFF,#FFF4CC) !important; color:#D49B00 !important; }
+  .nv-math  { border-color:#C5BCFF !important; background:linear-gradient(135deg,#FFF,#EEE9FF) !important; color:#7C6FCD !important; }
+  .nv-en    { border-color:#B8D8F0 !important; background:linear-gradient(135deg,#FFF,#E0F0FF) !important; color:#4FA3E0 !important; }
+  .nv-cn    { border-color:#FFB8B8 !important; background:linear-gradient(135deg,#FFF,#FFE4E4) !important; color:#D63A3A !important; }
+  .nv-lo    { border-color:#C8E6C9 !important; background:linear-gradient(135deg,#FFF,#E8F5E9) !important; color:#43A047 !important; }
+  .nv-color { border-color:#FFD9B8 !important; background:linear-gradient(135deg,#FFF,#FFEEDD) !important; color:#E67E22 !important; }
+  .main-nav a.active {
+    cursor: default;
+    box-shadow: inset 0 0 0 3px #FFB300, 0 4px 10px rgba(0,0,0,0.1);
+    transform: none;
+  }
+  @media (max-width: 480px) {
+    .main-nav-grid { grid-template-columns: repeat(4, 1fr); }
+    .main-nav a { font-size: 0.75em; padding: 8px 4px; }
+    .main-nav a .nav-icon { font-size: 1.4em; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== ເઍນູຫຼັກ ===== -->
+  <nav class="main-nav">
+    <div class="main-nav-title">🎒 ເລືອກວິຊາ — ສະຫຼັບໜ້າຮຽນໄດ້ໄວ</div>
+    <div class="main-nav-grid">
+      <a href="index.html" class="nv-home"><span class="nav-icon">🏠</span><span>ໜ້າຫຼັກ</span></a>
+      <a href="kiemseng5.2026.html" class="nv-exam active"><span class="nav-icon">📝</span><span>ທວນຄືນ</span></a>
+      <a href="math.html" class="nv-math"><span class="nav-icon">🧮</span><span>ຄະນິດສາດ</span></a>
+      <a href="english.html" class="nv-en"><span class="nav-icon">🅰️</span><span>ອັງກິດ</span></a>
+      <a href="chinese.html" class="nv-cn"><span class="nav-icon">🀄</span><span>ຈີນ</span></a>
+      <a href="hienkhien.html" class="nv-lo"><span class="nav-icon">🇱🇦</span><span>ຂຽນລາວ</span></a>
+      <a href="labaiyc.html" class="nv-color"><span class="nav-icon">🎨</span><span>ລະບາຍສີ</span></a>
+    </div>
+  </nav>
+
+  <header>
+    <h1>📚 ບົດຮຽນທວນຄືນສອບເສັງເດືອນ 5</h1>
+    <p>ນາງ ສະລິຕາ Dedy 2026 ✨🌈</p>
+  </header>
+
+  <!-- ສາລະບານ -->
+  <div class="toc">
+    <h2>📖 ສາລະບານ</h2>
+    <ol>
+      <li><a href="#lao">ພາສາລາວ</a></li>
+      <li><a href="#math">ຄະນິດສາດ</a></li>
+      <li><a href="#english">ພາສາອັງກິດ</a></li>
+      <li><a href="#current">ຄຳຄ່ອງ - ວັນເດັກສາກົນ</a></li>
+      <li><a href="#know">ຄຳຮູ້ (ເດືອນ, ວັນ, ບັ້ງສູດ, ສັດ, ໝາກໄມ້)</a></li>
+      <li><a href="#color">ທາສີ - ເດັກຫົດຕົ້ນໄມ້</a></li>
+      <li><a href="#body">ຄວາມຮູ້ - My Body</a></li>
+      <li><a href="#add">ບວກເລກ</a></li>
+      <li><a href="#write-eng">ຫັດຂຽນຕົວອັກສອນອັງກິດ</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. ພາສາລາວ -->
+  <div class="section" id="lao">
+    <h2>🇱🇦 1. ພາສາລາວ</h2>
+
+    <h3>ຫັດອ່ານ ສະຫຼະ ແລະ ວັນນະຍຸດ</h3>
+    <div class="hint-tip">👆 ຄລິກໃສ່ ສະຫຼະ ເພື່ອຈ້ຳ (ຂຶ້ນສີແດງ) ຄລິກອີກເທື່ອເພື່ອລ້າງ</div>
+    <div class="vowel-grid">
+      <div class="vowel-card clickable">
+        <span class="symbol">Xະ</span>
+        <span class="example">ກະ ປະ ຕະ</span>
+        <span class="read">ສະຫຼະ ອະ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">Xາ</span>
+        <span class="example">ກາ ມາ ປາ</span>
+        <span class="read">ສະຫຼະ ອາ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">ໄX</span>
+        <span class="example">ໄກ່ ໄຂ່ ໄມ້</span>
+        <span class="read">ສະຫຼະ ໄອ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">ໃX</span>
+        <span class="example">ໃຈ ໃບ ໃຫ້</span>
+        <span class="read">ສະຫຼະ ໃອ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">ເXົາ</span>
+        <span class="example">ເຂົ້າ ເຊົ້າ ເຕົ່າ</span>
+        <span class="read">ສະຫຼະ ເອົາ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">Xຳ</span>
+        <span class="example">ນ້ຳ ຄຳ ດຳ</span>
+        <span class="read">ສະຫຼະ ອຳ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">X່</span>
+        <span class="example">ກ່າ ປ່າ ມ່າ</span>
+        <span class="read">ໄມ້ເອກ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">X້</span>
+        <span class="example">ກ້າ ປ້າ ມ້າ</span>
+        <span class="read">ໄມ້ໂທ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">X໊</span>
+        <span class="example">ກ໊າ ປ໊າ</span>
+        <span class="read">ໄມ້ຕີ</span>
+      </div>
+      <div class="vowel-card clickable">
+        <span class="symbol">X໋</span>
+        <span class="example">ກ໋າ ປ໋າ</span>
+        <span class="read">ໄມ້ຈັດຕະວາ</span>
+      </div>
+    </div>
+
+    <h3>ຫັດຂຽນ <span class="badge">ບົດທີ 24</span></h3>
+    <div class="note">
+      ✏️ ໃຫ້ໜູຫັດຂຽນສະຫຼະ ແລະ ວັນນະຍຸດທັງໝົດໃນປຶ້ມບົດທີ 24 ຕາມຮຽງລຳດັບ ໃຫ້ຄົບທຸກຕົວ ຂຽນໃຫ້ສວຍງາມ ບໍ່ອອກນອກເສັ້ນ.
+    </div>
+  </div>
+
+  <!-- 2. ຄະນິດສາດ -->
+  <div class="section" id="math">
+    <h2>➕ 2. ຄະນິດສາດ</h2>
+
+    <h3>ຫັດອ່ານ ເລກ 1 ຫາ 90</h3>
+    <div class="hint-tip">👆 ຄລິກໃສ່ເລກ ເພື່ອຈ້ຳ (ຂຶ້ນສີແດງ) ຊ່ວຍບໍ່ໃຫ້ສັບສົນເວລານັບ</div>
+    <button class="clear-highlights-btn" onclick="clearHighlights('.number-table')">🗑️ ລ້າງສີທີ່ຈ້ຳໄວ້</button>
+    <div class="number-table">
+      <div class="num tens clickable">1</div><div class="num clickable">2</div><div class="num clickable">3</div><div class="num clickable">4</div><div class="num clickable">5</div>
+      <div class="num clickable">6</div><div class="num clickable">7</div><div class="num clickable">8</div><div class="num clickable">9</div><div class="num tens clickable">10</div>
+
+      <div class="num clickable">11</div><div class="num clickable">12</div><div class="num clickable">13</div><div class="num clickable">14</div><div class="num clickable">15</div>
+      <div class="num clickable">16</div><div class="num clickable">17</div><div class="num clickable">18</div><div class="num clickable">19</div><div class="num tens clickable">20</div>
+
+      <div class="num clickable">21</div><div class="num clickable">22</div><div class="num clickable">23</div><div class="num clickable">24</div><div class="num clickable">25</div>
+      <div class="num clickable">26</div><div class="num clickable">27</div><div class="num clickable">28</div><div class="num clickable">29</div><div class="num tens clickable">30</div>
+
+      <div class="num clickable">31</div><div class="num clickable">32</div><div class="num clickable">33</div><div class="num clickable">34</div><div class="num clickable">35</div>
+      <div class="num clickable">36</div><div class="num clickable">37</div><div class="num clickable">38</div><div class="num clickable">39</div><div class="num tens clickable">40</div>
+
+      <div class="num clickable">41</div><div class="num clickable">42</div><div class="num clickable">43</div><div class="num clickable">44</div><div class="num clickable">45</div>
+      <div class="num clickable">46</div><div class="num clickable">47</div><div class="num clickable">48</div><div class="num clickable">49</div><div class="num tens clickable">50</div>
+
+      <div class="num clickable">51</div><div class="num clickable">52</div><div class="num clickable">53</div><div class="num clickable">54</div><div class="num clickable">55</div>
+      <div class="num clickable">56</div><div class="num clickable">57</div><div class="num clickable">58</div><div class="num clickable">59</div><div class="num tens clickable">60</div>
+
+      <div class="num clickable">61</div><div class="num clickable">62</div><div class="num clickable">63</div><div class="num clickable">64</div><div class="num clickable">65</div>
+      <div class="num clickable">66</div><div class="num clickable">67</div><div class="num clickable">68</div><div class="num clickable">69</div><div class="num tens clickable">70</div>
+
+      <div class="num clickable">71</div><div class="num clickable">72</div><div class="num clickable">73</div><div class="num clickable">74</div><div class="num clickable">75</div>
+      <div class="num clickable">76</div><div class="num clickable">77</div><div class="num clickable">78</div><div class="num clickable">79</div><div class="num tens clickable">80</div>
+
+      <div class="num clickable">81</div><div class="num clickable">82</div><div class="num clickable">83</div><div class="num clickable">84</div><div class="num clickable">85</div>
+      <div class="num clickable">86</div><div class="num clickable">87</div><div class="num clickable">88</div><div class="num clickable">89</div><div class="num tens clickable">90</div>
+    </div>
+
+    <h3>ຫັດຂຽນ - ບວກເລກ <span class="badge">ບົດທີ 24</span></h3>
+    <div class="note">
+      ✏️ ໃຫ້ໜູຫັດຂຽນບວກເລກໃນປຶ້ມບົດທີ 24 ໃຫ້ຄົບທຸກຂໍ້ ກວດຄຳຕອບກັບພໍ່-ແມ່.
+    </div>
+  </div>
+
+  <!-- 3. ພາສາອັງກິດ -->
+  <div class="section" id="english">
+    <h2>🇬🇧 3. ພາສາອັງກິດ (English)</h2>
+
+    <h3>ຫັດອ່ານ Aa - Zz</h3>
+    <div class="hint-tip">👆 ຄລິກໃສ່ຕົວອັກສອນ ເພື່ອຈ້ຳ (ຂຶ້ນສີແດງ)</div>
+    <button class="clear-highlights-btn" onclick="clearHighlights('.alphabet-grid')">🗑️ ລ້າງສີທີ່ຈ້ຳໄວ້</button>
+    <div class="alphabet-grid">
+      <div class="alpha clickable">Aa</div><div class="alpha clickable">Bb</div><div class="alpha clickable">Cc</div>
+      <div class="alpha clickable">Dd</div><div class="alpha clickable">Ee</div><div class="alpha clickable">Ff</div>
+      <div class="alpha clickable">Gg</div><div class="alpha clickable">Hh</div><div class="alpha clickable">Ii</div>
+      <div class="alpha clickable">Jj</div><div class="alpha clickable">Kk</div><div class="alpha clickable">Ll</div>
+      <div class="alpha clickable">Mm</div><div class="alpha clickable">Nn</div><div class="alpha clickable">Oo</div>
+      <div class="alpha clickable">Pp</div><div class="alpha clickable">Qq</div><div class="alpha clickable">Rr</div>
+      <div class="alpha clickable">Ss</div><div class="alpha clickable">Tt</div><div class="alpha clickable">Uu</div>
+      <div class="alpha clickable">Vv</div><div class="alpha clickable">Ww</div><div class="alpha clickable">Xx</div>
+      <div class="alpha clickable">Yy</div><div class="alpha clickable">Zz</div>
+    </div>
+
+    <h3>ຫັດຂຽນ <span class="badge">ບົດທີ 21</span></h3>
+    <div class="note">
+      ✏️ ຫັດຂຽນຕົວອັກສອນອັງກິດຕາມປຶ້ມບົດທີ 21. ຂຽນທັງຕົວໃຫຍ່ ແລະ ຕົວນ້ອຍ.
+    </div>
+  </div>
+
+  <!-- 4. ຄຳຄ່ອງ -->
+  <div class="section" id="current">
+    <h2>🎉 4. ຄຳຄ່ອງ - ວັນເດັກສາກົນ</h2>
+
+    <div style="background:linear-gradient(135deg,#ffe0f0,#fef3c7);padding:20px;border-radius:14px;">
+      <p><b>📅 ວັນເດັກສາກົນ</b> ກົງກັບ <b>ວັນທີ 1 ມິຖຸນາ</b> ຂອງທຸກໆປີ.</p>
+      <p>👶 ເປັນວັນຂອງເດັກນ້ອຍທົ່ວໂລກ ເພື່ອສະແດງເຖິງສິດທິ ແລະ ຄວາມສຸກຂອງເດັກນ້ອຍ.</p>
+      <p>🎈 ມີກິດຈະກຳຫຼາຍຢ່າງ ເຊັ່ນ: ການເຫຼັ້ນ, ຮ້ອງເພງ, ຟ້ອນ, ແຈກຂອງຂວັນ ແລະ ອາຫານ.</p>
+      <p><b>🌍 In English:</b> "International Children's Day" (1st June)</p>
+    </div>
+  </div>
+
+  <!-- 5. ຄຳຮູ້ -->
+  <div class="section" id="know">
+    <h2>🧠 5. ຄຳຮູ້</h2>
+
+    <h3>ເລົ່າເດືອນ ພາສາລາວ - English</h3>
+    <table class="month-table">
+      <tr><th>ລຳດັບ</th><th>ພາສາລາວ</th><th>English</th></tr>
+      <tr><td>1</td><td>ມັງກອນ</td><td>January</td></tr>
+      <tr><td>2</td><td>ກຸມພາ</td><td>February</td></tr>
+      <tr><td>3</td><td>ມີນາ</td><td>March</td></tr>
+      <tr><td>4</td><td>ເມສາ</td><td>April</td></tr>
+      <tr><td>5</td><td>ພຶດສະພາ</td><td>May</td></tr>
+      <tr><td>6</td><td>ມິຖຸນາ</td><td>June</td></tr>
+      <tr><td>7</td><td>ກໍລະກົດ</td><td>July</td></tr>
+      <tr><td>8</td><td>ສິງຫາ</td><td>August</td></tr>
+      <tr><td>9</td><td>ກັນຍາ</td><td>September</td></tr>
+      <tr><td>10</td><td>ຕຸລາ</td><td>October</td></tr>
+      <tr><td>11</td><td>ພະຈິກ</td><td>November</td></tr>
+      <tr><td>12</td><td>ທັນວາ</td><td>December</td></tr>
+    </table>
+
+    <h3>ເລົ່າວັນຈັນ - ວັນອາທິດ ພາສາລາວ - English</h3>
+    <table class="day-table">
+      <tr><th>ພາສາລາວ</th><th>English</th></tr>
+      <tr><td>ວັນຈັນ</td><td>Monday</td></tr>
+      <tr><td>ວັນອັງຄານ</td><td>Tuesday</td></tr>
+      <tr><td>ວັນພຸດ</td><td>Wednesday</td></tr>
+      <tr><td>ວັນພະຫັດ</td><td>Thursday</td></tr>
+      <tr><td>ວັນສຸກ</td><td>Friday</td></tr>
+      <tr><td>ວັນເສົາ</td><td>Saturday</td></tr>
+      <tr><td>ວັນອາທິດ</td><td>Sunday</td></tr>
+    </table>
+
+    <h3>ເລົ່າບັ້ງສູດ ຄູນ (ບັ້ງ 2 - ບັ້ງ 6)</h3>
+    <div class="hint-tip">👆 ຄລິກໃສ່ແຕ່ລະບັນທັດ ເພື່ອຈ້ຳ ຊ່ວຍບໍ່ໃຫ້ສັບສົນເວລາທ່ອງ</div>
+    <button class="clear-highlights-btn" onclick="clearHighlights('.mult-wrap')">🗑️ ລ້າງສີທີ່ຈ້ຳໄວ້</button>
+
+    <div class="mult-wrap">
+      <div class="mult-block">
+        <h4>✖️ ບັ້ງ 2</h4>
+        <div class="mult-list">
+          <span class="mult-line clickable">2 × 1 = 2</span>
+          <span class="mult-line clickable">2 × 2 = 4</span>
+          <span class="mult-line clickable">2 × 3 = 6</span>
+          <span class="mult-line clickable">2 × 4 = 8</span>
+          <span class="mult-line clickable">2 × 5 = 10</span>
+          <span class="mult-line clickable">2 × 6 = 12</span>
+          <span class="mult-line clickable">2 × 7 = 14</span>
+          <span class="mult-line clickable">2 × 8 = 16</span>
+          <span class="mult-line clickable">2 × 9 = 18</span>
+          <span class="mult-line clickable">2 × 10 = 20</span>
+        </div>
+      </div>
+
+      <div class="mult-block">
+        <h4>✖️ ບັ້ງ 3</h4>
+        <div class="mult-list">
+          <span class="mult-line clickable">3 × 1 = 3</span>
+          <span class="mult-line clickable">3 × 2 = 6</span>
+          <span class="mult-line clickable">3 × 3 = 9</span>
+          <span class="mult-line clickable">3 × 4 = 12</span>
+          <span class="mult-line clickable">3 × 5 = 15</span>
+          <span class="mult-line clickable">3 × 6 = 18</span>
+          <span class="mult-line clickable">3 × 7 = 21</span>
+          <span class="mult-line clickable">3 × 8 = 24</span>
+          <span class="mult-line clickable">3 × 9 = 27</span>
+          <span class="mult-line clickable">3 × 10 = 30</span>
+        </div>
+      </div>
+
+      <div class="mult-block">
+        <h4>✖️ ບັ້ງ 4</h4>
+        <div class="mult-list">
+          <span class="mult-line clickable">4 × 1 = 4</span>
+          <span class="mult-line clickable">4 × 2 = 8</span>
+          <span class="mult-line clickable">4 × 3 = 12</span>
+          <span class="mult-line clickable">4 × 4 = 16</span>
+          <span class="mult-line clickable">4 × 5 = 20</span>
+          <span class="mult-line clickable">4 × 6 = 24</span>
+          <span class="mult-line clickable">4 × 7 = 28</span>
+          <span class="mult-line clickable">4 × 8 = 32</span>
+          <span class="mult-line clickable">4 × 9 = 36</span>
+          <span class="mult-line clickable">4 × 10 = 40</span>
+        </div>
+      </div>
+
+      <div class="mult-block">
+        <h4>✖️ ບັ້ງ 5</h4>
+        <div class="mult-list">
+          <span class="mult-line clickable">5 × 1 = 5</span>
+          <span class="mult-line clickable">5 × 2 = 10</span>
+          <span class="mult-line clickable">5 × 3 = 15</span>
+          <span class="mult-line clickable">5 × 4 = 20</span>
+          <span class="mult-line clickable">5 × 5 = 25</span>
+          <span class="mult-line clickable">5 × 6 = 30</span>
+          <span class="mult-line clickable">5 × 7 = 35</span>
+          <span class="mult-line clickable">5 × 8 = 40</span>
+          <span class="mult-line clickable">5 × 9 = 45</span>
+          <span class="mult-line clickable">5 × 10 = 50</span>
+        </div>
+      </div>
+
+      <div class="mult-block">
+        <h4>✖️ ບັ້ງ 6</h4>
+        <div class="mult-list">
+          <span class="mult-line clickable">6 × 1 = 6</span>
+          <span class="mult-line clickable">6 × 2 = 12</span>
+          <span class="mult-line clickable">6 × 3 = 18</span>
+          <span class="mult-line clickable">6 × 4 = 24</span>
+          <span class="mult-line clickable">6 × 5 = 30</span>
+          <span class="mult-line clickable">6 × 6 = 36</span>
+          <span class="mult-line clickable">6 × 7 = 42</span>
+          <span class="mult-line clickable">6 × 8 = 48</span>
+          <span class="mult-line clickable">6 × 9 = 54</span>
+          <span class="mult-line clickable">6 × 10 = 60</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>ອ່ານໂຕສັດ 5 ຊະນິດ</h3>
+    <div class="word-grid">
+      <div class="word-card clickable">
+        <span class="emoji">🐯</span>
+        <span class="lao">ໂຕເສືອ</span>
+        <span class="eng">Tiger</span>
+      </div>
+      <div class="word-card clickable">
+        <span class="emoji">🐘</span>
+        <span class="lao">ໂຕຊ້າງ</span>
+        <span class="eng">Elephant</span>
+      </div>
+      <div class="word-card clickable">
+        <span class="emoji">🐠</span>
+        <span class="lao">ໂຕປາ</span>
+        <span class="eng">Fish</span>
+      </div>
+      <div class="word-card clickable">
+        <span class="emoji">🐱</span>
+        <span class="lao">ໂຕແມວ</span>
+        <span class="eng">Cat</span>
+      </div>
+      <div class="word-card clickable">
+        <span class="emoji">🐰</span>
+        <span class="lao">ໂຕກະຕ່າຍ</span>
+        <span class="eng">Rabbit</span>
+      </div>
+    </div>
+
+    <h3>ອ່ານໝາກໄມ້ 5 ຊະນິດ</h3>
+    <div class="word-grid">
+      <div class="word-card clickable">
+        <span class="emoji">🥭</span>
+        <span class="lao">ໝາກມ່ວງ</span>
+        <span class="eng">Mango</span>
+      </div>
+      <div class="word-card clickable">
+        <span class="emoji">🍊</span>
+        <span class="lao">ໝາກກ້ຽງ</span>
+        <span class="eng">Orange</span>
+      </div>
+      <div class="word-card clickable">
+        <span class="emoji">🍌</span>
+        <span class="lao">ໝາກກ້ວຍ</span>
+        <span class="eng">Banana</span>
+      </div>
+      <div class="word-card clickable">
+        <span class="emoji">🍎</span>
+        <span class="lao">ໝາກແອັບເປິ້ນ</span>
+        <span class="eng">Apple</span>
+      </div>
+      <div class="word-card clickable">
+        <span class="emoji">
+          <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <!-- Papaya body - elongated oval shape -->
+            <ellipse cx="30" cy="35" rx="14" ry="22" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+            <!-- Lighter highlight -->
+            <ellipse cx="25" cy="30" rx="5" ry="10" fill="#fbbf24" opacity="0.6"/>
+            <!-- Stem -->
+            <path d="M 30 13 L 30 8" stroke="#16a34a" stroke-width="2" stroke-linecap="round"/>
+            <!-- Leaves -->
+            <ellipse cx="25" cy="9" rx="4" ry="2" fill="#22c55e" transform="rotate(-30 25 9)"/>
+            <ellipse cx="35" cy="9" rx="4" ry="2" fill="#22c55e" transform="rotate(30 35 9)"/>
+            <!-- Seeds visible (dots) -->
+            <circle cx="28" cy="35" r="1.2" fill="#1f2937"/>
+            <circle cx="32" cy="38" r="1.2" fill="#1f2937"/>
+            <circle cx="29" cy="42" r="1.2" fill="#1f2937"/>
+            <circle cx="33" cy="32" r="1.2" fill="#1f2937"/>
+          </svg>
+        </span>
+        <span class="lao">ໝາກຫຸ້ງ</span>
+        <span class="eng">Papaya</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. ທາສີ -->
+  <div class="section" id="color">
+    <h2>🎨 6. ທາສີຮູບເດັກຫົດຕົ້ນໄມ້</h2>
+
+    <div class="coloring">
+      <p style="margin-bottom:15px;font-size:1.1em;color:#0f5132;"><b>✏️ ເລືອກສີ ແລະ ຂະໜາດສໍ ແລ້ວແຕ້ມໃສ່ຮູບເລີຍ</b></p>
+
+      <!-- ແຖບເຄື່ອງມືສຳລັບເລືອກສີ ແລະ ປັບຂະໜາດສໍ -->
+      <div class="paint-toolbar">
+        <h4>🎨 ເລືອກສີ</h4>
+        <div class="color-palette" id="colorPalette">
+          <div class="color-swatch selected" style="background:#ef4444;" data-color="#ef4444" title="ສີແດງ"></div>
+          <div class="color-swatch" style="background:#f97316;" data-color="#f97316" title="ສີສົ້ມ"></div>
+          <div class="color-swatch" style="background:#fbbf24;" data-color="#fbbf24" title="ສີເຫຼືອງ"></div>
+          <div class="color-swatch" style="background:#16a34a;" data-color="#16a34a" title="ສີຂຽວ"></div>
+          <div class="color-swatch" style="background:#0ea5e9;" data-color="#0ea5e9" title="ສີຟ້າ"></div>
+          <div class="color-swatch" style="background:#1d4ed8;" data-color="#1d4ed8" title="ສີຟ້າເຂັ້ມ"></div>
+          <div class="color-swatch" style="background:#9333ea;" data-color="#9333ea" title="ສີມ່ວງ"></div>
+          <div class="color-swatch" style="background:#ec4899;" data-color="#ec4899" title="ສີບົວ"></div>
+          <div class="color-swatch" style="background:#92400e;" data-color="#92400e" title="ສີນ້ຳຕານ"></div>
+          <div class="color-swatch" style="background:#000000;" data-color="#000000" title="ສີດຳ"></div>
+          <div class="color-swatch" style="background:#ffffff;border:2px solid #ccc;" data-color="#ffffff" title="ສີຂາວ"></div>
+          <div class="color-swatch" style="background:#9ca3af;" data-color="#9ca3af" title="ສີເທົາ"></div>
+          <div class="color-swatch" style="background:#86efac;" data-color="#86efac" title="ສີຂຽວອ່ອນ"></div>
+          <div class="color-swatch" style="background:#fda4af;" data-color="#fda4af" title="ສີບົວອ່ອນ"></div>
+          <div class="color-swatch" style="background:#fde68a;" data-color="#fde68a" title="ສີເຫຼືອງອ່ອນ"></div>
+        </div>
+      </div>
+
+      <div class="paint-toolbar">
+        <h4>📏 ຂະໜາດສໍ ແລະ ເຄື່ອງມື</h4>
+        <div class="brush-size-control">
+          <label>ຫົວສໍ:</label>
+          <input type="range" id="brushSize" min="2" max="50" value="10">
+          <span id="brushSizeLabel" style="font-weight:bold;color:#78350f;min-width:30px;">10</span>
+          <div class="brush-preview">
+            <div class="brush-preview-dot" id="brushPreviewDot" style="width:10px;height:10px;"></div>
+          </div>
+        </div>
+
+        <button class="paint-tool-btn active" id="brushBtn">🖌️ ສໍແຕ້ມ</button>
+        <button class="paint-tool-btn eraser" id="eraserBtn">🩹 ຢາງລົບ</button>
+        <button class="paint-tool-btn clear" id="clearCanvas">🗑️ ລ້າງໝົດ</button>
+        <button class="paint-tool-btn save" id="saveImage">💾 ບັນທຶກຮູບ</button>
+      </div>
+
+      <!-- ກະດານແຕ້ມ -->
+      <div class="canvas-stage" id="canvasStage">
+        <canvas id="paintCanvas" width="500" height="380"></canvas>
+        <svg width="500" height="380" viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg" id="outlineSvg">
+          <!-- Sun -->
+          <circle cx="430" cy="60" r="30" fill="none" stroke="#333" stroke-width="2"/>
+          <line x1="430" y1="15" x2="430" y2="30" stroke="#333" stroke-width="2"/>
+          <line x1="430" y1="90" x2="430" y2="105" stroke="#333" stroke-width="2"/>
+          <line x1="385" y1="60" x2="400" y2="60" stroke="#333" stroke-width="2"/>
+          <line x1="460" y1="60" x2="475" y2="60" stroke="#333" stroke-width="2"/>
+          <line x1="395" y1="25" x2="405" y2="35" stroke="#333" stroke-width="2"/>
+          <line x1="455" y1="85" x2="465" y2="95" stroke="#333" stroke-width="2"/>
+
+          <!-- Cloud -->
+          <ellipse cx="100" cy="60" rx="40" ry="20" fill="none" stroke="#333" stroke-width="2"/>
+          <ellipse cx="130" cy="55" rx="30" ry="18" fill="none" stroke="#333" stroke-width="2"/>
+
+          <!-- Ground -->
+          <line x1="0" y1="320" x2="500" y2="320" stroke="#333" stroke-width="2"/>
+
+          <!-- Tree -->
+          <rect x="335" y="220" width="20" height="100" fill="none" stroke="#333" stroke-width="2"/>
+          <circle cx="345" cy="200" r="55" fill="none" stroke="#333" stroke-width="2"/>
+          <circle cx="320" cy="180" r="30" fill="none" stroke="#333" stroke-width="2"/>
+          <circle cx="370" cy="180" r="30" fill="none" stroke="#333" stroke-width="2"/>
+
+          <!-- Child -->
+          <circle cx="170" cy="180" r="25" fill="none" stroke="#333" stroke-width="2"/>
+          <circle cx="163" cy="178" r="2" fill="#333"/>
+          <circle cx="177" cy="178" r="2" fill="#333"/>
+          <path d="M 162 188 Q 170 195 178 188" fill="none" stroke="#333" stroke-width="2"/>
+          <path d="M 170 205 L 170 270" stroke="#333" stroke-width="2"/>
+          <path d="M 145 270 L 170 230 L 195 270" fill="none" stroke="#333" stroke-width="2"/>
+          <line x1="170" y1="220" x2="200" y2="240" stroke="#333" stroke-width="2"/>
+          <line x1="170" y1="220" x2="145" y2="235" stroke="#333" stroke-width="2"/>
+          <line x1="155" y1="270" x2="150" y2="320" stroke="#333" stroke-width="2"/>
+          <line x1="185" y1="270" x2="190" y2="320" stroke="#333" stroke-width="2"/>
+
+          <!-- Watering can -->
+          <path d="M 200 240 L 230 235 L 235 270 L 205 275 Z" fill="none" stroke="#333" stroke-width="2"/>
+          <path d="M 235 245 L 250 240 L 252 250 L 240 255" fill="none" stroke="#333" stroke-width="2"/>
+          <path d="M 200 245 Q 195 250 200 260" fill="none" stroke="#333" stroke-width="2"/>
+
+          <!-- Water drops -->
+          <line x1="252" y1="252" x2="270" y2="270" stroke="#333" stroke-width="2"/>
+          <line x1="258" y1="252" x2="278" y2="275" stroke="#333" stroke-width="2"/>
+          <line x1="264" y1="252" x2="285" y2="280" stroke="#333" stroke-width="2"/>
+          <circle cx="270" cy="285" r="3" fill="none" stroke="#333" stroke-width="1.5"/>
+          <circle cx="285" cy="290" r="3" fill="none" stroke="#333" stroke-width="1.5"/>
+          <circle cx="295" cy="295" r="3" fill="none" stroke="#333" stroke-width="1.5"/>
+
+          <!-- Grass -->
+          <path d="M 30 320 L 35 310 L 40 320" fill="none" stroke="#333" stroke-width="2"/>
+          <path d="M 50 320 L 55 308 L 60 320" fill="none" stroke="#333" stroke-width="2"/>
+          <path d="M 410 320 L 415 308 L 420 320" fill="none" stroke="#333" stroke-width="2"/>
+          <path d="M 430 320 L 435 310 L 440 320" fill="none" stroke="#333" stroke-width="2"/>
+
+          <!-- Flowers -->
+          <circle cx="80" cy="315" r="4" fill="none" stroke="#333" stroke-width="1.5"/>
+          <line x1="80" y1="319" x2="80" y2="330" stroke="#333" stroke-width="1.5"/>
+          <circle cx="400" cy="315" r="4" fill="none" stroke="#333" stroke-width="1.5"/>
+          <line x1="400" y1="319" x2="400" y2="330" stroke="#333" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <p style="margin-top:15px;color:#555;font-size:0.95em;">
+        🖱️ ກົດເມົ້າຄ້າງໄວ້ ແລະ ລາກເພື່ອແຕ້ມສີ &nbsp;|&nbsp; 📱 ໃນໂທລະສັບ ໃຫ້ແຕະ ແລະ ລາກນິ້ວ
+      </p>
+    </div>
+  </div>
+
+  <!-- 7. My Body -->
+  <div class="section" id="body">
+    <h2>👶 7. ຄວາມຮູ້ - My Body (ຮ່າງກາຍ)</h2>
+
+    <div class="body-grid">
+      <div class="body-item clickable"><span class="icon">🧠</span><span class="lao-name">ຫົວ</span><span class="eng-name">Head</span></div>
+      <div class="body-item clickable"><span class="icon">💇</span><span class="lao-name">ຜົມ</span><span class="eng-name">Hair</span></div>
+      <div class="body-item clickable"><span class="icon">😊</span><span class="lao-name">ໜ້າ</span><span class="eng-name">Face</span></div>
+      <div class="body-item clickable"><span class="icon">👁️</span><span class="lao-name">ຕາ</span><span class="eng-name">Eye</span></div>
+      <div class="body-item clickable"><span class="icon">👂</span><span class="lao-name">ຫູ</span><span class="eng-name">Ear</span></div>
+      <div class="body-item clickable"><span class="icon">👃</span><span class="lao-name">ດັງ</span><span class="eng-name">Nose</span></div>
+      <div class="body-item clickable"><span class="icon">👄</span><span class="lao-name">ປາກ</span><span class="eng-name">Mouth</span></div>
+      <div class="body-item clickable"><span class="icon">🦷</span><span class="lao-name">ແຂ້ວ</span><span class="eng-name">Teeth</span></div>
+      <div class="body-item clickable"><span class="icon">👅</span><span class="lao-name">ລີ້ນ</span><span class="eng-name">Tongue</span></div>
+      <div class="body-item clickable"><span class="icon">🧎</span><span class="lao-name">ຄໍ</span><span class="eng-name">Neck</span></div>
+      <div class="body-item clickable"><span class="icon">💪</span><span class="lao-name">ແຂນ</span><span class="eng-name">Arm</span></div>
+      <div class="body-item clickable"><span class="icon">✋</span><span class="lao-name">ມື</span><span class="eng-name">Hand</span></div>
+      <div class="body-item clickable"><span class="icon">👆</span><span class="lao-name">ນິ້ວມື</span><span class="eng-name">Finger</span></div>
+      <div class="body-item clickable"><span class="icon">🦵</span><span class="lao-name">ຂາ</span><span class="eng-name">Leg</span></div>
+      <div class="body-item clickable"><span class="icon">🦶</span><span class="lao-name">ຕີນ</span><span class="eng-name">Foot</span></div>
+      <div class="body-item clickable"><span class="icon">🫃</span><span class="lao-name">ທ້ອງ</span><span class="eng-name">Stomach</span></div>
+    </div>
+
+    <div class="note">
+      🗣️ ຝຶກເລົ່າເປັນປະໂຫຍກງ່າຍໆ: <br>
+      "This is my <b>head</b>" (ນີ້ແມ່ນຫົວຂອງຂ້ອຍ) <br>
+      "I have two <b>eyes</b>" (ຂ້ອຍມີ 2 ຕາ) <br>
+      "I have one <b>nose</b>" (ຂ້ອຍມີ 1 ດັງ) <br>
+      "I have two <b>hands</b>" (ຂ້ອຍມີ 2 ມື)
+    </div>
+  </div>
+
+  <!-- 8. ບວກເລກ -->
+  <div class="section" id="add">
+    <h2>➕ 8. ບວກເລກ</h2>
+
+    <p style="color:#555;margin-bottom:10px;">ໃຫ້ໜູຄິດ ແລ້ວຂຽນຄຳຕອບລົງໃນຫ້ອງສີ່ຫຼ່ຽມ ແລ້ວກົດປຸ່ມ "ກວດຄຳຕອບ":</p>
+
+    <div class="math-grid" id="mathGrid">
+      <div class="math-q">2 + 1 = <input type="number" class="ans-input" data-answer="3"></div>
+      <div class="math-q">1 + 1 = <input type="number" class="ans-input" data-answer="2"></div>
+      <div class="math-q">4 + 3 = <input type="number" class="ans-input" data-answer="7"></div>
+      <div class="math-q">5 + 5 = <input type="number" class="ans-input" data-answer="10"></div>
+      <div class="math-q">3 + 1 = <input type="number" class="ans-input" data-answer="4"></div>
+      <div class="math-q">1 + 0 = <input type="number" class="ans-input" data-answer="1"></div>
+      <div class="math-q">6 + 2 = <input type="number" class="ans-input" data-answer="8"></div>
+      <div class="math-q">7 + 2 = <input type="number" class="ans-input" data-answer="9"></div>
+      <div class="math-q">1 + 4 = <input type="number" class="ans-input" data-answer="5"></div>
+      <div class="math-q">3 + 3 = <input type="number" class="ans-input" data-answer="6"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:15px;">
+      <button class="check-btn" onclick="checkAnswers()">✅ ກວດຄຳຕອບ</button>
+      <button class="reset-btn" onclick="resetAnswers()">🔄 ເລີ່ມໃໝ່</button>
+      <button class="check-btn" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);" onclick="showAnswers()">👁️ ເບິ່ງຄຳຕອບ</button>
+      <div class="score-display" id="scoreDisplay" style="display:none;">ຄະແນນ: 0/10</div>
+    </div>
+
+    <div class="note">
+      💡 <b>ເທັກນິກ:</b> ໃຊ້ນິ້ວມື ຫຼື ສິ່ງຂອງຊ່ວຍນັບ ເຊັ່ນ: ໝາກຖົ່ວ, ໝາກນິ້ມ, ຫຼື ບລັອກໄມ້
+    </div>
+  </div>
+
+  <!-- 9. ຫັດຂຽນຕົວອັກສອນອັງກິດ -->
+  <div class="section" id="write-eng">
+    <h2>✍️ 9. ຫັດຂຽນຕົວອັກສອນອັງກິດ</h2>
+
+    <div class="hint-tip">
+      📝 <b>ວິທີຂຽນ:</b> 1) ເບິ່ງຕົວໃຫຍ່ສີຄຳເປັນຕົວແບບ &nbsp; 2) ໂມ້ຂຽນຕາມຕົວສີຈາງ &nbsp; 3) ຂຽນເອງໃນຫ້ອງສີ່ຫຼ່ຽມຫວ່າງ &nbsp; 4) ອ່ານອອກສຽງທຸກຄັ້ງທີ່ຂຽນ
+    </div>
+
+    <div class="write-box">
+      <h3 style="margin-top:0;">📌 ຕົວໃຫຍ່ (Capital Letters)</h3>
+
+      <div class="stroke-guide">
+        <b>A</b> = 1) ເສັ້ນຊ້າຍລົງ ↘ &nbsp; 2) ເສັ້ນຂວາລົງ ↙ &nbsp; 3) ເສັ້ນຂວາງກາງ → &nbsp;
+        ອ່ານ: <b>"ເອ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">A</div>
+        <div class="practice-area">
+          <span class="trace">A</span><span class="trace">A</span><span class="trace">A</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+        </div>
+      </div>
+
+      <div class="stroke-guide">
+        <b>D</b> = 1) ເສັ້ນຕັ້ງລົງ ↓ &nbsp; 2) ໂຄ້ງໃຫຍ່ຈາກເທິງລົງລຸ່ມ ⤵ &nbsp;
+        ອ່ານ: <b>"ດີ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">D</div>
+        <div class="practice-area">
+          <span class="trace">D</span><span class="trace">D</span><span class="trace">D</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+        </div>
+      </div>
+
+      <div class="stroke-guide">
+        <b>N</b> = 1) ເສັ້ນຕັ້ງຊ້າຍ ↓ &nbsp; 2) ເສັ້ນສ່ຽງລົງ ↘ &nbsp; 3) ເສັ້ນຕັ້ງຂວາ ↑ &nbsp;
+        ອ່ານ: <b>"ເອັນ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">N</div>
+        <div class="practice-area">
+          <span class="trace">N</span><span class="trace">N</span><span class="trace">N</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+        </div>
+      </div>
+
+      <div class="stroke-guide">
+        <b>H</b> = 1) ເສັ້ນຕັ້ງຊ້າຍ ↓ &nbsp; 2) ເສັ້ນຕັ້ງຂວາ ↓ &nbsp; 3) ເສັ້ນຂວາງກາງ → &nbsp;
+        ອ່ານ: <b>"ເອັຈ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">H</div>
+        <div class="practice-area">
+          <span class="trace">H</span><span class="trace">H</span><span class="trace">H</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+        </div>
+      </div>
+
+      <div class="stroke-guide">
+        <b>J</b> = 1) ເສັ້ນຕັ້ງລົງ ↓ &nbsp; 2) ໂຄ້ງລຸ່ມໄປຊ້າຍ ↪ &nbsp;
+        ອ່ານ: <b>"ເຈ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">J</div>
+        <div class="practice-area">
+          <span class="trace">J</span><span class="trace">J</span><span class="trace">J</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="write-box" style="background:linear-gradient(135deg,#dbeafe,#fce7f3);border-color:#3b82f6;">
+      <h3 style="margin-top:0;">📌 ຕົວໃຫຍ່ + ຕົວນ້ອຍ (Big + Small)</h3>
+
+      <div class="stroke-guide">
+        <b>Ii</b> = ເສັ້ນຕັ້ງສັ້ນ &nbsp; <b>i</b> ມີຈຸດເທິງ &nbsp;
+        ອ່ານ: <b>"ໄອ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">Ii</div>
+        <div class="practice-area">
+          <span class="trace">Ii</span><span class="trace">Ii</span><span class="trace">Ii</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div>
+        </div>
+      </div>
+
+      <div class="stroke-guide">
+        <b>Ll</b> = ເສັ້ນຕັ້ງລົງ → ຫາງລຸ່ມໄປຂວາ &nbsp; <b>l</b> ເສັ້ນຕັ້ງສັ້ນ &nbsp;
+        ອ່ານ: <b>"ແອວ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">Ll</div>
+        <div class="practice-area">
+          <span class="trace">Ll</span><span class="trace">Ll</span><span class="trace">Ll</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div>
+        </div>
+      </div>
+
+      <div class="stroke-guide">
+        <b>Pp</b> = 1) ເສັ້ນຕັ້ງ ↓ &nbsp; 2) ວົງມົນເທິງ ⊃ &nbsp;
+        ອ່ານ: <b>"ພີ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">Pp</div>
+        <div class="practice-area">
+          <span class="trace">Pp</span><span class="trace">Pp</span><span class="trace">Pp</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div>
+        </div>
+      </div>
+
+      <div class="stroke-guide">
+        <b>Vv</b> = ເສັ້ນສ່ຽງລົງ ↘ → ເສັ້ນສ່ຽງຂຶ້ນ ↗ &nbsp;
+        ອ່ານ: <b>"ວີ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">Vv</div>
+        <div class="practice-area">
+          <span class="trace">Vv</span><span class="trace">Vv</span><span class="trace">Vv</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div>
+        </div>
+      </div>
+
+      <div class="stroke-guide">
+        <b>Tt</b> = 1) ເສັ້ນຂວາງເທິງ → &nbsp; 2) ເສັ້ນຕັ້ງລົງ ↓ &nbsp;
+        ອ່ານ: <b>"ທີ"</b>
+      </div>
+      <div class="write-row">
+        <div class="model">Tt</div>
+        <div class="practice-area">
+          <span class="trace">Tt</span><span class="trace">Tt</span><span class="trace">Tt</span>
+          <div class="empty-slot"></div><div class="empty-slot"></div>
+          <div class="empty-slot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      ✏️ <b>ກົດລະບຽບ:</b> 1) ຂຽນໃຫ້ສວຍ ບໍ່ອອກນອກເສັ້ນ &nbsp; 2) ອ່ານອອກສຽງທຸກຄັ້ງທີ່ຂຽນ &nbsp; 3) ໃຫ້ຂຽນຄົບ 1 ແຖວຕໍ່ຕົວ &nbsp; 4) ຖ້າຂຽນຜິດ ໃຫ້ລຶບແລ້ວເລີ່ມໃໝ່
+    </div>
+  </div>
+
+  <footer>
+    💖 ຂໍໃຫ້ໜູນ້ອຍຮຽນຢ່າງມ່ວນຊື່ນ ແລະ ປະສົບຄວາມສຳເລັດ <br>
+    ໃນການສອບເສັງເດືອນ 5 ນີ້! 🌟<br>
+    <small>ບົດຮຽນທວນຄືນສອບເສັງເດືອນ 5 - ນາງ ສະລິຕາ Dedy 2026</small>
+  </footer>
+
+</div>
+
+<button class="floating-clear" onclick="clearAllHighlights()">🗑️ ລ້າງສີຈ້ຳທັງໝົດ</button>
+
+<script>
+  function checkAnswers() {
+    const inputs = document.querySelectorAll('.ans-input');
+    let correct = 0;
+    let total = inputs.length;
+
+    inputs.forEach(input => {
+      const userAnswer = parseInt(input.value);
+      const correctAnswer = parseInt(input.dataset.answer);
+      input.classList.remove('correct', 'wrong');
+
+      if (input.value === '') {
+        // ຍັງບໍ່ໄດ້ຕອບ - ບໍ່ມີສີ
+        return;
+      }
+
+      if (userAnswer === correctAnswer) {
+        input.classList.add('correct');
+        correct++;
+      } else {
+        input.classList.add('wrong');
+      }
+    });
+
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    scoreDisplay.style.display = 'inline-block';
+    scoreDisplay.innerHTML = `ຄະແນນ: ${correct}/${total}`;
+
+    if (correct === total) {
+      scoreDisplay.innerHTML += ' 🎉 ເກັ່ງຫຼາຍ!';
+      scoreDisplay.style.background = '#d1fae5';
+      scoreDisplay.style.color = '#065f46';
+    } else if (correct >= total * 0.7) {
+      scoreDisplay.innerHTML += ' 👍 ດີຫຼາຍ!';
+      scoreDisplay.style.background = '#fef3c7';
+      scoreDisplay.style.color = '#b45309';
+    } else {
+      scoreDisplay.innerHTML += ' 💪 ສູ້ໆ ລອງໃໝ່!';
+      scoreDisplay.style.background = '#fee2e2';
+      scoreDisplay.style.color = '#991b1b';
+    }
+  }
+
+  function resetAnswers() {
+    const inputs = document.querySelectorAll('.ans-input');
+    inputs.forEach(input => {
+      input.value = '';
+      input.classList.remove('correct', 'wrong');
+    });
+    document.getElementById('scoreDisplay').style.display = 'none';
+  }
+
+  function showAnswers() {
+    const inputs = document.querySelectorAll('.ans-input');
+    inputs.forEach(input => {
+      input.value = input.dataset.answer;
+      input.classList.remove('wrong');
+      input.classList.add('correct');
+    });
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    scoreDisplay.style.display = 'inline-block';
+    scoreDisplay.innerHTML = '👁️ ນີ້ແມ່ນຄຳຕອບທັງໝົດ';
+    scoreDisplay.style.background = '#dbeafe';
+    scoreDisplay.style.color = '#1e40af';
+  }
+
+  // ກົດ Enter ເພື່ອໄປຫ້ອງຕໍ່ໄປ
+  document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('.ans-input');
+    inputs.forEach((input, index) => {
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          } else {
+            checkAnswers();
+          }
+        }
+      });
+    });
+
+    // ຄລິກເພື່ອຈ້ຳ (ຂຶ້ນສີແດງ) - ຊ່ວຍເວລາຮຽນ
+    const clickables = document.querySelectorAll('.clickable');
+    clickables.forEach(el => {
+      el.addEventListener('click', function(e) {
+        // ບໍ່ໃຫ້ກົດ input ມາ trigger ການຈ້ຳ
+        if (e.target.tagName === 'INPUT') return;
+        this.classList.toggle('active');
+      });
+    });
+  });
+
+  // ລ້າງສີຈ້ຳໃນຂອບເຂດທີ່ກຳນົດ
+  function clearHighlights(selector) {
+    const container = document.querySelector(selector);
+    if (!container) return;
+    container.querySelectorAll('.clickable.active').forEach(el => {
+      el.classList.remove('active');
+    });
+  }
+
+  // ລ້າງສີຈ້ຳທັງໝົດ
+  function clearAllHighlights() {
+    document.querySelectorAll('.clickable.active').forEach(el => {
+      el.classList.remove('active');
+    });
+  }
+
+  /* ============= ສະຕູດິໂອລະບາຍສີ ============= */
+  (function setupPaintStudio() {
+    const canvas = document.getElementById('paintCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    let currentColor = '#ef4444';
+    let currentSize = 10;
+    let isErasing = false;
+    let isDrawing = false;
+    let lastX = 0, lastY = 0;
+
+    // ຕັ້ງຄ່າເບື້ອງຕົ້ນ
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // ຄຳນວນຕຳແໜ່ງເມົ້າ/ນິ້ວໃນ canvas
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      let clientX, clientY;
+      if (e.touches) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    }
+
+    function startDraw(e) {
+      e.preventDefault();
+      isDrawing = true;
+      const pos = getPos(e);
+      lastX = pos.x;
+      lastY = pos.y;
+      // ແຕ້ມຈຸດທັນທີເມື່ອກົດ (ເຮັດໃຫ້ສາມາດກົດແຕ້ມຈຸດດຽວໄດ້)
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, currentSize / 2, 0, Math.PI * 2);
+      if (isErasing) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fill();
+        ctx.restore();
+      } else {
+        ctx.fillStyle = currentColor;
+        ctx.fill();
+      }
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      ctx.lineWidth = currentSize;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(pos.x, pos.y);
+      if (isErasing) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.stroke();
+        ctx.restore();
+      } else {
+        ctx.strokeStyle = currentColor;
+        ctx.stroke();
+      }
+      lastX = pos.x;
+      lastY = pos.y;
+    }
+
+    function stopDraw() {
+      isDrawing = false;
+    }
+
+    // ເມົ້າ
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+
+    // ນິ້ວ (touch)
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', stopDraw);
+
+    // ເລືອກສີ
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+      swatch.addEventListener('click', function() {
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+        this.classList.add('selected');
+        currentColor = this.dataset.color;
+        // ສະຫຼັບກັບໂໝດແຕ້ມເມື່ອເລືອກສີ
+        isErasing = false;
+        document.getElementById('brushBtn').classList.add('active');
+        document.getElementById('eraserBtn').classList.remove('active');
+        updateBrushPreview();
+      });
+    });
+
+    // ປັບຂະໜາດສໍ
+    const brushSize = document.getElementById('brushSize');
+    const brushSizeLabel = document.getElementById('brushSizeLabel');
+    const brushPreviewDot = document.getElementById('brushPreviewDot');
+
+    function updateBrushPreview() {
+      brushSizeLabel.textContent = currentSize;
+      brushPreviewDot.style.width = currentSize + 'px';
+      brushPreviewDot.style.height = currentSize + 'px';
+      brushPreviewDot.style.background = isErasing ? '#cbd5e1' : currentColor;
+    }
+
+    brushSize.addEventListener('input', function() {
+      currentSize = parseInt(this.value);
+      updateBrushPreview();
+    });
+
+    // ປຸ່ມສໍແຕ້ມ
+    document.getElementById('brushBtn').addEventListener('click', function() {
+      isErasing = false;
+      this.classList.add('active');
+      document.getElementById('eraserBtn').classList.remove('active');
+      updateBrushPreview();
+    });
+
+    // ປຸ່ມຢາງລົບ
+    document.getElementById('eraserBtn').addEventListener('click', function() {
+      isErasing = true;
+      this.classList.add('active');
+      document.getElementById('brushBtn').classList.remove('active');
+      updateBrushPreview();
+    });
+
+    // ປຸ່ມລ້າງໝົດ
+    document.getElementById('clearCanvas').addEventListener('click', function() {
+      if (confirm('ຢືນຢັນລ້າງສີທັງໝົດບໍ?')) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    });
+
+    // ປຸ່ມບັນທຶກຮູບ
+    document.getElementById('saveImage').addEventListener('click', function() {
+      // ສ້າງ canvas ໃໝ່ ລວມ canvas ສີ + SVG ເສັ້ນ
+      const merged = document.createElement('canvas');
+      merged.width = canvas.width;
+      merged.height = canvas.height;
+      const mctx = merged.getContext('2d');
+
+      // ພື້ນຫຼັງສີຂາວ
+      mctx.fillStyle = '#ffffff';
+      mctx.fillRect(0, 0, merged.width, merged.height);
+
+      // ວາດ canvas ສີ
+      mctx.drawImage(canvas, 0, 0);
+
+      // ວາດ SVG ທັບ
+      const svg = document.getElementById('outlineSvg');
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      const img = new Image();
+      img.onload = function() {
+        mctx.drawImage(img, 0, 0, merged.width, merged.height);
+        URL.revokeObjectURL(url);
+        // ດາວໂຫຼດ
+        const link = document.createElement('a');
+        link.download = 'ຮູບລະບາຍສີ.png';
+        link.href = merged.toDataURL('image/png');
+        link.click();
+      };
+      img.src = url;
+    });
+
+    // ເຮັດໃຫ້ canvas ປັບຂະໜາດຕາມໜ້າຈໍ
+    function resizeCanvas() {
+      const stage = document.getElementById('canvasStage');
+      const maxW = Math.min(500, stage.parentElement.clientWidth - 40);
+      const ratio = maxW / 500;
+      stage.style.width = maxW + 'px';
+      canvas.style.width = maxW + 'px';
+      canvas.style.height = (380 * ratio) + 'px';
+      const svg = document.getElementById('outlineSvg');
+      svg.style.width = maxW + 'px';
+      svg.style.height = (380 * ratio) + 'px';
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    updateBrushPreview();
+  })();
+</script>
+
+</body>
+</html>
