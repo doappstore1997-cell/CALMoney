@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ແອັບນັດໝາຍ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&family=Noto+Serif+Lao:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f1a; --surface: #1a1a2e; --card: #16213e;
+    --accent: #e94560; --accent2: #f5a623; --text: #eaeaea;
+    --text-muted: #8892b0; --success: #4ecca3;
+    --border: rgba(255,255,255,0.07); --glow: 0 0 20px rgba(233,69,96,0.3);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Noto Sans Lao', sans-serif;
+    min-height: 100vh; display:flex; justify-content:center;
+    align-items:flex-start; padding:20px;
+  }
+  .phone {
+    width:390px; min-height:844px; background:var(--surface);
+    border-radius:44px; border:2px solid rgba(255,255,255,0.1);
+    overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    position:relative; animation:fadeIn 0.6s ease;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+  .status-bar { display:flex; justify-content:space-between; align-items:center; padding:14px 28px 0; font-size:12px; font-weight:600; }
+  .header { padding:16px 24px 0; }
+  .header-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .app-title { font-family:'Noto Serif Lao',serif; font-size:26px; font-weight:700; }
+  .app-title span { color:var(--accent); }
+  .date-badge { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--text-muted); }
+  .subtitle { font-size:13px; color:var(--text-muted); margin-bottom:16px; }
+  .tabs { display:flex; gap:8px; padding:0 24px 16px; }
+  .tab { flex:1; padding:9px 0; border-radius:12px; border:none; cursor:pointer; font-family:'Noto Sans Lao',sans-serif; font-size:13px; font-weight:600; transition:all 0.2s; }
+  .tab.active { background:var(--accent); color:#fff; box-shadow:var(--glow); }
+  .tab.inactive { background:var(--card); color:var(--text-muted); }
+  .add-panel { margin:0 16px 16px; background:var(--card); border-radius:20px; border:1px solid var(--border); padding:18px; animation:slideDown 0.3s ease; }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)} }
+  .add-panel h3 { font-size:15px; font-weight:700; margin-bottom:14px; color:var(--accent2); }
+  .form-row { margin-bottom:12px; }
+  .form-label { font-size:11px; color:var(--text-muted); margin-bottom:5px; display:block; font-weight:600; text-transform:uppercase; }
+  .form-input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 14px; color:var(--text); font-family:'Noto Sans Lao',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+  .form-input:focus { border-color:var(--accent); }
+  .form-row-double { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .btn-add { width:100%; padding:12px; border-radius:12px; border:none; cursor:pointer; background:linear-gradient(135deg,var(--accent),#c0392b); color:#fff; font-family:'Noto Sans Lao',sans-serif; font-size:14px; font-weight:700; margin-top:4px; box-shadow:var(--glow); transition:transform 0.15s; }
+  .btn-add:hover { transform:translateY(-1px); }
+  .list-header { padding:0 24px 10px; display:flex; justify-content:space-between; align-items:center; }
+  .list-header-text { font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.8px; }
+  .count-badge { background:var(--accent); color:#fff; border-radius:10px; padding:2px 8px; font-size:11px; font-weight:700; }
+  .appointments { padding:0 16px 30px; display:flex; flex-direction:column; gap:10px; }
+  .appt-card { background:var(--card); border-radius:18px; border:1px solid var(--border); padding:16px; display:flex; align-items:flex-start; gap:14px; transition:transform 0.15s; position:relative; overflow:hidden; animation:cardIn 0.3s ease; }
+  @keyframes cardIn { from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)} }
+  .appt-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:4px 0 0 4px; }
+  .appt-card.upcoming::before { background:var(--accent); }
+  .appt-card.today::before { background:var(--success); box-shadow:0 0 10px rgba(78,204,163,0.5); }
+  .appt-card.past::before { background:var(--text-muted); }
+  .appt-card:hover { transform:translateX(4px); }
+  .appt-icon { width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .appt-icon.health { background:rgba(233,69,96,0.15); }
+  .appt-icon.work { background:rgba(245,166,35,0.15); }
+  .appt-icon.personal { background:rgba(78,204,163,0.15); }
+  .appt-icon.other { background:rgba(136,146,176,0.15); }
+  .appt-info { flex:1; min-width:0; }
+  .appt-title { font-size:15px; font-weight:700; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .appt-meta { display:flex; gap:6px; flex-wrap:wrap; }
+  .meta-chip { font-size:11px; padding:2px 7px; border-radius:6px; background:rgba(255,255,255,0.06); color:var(--text-muted); }
+  .meta-chip.h { color:var(--accent2); background:rgba(245,166,35,0.1); }
+  .appt-actions { display:flex; flex-direction:column; gap:6px; }
+  .btn-notify { padding:5px 10px; border-radius:8px; border:none; cursor:pointer; font-size:11px; font-weight:700; font-family:'Noto Sans Lao',sans-serif; background:rgba(233,69,96,0.15); color:var(--accent); transition:all 0.2s; white-space:nowrap; }
+  .btn-notify.on { background:var(--accent); color:#fff; }
+  .btn-del { padding:5px 10px; border-radius:8px; border:none; cursor:pointer; font-size:11px; background:rgba(255,255,255,0.05); color:var(--text-muted); transition:all 0.2s; font-family:'Noto Sans Lao',sans-serif; }
+  .btn-del:hover { background:rgba(233,69,96,0.2); color:var(--accent); }
+  .notif-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:100; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+  .notif-overlay.show { opacity:1; pointer-events:all; }
+  .notif-popup { width:310px; background:var(--card); border-radius:24px; border:1px solid rgba(255,255,255,0.12); padding:28px 24px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.5); transform:scale(0.85); transition:transform 0.3s; }
+  .notif-overlay.show .notif-popup { transform:scale(1); }
+  .notif-icon-big { font-size:52px; margin-bottom:14px; display:inline-block; animation:ring 0.6s ease infinite alternate; }
+  @keyframes ring { from{transform:rotate(-15deg)}to{transform:rotate(15deg)} }
+  .notif-title { font-size:18px; font-weight:700; margin-bottom:8px; }
+  .notif-body { font-size:13px; color:var(--text-muted); line-height:1.7; margin-bottom:22px; }
+  .notif-time { color:var(--accent); font-weight:700; }
+  .btn-close-notif { padding:12px 32px; border-radius:14px; border:none; cursor:pointer; background:var(--accent); color:#fff; font-family:'Noto Sans Lao',sans-serif; font-size:14px; font-weight:700; box-shadow:var(--glow); }
+  .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); }
+  .empty-state .ei { font-size:48px; margin-bottom:12px; opacity:0.4; }
+  .fab { position:absolute; bottom:32px; right:24px; width:52px; height:52px; border-radius:50%; border:none; cursor:pointer; background:linear-gradient(135deg,var(--accent),#c0392b); color:#fff; font-size:24px; box-shadow:var(--glow),0 8px 20px rgba(0,0,0,0.3); transition:transform 0.2s; display:flex; align-items:center; justify-content:center; }
+  .fab:hover { transform:scale(1.1); }
+  select.form-input option { background:#1a1a2e; }
+  ::-webkit-scrollbar { display:none; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status-bar">
+    <span id="clock-time" style="font-weight:700">09:41</span>
+    <div style="display:flex;gap:6px;align-items:center;font-size:12px">
+      <span>●●●</span><span>WiFi</span><span>🔋</span>
+    </div>
+  </div>
+
+  <div class="header">
+    <div class="header-top">
+      <div class="app-title">ນັດ<span>ໝາຍ</span></div>
+      <div class="date-badge" id="header-date">ວັນທີ...</div>
+    </div>
+    <p class="subtitle">ຈັດການນັດໝາຍ & ແຈ້ງເຕືອນ</p>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('list')">📋 ນັດທັງໝົດ</button>
+      <button class="tab inactive" onclick="switchTab('add')">➕ ເພີ່ມນັດ</button>
+    </div>
+  </div>
+
+  <div class="add-panel" id="add-panel" style="display:none">
+    <h3>✏️ ເພີ່ມນັດໃໝ່</h3>
+    <div class="form-row">
+      <label class="form-label">ຊື່ນັດ / ຫົວຂໍ້</label>
+      <input type="text" class="form-input" id="inp-title" placeholder="ເຊັ່ນ: ໝໍ, ປະຊຸມ...">
+    </div>
+    <div class="form-row form-row-double">
+      <div>
+        <label class="form-label">ວັນທີ</label>
+        <input type="date" class="form-input" id="inp-date">
+      </div>
+      <div>
+        <label class="form-label">ເວລາ</label>
+        <input type="time" class="form-input" id="inp-time">
+      </div>
+    </div>
+    <div class="form-row form-row-double">
+      <div>
+        <label class="form-label">ໝວດ</label>
+        <select class="form-input" id="inp-cat">
+          <option value="health">🏥 ສຸຂະພາບ</option>
+          <option value="work">💼 ວຽກ</option>
+          <option value="work">💼 ວຽກໄປສົ່ງສະໃບນາງ</option>
+          <option value="personal">⭐ ສ່ວນຕົວ</option>
+          <option value="other">📌 ອື່ນໆ</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">ສະຖານທີ</label>
+        <input type="text" class="form-input" id="inp-loc" placeholder="ທາງເລືອກ">
+      </div>
+    </div>
+    <button class="btn-add" onclick="addAppointment()">🔔 ບັນທຶກ + ຕັ້ງແຈ້ງເຕືອນ</button>
+  </div>
+
+  <div id="list-view">
+    <div class="list-header">
+      <span class="list-header-text">ນັດທີ່ມີ</span>
+      <span class="count-badge" id="count-badge">0</span>
+    </div>
+    <div class="appointments" id="appt-list"></div>
+  </div>
+
+  <button class="fab" onclick="switchTab('add')" id="fab-btn">+</button>
+
+  <div class="notif-overlay" id="notif-overlay">
+    <div class="notif-popup">
+      <div class="notif-icon-big">🔔</div>
+      <div class="notif-title" id="notif-title">ແຈ້ງເຕືອນນັດ!</div>
+      <div class="notif-body" id="notif-body"></div>
+      <button class="btn-close-notif" onclick="closeNotif()">✔ ຮັບຮູ້ແລ້ວ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_ICONS = {health:'🏥',work:'💼',personal:'⭐',other:'📌'};
+let appointments = [
+  {id:1,title:'ກວດສຸຂະພາບ',date:'2026-05-08',time:'09:00',cat:'health',loc:'ໂຮງໝໍ ມະໂຫສົດ',notify:true},
+  {id:2,title:'ປະຊຸມທີມ',date:'2026-05-06',time:'14:30',cat:'work',loc:'ຫ້ອງປະຊຸມ A',notify:true},
+  {id:3,title:'ວັນເກີດໝູ່',date:'2026-05-12',time:'18:00',cat:'personal',loc:'ຮ້ານອາຫານ',notify:false},
+];
+let timers={}, nextId=4;
+
+function getToday(){ return new Date().toISOString().split('T')[0]; }
+function formatDate(d){
+  const dt=new Date(d+'T00:00:00');
+  const days=['ອາທິດ','ຈັນ','ອັງຄານ','ພຸດ','ພະຫັດ','ສຸກ','ເສົາ'];
+  const mons=['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'];
+  return days[dt.getDay()]+' '+dt.getDate()+' '+mons[dt.getMonth()]+' '+(dt.getFullYear()+543);
+}
+
+function updateClock(){
+  const n=new Date();
+  document.getElementById('clock-time').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('header-date').textContent=formatDate(n.toISOString().split('T')[0]);
+}
+updateClock(); setInterval(updateClock,1000);
+
+function getStatus(date,time){
+  const now=new Date(), dt=new Date(date+'T'+time);
+  if(date===getToday()) return 'today';
+  return dt>now?'upcoming':'past';
+}
+
+function render(){
+  const list=document.getElementById('appt-list');
+  const sorted=[...appointments].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  document.getElementById('count-badge').textContent=sorted.length;
+  if(!sorted.length){
+    list.innerHTML='<div class="empty-state"><div class="ei">📅</div><p>ຍັງບໍ່ມີນັດ<br>ກົດ + ເພື່ອເພີ່ມນັດໃໝ່</p></div>';
+    return;
+  }
+  const statusLabel={today:'🟢 ມື້ນີ້',upcoming:'🔵 ຈະມາ',past:'⚫ ຜ່ານມາ'};
+  list.innerHTML=sorted.map(a=>{
+    const s=getStatus(a.date,a.time);
+    return `<div class="appt-card ${s}">
+      <div class="appt-icon ${a.cat}">${CAT_ICONS[a.cat]}</div>
+      <div class="appt-info">
+        <div class="appt-title">${a.title}</div>
+        <div class="appt-meta">
+          <span class="meta-chip h">🗓 ${formatDate(a.date)}</span>
+          <span class="meta-chip">⏰ ${a.time}</span>
+          ${a.loc?`<span class="meta-chip">📍 ${a.loc}</span>`:''}
+          <span class="meta-chip">${statusLabel[s]}</span>
+        </div>
+      </div>
+      <div class="appt-actions">
+        <button class="btn-notify ${a.notify?'on':''}" onclick="toggleNotify(${a.id})">${a.notify?'🔔 ON':'🔕 OFF'}</button>
+        <button class="btn-del" onclick="deleteAppt(${a.id})">🗑 ລົບ</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function scheduleNotification(appt){
+  if(timers[appt.id]){clearTimeout(timers[appt.id]);delete timers[appt.id];}
+  if(!appt.notify) return;
+  const apptTime=new Date(appt.date+'T'+appt.time);
+  const remindTime=new Date(apptTime.getTime()-30*60*1000);
+  const delay=remindTime-new Date();
+  if(delay>0) timers[appt.id]=setTimeout(()=>showNotif(appt,'30 ນາທີ'),delay);
+  const atDelay=apptTime-new Date();
+  if(atDelay>0) setTimeout(()=>showNotif(appt,'ເຖິງເວລາ'),atDelay);
+}
+
+function showNotif(appt,label){
+  document.getElementById('notif-title').textContent='🔔 ແຈ້ງເຕືອນນັດ!';
+  document.getElementById('notif-body').innerHTML=
+    `<strong>${appt.title}</strong><br>ເວລາ: <span class="notif-time">${appt.time} ໂມງ</span><br>ວັນທີ: ${formatDate(appt.date)}${appt.loc?'<br>📍 '+appt.loc:''}<br><br><small style="color:#4ecca3">${label==='ເຖິງເວລາ'?'⏰ ຮອດເວລານັດແລ້ວ!':'🔔 ອີກ 30 ນາທີຈະຮອດເວລານັດ'}</small>`;
+  document.getElementById('notif-overlay').classList.add('show');
+  if(Notification&&Notification.permission==='granted')
+    new Notification('ນັດໝາຍ: '+appt.title,{body:'ເວລາ '+appt.time+' - '+formatDate(appt.date)});
+}
+
+function closeNotif(){ document.getElementById('notif-overlay').classList.remove('show'); }
+
+function switchTab(tab){
+  const ap=document.getElementById('add-panel');
+  const lv=document.getElementById('list-view');
+  const fab=document.getElementById('fab-btn');
+  const tabs=document.querySelectorAll('.tab');
+  if(tab==='add'){
+    ap.style.display='block'; lv.style.display='none'; fab.style.display='none';
+    tabs[0].className='tab inactive'; tabs[1].className='tab active';
+    const n=new Date();
+    document.getElementById('inp-date').value=n.toISOString().split('T')[0];
+    document.getElementById('inp-time').value=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  } else {
+    ap.style.display='none'; lv.style.display='block'; fab.style.display='flex';
+    tabs[0].className='tab active'; tabs[1].className='tab inactive';
+    render();
+  }
+}
+
+function addAppointment(){
+  const title=document.getElementById('inp-title').value.trim();
+  const date=document.getElementById('inp-date').value;
+  const time=document.getElementById('inp-time').value;
+  const cat=document.getElementById('inp-cat').value;
+  const loc=document.getElementById('inp-loc').value.trim();
+  if(!title||!date||!time){alert('ກະລຸນາຕື່ມຂໍ້ມູນໃຫ້ຄົບ!');return;}
+  const appt={id:nextId++,title,date,time,cat,loc,notify:true};
+  appointments.push(appt);
+  scheduleNotification(appt);
+  if(Notification&&Notification.permission==='default') Notification.requestPermission();
+  document.getElementById('inp-title').value='';
+  document.getElementById('inp-loc').value='';
+  document.getElementById('notif-title').textContent='✅ ເພີ່ມນັດສຳເລັດ!';
+  document.getElementById('notif-body').innerHTML=`<strong>${title}</strong><br>ວັນທີ: ${formatDate(date)}<br>ເວລາ: <span class="notif-time">${time} ໂມງ</span>${loc?'<br>📍 '+loc:''}<br><br><small style="color:#4ecca3">🔔 ຕັ້ງແຈ້ງເຕືອນ 30 ນາທີ ກ່ອນຮອດເວລາ</small>`;
+  document.getElementById('notif-overlay').classList.add('show');
+  switchTab('list');
+}
+
+function toggleNotify(id){
+  const a=appointments.find(x=>x.id===id);
+  if(!a) return;
+  a.notify=!a.notify;
+  scheduleNotification(a);
+  if(a.notify&&Notification&&Notification.permission==='default') Notification.requestPermission();
+  render();
+}
+
+function deleteAppt(id){
+  if(timers[id]){clearTimeout(timers[id]);delete timers[id];}
+  appointments=appointments.filter(x=>x.id!==id);
+  render();
+}
+
+render();
+if(Notification&&Notification.permission==='default') Notification.requestPermission();
+</script>
+</body>
+</html>
