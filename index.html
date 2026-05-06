@@ -56,6 +56,7 @@
     transition: all 0.18s;
     display: flex; flex-direction: column; align-items: center;
     gap: 6px; text-align: center; line-height: 1.2;
+    position: relative;
   }
   .picker-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.08); }
   .picker-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.12); }
@@ -72,7 +73,7 @@
   .pb-color .pb-title { color: #E67E22; }
   .pb-lo { border-color: #C8E6C9; background: linear-gradient(135deg, #FFFFFF, #E8F5E9); }
   .pb-lo .pb-title { color: #43A047; }
-  .pb-exam { border-color: #FFD966; background: linear-gradient(135deg, #FFFFFF, #FFF4CC); position: relative; }
+  .pb-exam { border-color: #FFD966; background: linear-gradient(135deg, #FFFFFF, #FFF4CC); }
   .pb-exam .pb-title { color: #D49B00; }
   .pb-exam::after {
     content: "ໃໝ່!";
@@ -86,6 +87,23 @@
     box-shadow: 0 3px 0 rgba(0,0,0,0.12);
     animation: wiggle 1.6s infinite;
   }
+
+  /* ປຸ່ມໃໝ່: ນັດໝາຍອ້າຍບິກ */
+  .pb-big { border-color: #FBBF24; background: linear-gradient(135deg, #FFFFFF, #FFFBEB); }
+  .pb-big .pb-title { color: #B45309; }
+  .pb-big::after {
+    content: "HOT 🔥";
+    position: absolute;
+    top: -8px; right: -8px;
+    background: #F97316; color: #fff;
+    font-size: clamp(10px,2.5vw,12px);
+    font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 999px;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.12);
+    animation: wiggle 1.6s infinite;
+  }
+
   @keyframes wiggle {
     0%,100% { transform: rotate(-6deg); }
     50% { transform: rotate(6deg); }
@@ -107,6 +125,14 @@
   <div class="picker-sub">ເລືອກວິຊາທີ່ຢາກຮຽນເລີຍ ✨</div>
 
   <div class="picker-grid">
+
+    <!-- ປຸ່ມໃໝ່ ນັດໝາຍອ້າຍບິກ -->
+    <a class="picker-btn pb-big" href="big.html">
+      <span class="pb-icon">📅</span>
+      <span class="pb-title">ນັດໝາຍອ້າຍບິກ</span>
+      <span class="pb-desc">ຕາຕະລາງ &amp; ກິດຈະກຳ</span>
+    </a>
+
     <a class="picker-btn pb-exam" href="kiemseng5.2026.html">
       <span class="pb-icon">📝</span>
       <span class="pb-title">ທວນຄືນບົດຮຽນ</span>
@@ -145,7 +171,6 @@
 </div>
 
 <script>
-  // Allow child pages to ask the index to switch view via postMessage (kept for compatibility)
   window.addEventListener('message', function(e){
     var d = e.data || {};
     if(d.type === 'switchView' && d.view){
